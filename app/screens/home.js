@@ -1,68 +1,25 @@
 /**
  * Created by ggoma on 12/23/16.
  */
-import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet
-} from 'react-native';
-
+import React from 'react';
 import Landing from './Landing';
-import Footer from './common/footer';
-import TabBarNavigation from './common/tab-bar-navigation';
-import { gs, hs } from '../styles/global';
+import { Screen } from './screen';
 
-export class HomeScreen extends Component {
+export class HomeScreen extends React.Component {
 
     static navigationOptions = ({ navigation }) => ({
         header: navigation.state.params ? navigation.state.params.header : undefined,
-        title: 'HOME',
-        headerStyle: hs.bg,
-        headerTitleStyle: {...hs.font, alignSelf: 'center'},
+        title: navigation.state.params ? navigation.state.params.titleText : undefined,
     });
-
-    hideHeader() {
-        this.props.navigation.setParams({ 
-            header: null 
-        });
-    }
-
-    showHeader() {
-        this.props.navigation.setParams({ 
-            header: undefined 
-        });
-    }
 
     render() {
         return (
-            <View style={[gs.bg, styles.container]}>
+            <Screen
+                title='HOME'
+                navigation={this.props.navigation}
+            >
                 <Landing />
-                <Footer ref='footer'
-                        hide={() => {
-                            this.refs.tab.hide();
-                            this.hideHeader();
-                        }}
-                        show={() => {
-                            this.refs.tab.show();
-                            this.showHeader();
-                        }}
-                        hideTabBarNavigation={
-                            (v) => {
-                                if (!v) {
-                                    return;
-                                }
-                                this.refs.tab.setHeight(v);
-                            }
-                        }
-                />
-                <TabBarNavigation ref='tab'/>
-            </View>
+            </Screen>
         )
     }
 }
-
-var styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    }
-});
