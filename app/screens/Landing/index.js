@@ -8,14 +8,11 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
-
 import Header from '../common/header';
-
 import PlayList from '../common/playlist';
-
 import img from '../common/imgs';
-
-import {TOGETHER} from '../common/footer';
+import { TOGETHER } from '../common/footer';
+import { gs } from '../../styles/global';
 
 export default class Landing extends Component {
 
@@ -23,7 +20,12 @@ export default class Landing extends Component {
         playlists: this.generatePlaylists(img, 5)
     };
 
-    title = ['Just For You', 'Recently Played', 'Inspired by your Recent Listening', 'New Music Friday!'];
+    title = [
+        'Just For You',
+        'Recently Played',
+        'Inspired by your Recent Listening',
+        'New Music Friday!'
+    ];
 
     generatePlaylists(array, size) {
         let results = [];
@@ -59,6 +61,5 @@ export default class Landing extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black'
     },
 });

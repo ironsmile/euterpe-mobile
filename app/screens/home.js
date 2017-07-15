@@ -10,6 +10,7 @@ import {
 import Landing from './Landing';
 import Footer from './common/footer';
 import TabBarNavigation from './common/tab-bar-navigation';
+import { gs } from '../styles/global';
 
 export class HomeScreen extends Component {
 
@@ -20,7 +21,7 @@ export class HomeScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={[gs.bg, styles.container]}>
                 <Landing />
                 <Footer ref='footer'
                         hide={() => this.refs.tab.hide()}
