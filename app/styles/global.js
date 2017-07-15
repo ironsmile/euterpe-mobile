@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 const fontFamily = 'Verdana';
 
 export const gs = {
@@ -18,10 +20,14 @@ export const hs = {
   bg: {
     backgroundColor: 'rgba(27,27,27,.9)',
     position: 'absolute',
-    height: 50,
+    height: (Platform.OS === 'ios') ? 50 : 30,
     top: 0,
     left: 0,
     right: 0,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    shadowOffset: null,
+    elevation: 0,
     // backgroundColor: 'red',
   },
 

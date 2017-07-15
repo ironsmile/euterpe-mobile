@@ -18,7 +18,7 @@ export class HomeScreen extends Component {
         header: navigation.state.params ? navigation.state.params.header : undefined,
         title: 'HOME',
         headerStyle: hs.bg,
-        headerTitleStyle: hs.font,
+        headerTitleStyle: {...hs.font, alignSelf: 'center'},
     });
 
     hideHeader() {
