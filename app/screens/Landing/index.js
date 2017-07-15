@@ -46,8 +46,7 @@ export default class Landing extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <ScrollView
-                    style={styles.sv}>
+                <ScrollView>
                     {this.renderPlaylists()}
                 </ScrollView>
                 {/*for the gap*/}
@@ -62,7 +61,4 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'black'
     },
-    sv: {
-        paddingTop: 72,
-    }
 });
