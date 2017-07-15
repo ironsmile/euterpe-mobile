@@ -10,13 +10,14 @@ import {
 import Landing from './Landing';
 import Footer from './common/footer';
 import TabBarNavigation from './common/tab-bar-navigation';
-import { gs } from '../styles/global';
+import { gs, hs } from '../styles/global';
 
 export class HomeScreen extends Component {
 
     static navigationOptions = {
       title: 'HOME',
-      header: null,
+      headerStyle: hs.bg,
+      headerTitleStyle: hs.font,
     }
 
     render() {
@@ -35,6 +36,6 @@ export class HomeScreen extends Component {
 
 var styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
     }
 });

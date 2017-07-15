@@ -48,8 +48,8 @@ export default class PlayList extends Component {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        paddingTop: 24,
-        paddingBottom: 56
+        paddingTop: 74,
+        paddingBottom: 6
     },
 
     title: {

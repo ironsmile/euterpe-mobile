@@ -8,7 +8,7 @@ export const gs = {
 
   font: {
     color: 'white',
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily,
   },
 
 };
@@ -16,7 +16,13 @@ export const gs = {
 export const hs = {
 
   bg: {
-    backgroundColor: '#1b1b1b',
+    backgroundColor: 'rgba(27,27,27,.9)',
+    position: 'absolute',
+    height: 50,
+    top: 0,
+    left: 0,
+    right: 0,
+    // backgroundColor: 'red',
   },
 
   font: {
