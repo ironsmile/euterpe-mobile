@@ -9,7 +9,8 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
-    StatusBar
+    StatusBar,
+    Platform
 } from 'react-native';
 
 import D from './dimensions';
@@ -71,8 +72,6 @@ export default class Footer extends Component {
             },
 
             onPanResponderMove: (e, g) => {
-
-
 
                 if(this.moving || (!this.open && g.dy > 0) || (this.open && g.dy < 0)) {
                     // console.log('shouldnt move!!');
@@ -203,7 +202,6 @@ export default class Footer extends Component {
             this.state.opacity,
             {toValue: 0}
         ).start();
-
         this.openPlaying(-101);
     }
 

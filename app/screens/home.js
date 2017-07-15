@@ -46,7 +46,14 @@ export class HomeScreen extends Component {
                             this.refs.tab.show();
                             this.showHeader();
                         }}
-                        hideTabBarNavigation={(v) => this.refs.tab.setHeight(v)}
+                        hideTabBarNavigation={
+                            (v) => {
+                                if (!v) {
+                                    return;
+                                }
+                                this.refs.tab.setHeight(v);
+                            }
+                        }
                 />
                 <TabBarNavigation ref='tab'/>
             </View>
