@@ -224,7 +224,11 @@ export default class Footer extends Component {
 
 
     getStyle() {
-        return {transform: [{translateY: this.state.pan.y}]};
+        return {
+            transform: [{
+                translateY: this.state.pan.y
+            }]
+        };
     }
 
     renderDefault() {
