@@ -267,16 +267,7 @@ export default class Footer extends Component {
 
     render() {
         return (
-            <View
-                ref='view' style={styles.container}>
-                <StatusBar
-                    ref='status'
-                    translucent
-                    animated={true}
-                    barStyle={'light-content'}
-                    backgroundColor="transparent"
-                />
-
+            <View ref='view' style={styles.container}>
                 <Animated.View
                     {...this._panResponder.panHandlers}
                     style={[styles.playing, this.getStyle()]}>
@@ -284,7 +275,6 @@ export default class Footer extends Component {
                     <CoverFlow scrollDown={() => this.scrollDown()}/>
                     {this.renderDefault()}
                 </Animated.View>
-
             </View>
         )
     }

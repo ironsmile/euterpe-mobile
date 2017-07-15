@@ -7,12 +7,12 @@ import {
     View,
     Text,
     TouchableWithoutFeedback,
+    TouchableOpacity,
     StyleSheet
 } from 'react-native';
 
 import D from './dimensions';
 import Icon from 'react-native-vector-icons/Ionicons';
-let Ionicons = Icon;
 
 export default class tabBarNavigation extends Component {
     state = {
@@ -20,18 +20,21 @@ export default class tabBarNavigation extends Component {
         translateY: new Animated.Value(0)
     };
 
-    details = ['Home', 'Browse', 'Search', 'Radio', 'Library'];
-    icons = ['ios-home', 'ios-albums', 'ios-search', 'ios-radio-outline', 'ios-book-outline'];
+    details = ['Home', 'Browse', 'Search', 'Library', 'About'];
+    icons = ['ios-home', 'ios-albums', 'ios-search', 'ios-book', 'ios-information-circle'];
+
     renderIcons() {
         return this.details.map((item, i) => {
-            const color = this.state.selected == i ? '#41b177' : '#bdbec2';
+            const color = this.state.selected == i ? 'white' : '#bdbec2';
+            const name = this.state.selected == i ? this.icons[i] : this.icons[i] + '-outline';
+            const fontWeight = this.state.selected == i ? 'bold' : undefined;
             return (
-                <TouchableWithoutFeedback onPress={() => this.setState({selected: i})} key={i}>
+                <TouchableOpacity onPress={() => this.setState({selected: i})} key={i}>
                     <View style={styles.tab_item} >
-                        <Ionicons name={this.icons[i]} color={color} size={24}/>
-                        <Text style={[styles.text, {color}]}>{item}</Text>
+                        <Icon name={name} color={color} size={24}/>
+                        <Text style={[styles.text, {color, fontWeight}]}>{item}</Text>
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
             )
         })
     }
@@ -85,6 +88,7 @@ const styles = StyleSheet.create({
 
     tab_item: {
         alignItems: 'center',
+        width: 56,
     },
 
     text: {

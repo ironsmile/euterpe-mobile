@@ -4,7 +4,8 @@
 import React, { Component } from 'react';
 import {
     View,
-    StyleSheet
+    StyleSheet,
+    StatusBar
 } from 'react-native';
 
 import Landing from './Landing';
@@ -35,6 +36,13 @@ export class Screen extends Component {
     render() {
         return (
             <View style={[gs.bg, styles.container]}>
+                <StatusBar
+                    ref='status'
+                    translucent
+                    animated={true}
+                    barStyle={'light-content'}
+                    backgroundColor="transparent"
+                />
                 {this.props.children}
                 <Footer ref='footer'
                         hide={() => {
