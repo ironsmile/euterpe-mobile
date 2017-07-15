@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     album: {
         width: D.width * 4.2/10,
         height: D.width * 4.2/10,
-        backgroundColor: 'white'
+        backgroundColor: 'transparent'
     },
 
     img: {
