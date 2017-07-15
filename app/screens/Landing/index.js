@@ -25,20 +25,17 @@ export default class Landing extends Component {
 
     title = ['Just For You', 'Recently Played', 'Inspired by your Recent Listening', 'New Music Friday!'];
 
-
-
     generatePlaylists(array, size) {
         let results = [];
         while (array.length) {
             results.push(array.splice(0, size));
         }
-        console.log(results);
         return results;
     }
 
     renderPlaylists() {
         return this.state.playlists.map((playlist, i) => {
-            if(i == 1) return <PlayList title={this.title[i]} items={playlist} key={i} circle/>
+            if(i == 0) return <PlayList title={this.title[i]} items={playlist} key={i} circle/>
             return (
                 <PlayList title={this.title[i]} items={playlist} key={i}/>
             )
@@ -55,8 +52,6 @@ export default class Landing extends Component {
                 </ScrollView>
                 {/*for the gap*/}
                 <View style={{height: TOGETHER}}/>
-                <Header name='HOME'/>
-
             </View>
         )
     }

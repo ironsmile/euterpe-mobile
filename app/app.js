@@ -6,4 +6,4 @@ const HttpmsApp = StackNavigator({
   Home: { screen: HomeScreen },
 });
 
-AppRegistry.registerComponent('httpms', () => HomeScreen);
+AppRegistry.registerComponent('httpms', () => HttpmsApp);

@@ -232,21 +232,31 @@ export default class Footer extends Component {
         return (
             <Animated.View style={[styles.firstView, {opacity, height: opacity.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, FOOTER_HEIGHT + 10]
+                outputRange: [0, FOOTER_HEIGHT]
             })}]}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between',
-                    alignItems: 'center', padding: 16, paddingBottom: 26,}}>
-                    <TouchableOpacity onPress={() => this.scrollUp()} >
-                        <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
-                    </TouchableOpacity>
-                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={styles.title}>Awesome Title · <Text style={styles.author}>Artist ggomaeng</Text></Text>
-                        <View style={{flexDirection: 'row'}}>
-                            <Ionicons color={'#429962'} style={{marginRight: 8, paddingBottom: 10}} name='ios-volume-up' size={16}/><Text style={styles.music}>SUNG'S MACBOOK PRO</Text>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between',
+                        alignItems: 'center', paddingLeft: 16, paddingRight: 16,
+                        width: '100%'}}>
+                        <TouchableOpacity onPress={() => this.scrollUp()} >
+                            <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
+                        </TouchableOpacity>
+                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={styles.title}>
+                                Awesome Title ·
+                                <Text style={styles.author}>
+                                    Artist ggomaeng
+                                </Text>
+                            </Text>
                         </View>
-                    </View>
-                    <View style={styles.pause}>
-                        <Ionicons name='ios-pause' color='white' size={16}/>
+                        <View style={styles.pause}>
+                            <Ionicons name='ios-pause' color='white' size={16}/>
+                        </View>
                     </View>
                 </View>
             </Animated.View>

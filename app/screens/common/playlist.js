@@ -16,9 +16,15 @@ export default class PlayList extends Component {
 
     renderItems() {
         const {circle} = this.props;
-        return this.props.items.map((a, i ) => {
+        return this.props.items.map((a, i) => {
             return (
-                <PlaylistItem circle={circle} source={a.source} followers={a.followers} title={a.name} key={i}/>
+                <PlaylistItem
+                    circle={circle}
+                    source={a.source}
+                    followers={a.followers}
+                    title={a.name}
+                    key={i}
+                />
             )
         })
 

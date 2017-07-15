@@ -4,57 +4,24 @@
 import React, { Component } from 'react';
 import {
     View,
-    StyleSheet,
-    Navigator
+    StyleSheet
 } from 'react-native';
 
 import Landing from './Landing';
-import Browse from './Browse';
-
-
 import Footer from './common/footer';
 import TabBarNavigation from './common/tab-bar-navigation';
 
-var ROUTES = {
-    landing: Landing,
-    browser: Browse
-};
-
-export default class HomeScreen extends Component {
+export class HomeScreen extends Component {
 
     static navigationOptions = {
       title: 'HOME',
       header: null,
     }
 
-    renderScene(route, navigator) {
-        var Component = ROUTES[route.name];
-
-        return <Component route={route} navigator={navigator}/>
-    }
-
-    configureScene(route) {
-        if (route.sceneConfig) {
-            return route.sceneConfig;
-        }
-        return {
-            ...CustomNavigatorSceneConfigs.FloatFromRight,
-            gestures: {}
-        };
-    }
-
     render() {
         return (
             <View style={styles.container}>
-                <Navigator
-                    initialRoute={{name: 'landing'}}
-                    renderScene={this.renderScene}
-                    configureScene={(route) => ({
-                        ...Navigator.SceneConfigs.VerticalDownSwipeJump,
-                        gestures: false
-                    })}
-                    style={styles.container}
-                />
+                <Landing />
                 <Footer ref='footer'
                         hide={() => this.refs.tab.hide()}
                         show={() => this.refs.tab.show()}
