@@ -14,10 +14,23 @@ import { gs, hs } from '../styles/global';
 
 export class HomeScreen extends Component {
 
-    static navigationOptions = {
-      title: 'HOME',
-      headerStyle: hs.bg,
-      headerTitleStyle: hs.font,
+    static navigationOptions = ({ navigation }) => ({
+        header: navigation.state.params ? navigation.state.params.header : undefined,
+        title: 'HOME',
+        headerStyle: hs.bg,
+        headerTitleStyle: hs.font,
+    });
+
+    hideHeader() {
+        this.props.navigation.setParams({ 
+            header: null 
+        });
+    }
+
+    showHeader() {
+        this.props.navigation.setParams({ 
+            header: undefined 
+        });
     }
 
     render() {
@@ -25,9 +38,16 @@ export class HomeScreen extends Component {
             <View style={[gs.bg, styles.container]}>
                 <Landing />
                 <Footer ref='footer'
-                        hide={() => this.refs.tab.hide()}
-                        show={() => this.refs.tab.show()}
-                        hideTabBarNavigation={(v) => this.refs.tab.setHeight(v)}/>
+                        hide={() => {
+                            this.refs.tab.hide();
+                            this.hideHeader();
+                        }}
+                        show={() => {
+                            this.refs.tab.show();
+                            this.showHeader();
+                        }}
+                        hideTabBarNavigation={(v) => this.refs.tab.setHeight(v)}
+                />
                 <TabBarNavigation ref='tab'/>
             </View>
         )

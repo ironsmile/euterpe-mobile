@@ -84,25 +84,13 @@ export default class CoverFlow extends Component {
         )
     }
 
-    renderName() {
-        return (
-            <View style={{alignItems: 'center'}}>
-                <View style={{flexDirection: 'row'}}>
-                   <Ionicons color={'#429962'} style={{marginRight: 8, paddingBottom: 8}} name='ios-volume-up' size={24}/><Text style={styles.text}>SUNG'S MACBOOK PRO</Text>
-                </View>
-            </View>
-        )
-    }
-
     render() {
         return (
             <View style={styles.container}>
-
                 {this.renderHeader()}
                 {this.renderCoverflow()}
                 {this.renderInfo()}
                 {this.renderButtons()}
-                {this.renderName()}
             </View>
         )
     }
@@ -111,7 +99,6 @@ export default class CoverFlow extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 20
     },
 
     header: {
