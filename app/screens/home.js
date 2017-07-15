@@ -21,9 +21,11 @@ var ROUTES = {
 };
 
 export default class HomeScreen extends Component {
-    navigatorOtions: {
-        header: null
-    },
+
+    static navigationOptions = {
+      title: 'HOME',
+      header: null,
+    }
 
     renderScene(route, navigator) {
         var Component = ROUTES[route.name];
@@ -47,7 +49,10 @@ export default class HomeScreen extends Component {
                 <Navigator
                     initialRoute={{name: 'landing'}}
                     renderScene={this.renderScene}
-                    configureScene={(route) => ({ ... Navigator.SceneConfigs.VerticalDownSwipeJump, gestures: false })}
+                    configureScene={(route) => ({
+                        ...Navigator.SceneConfigs.VerticalDownSwipeJump,
+                        gestures: false
+                    })}
                     style={styles.container}
                 />
                 <Footer ref='footer'

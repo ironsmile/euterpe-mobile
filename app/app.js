@@ -4,8 +4,6 @@ import { HomeScreen } from './screens/home';
 
 const HttpmsApp = StackNavigator({
   Home: { screen: HomeScreen },
-}, {
-    initialRouteName: 'Home',
 });
 
-AppRegistry.registerComponent('httpms', () => HttpmsApp);
+AppRegistry.registerComponent('httpms', () => HomeScreen);

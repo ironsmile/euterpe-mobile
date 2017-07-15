@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 
 import D from './dimensions';
-import {Ionicons} from '@exponent/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
+let Ionicons = Icon;
 
 export default class tabBarNavigation extends Component {
     state = {

@@ -15,7 +15,8 @@ import {
 import D from './dimensions';
 
 import CoverFlow from './coverflow';
-import {Ionicons} from '@exponent/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
+let Ionicons = Icon;
 
 export const FOOTER_HEIGHT = 48;
 export const TABBAR_HEIGHT = 56;

@@ -12,7 +12,8 @@ import {
 
 } from 'react-native';
 
-import {Ionicons} from '@exponent/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
+let Ionicons = Icon;
 
 
 import D from './dimensions';
