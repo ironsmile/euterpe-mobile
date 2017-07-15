@@ -271,7 +271,13 @@ export default class Footer extends Component {
         return (
             <View
                 ref='view' style={styles.container}>
-                <StatusBar ref='status' animated={true} barStyle={'light-content'}/>
+                <StatusBar
+                    ref='status'
+                    translucent
+                    animated={true}
+                    barStyle={'light-content'}
+                    backgroundColor="transparent"
+                />
 
                 <Animated.View
                     {...this._panResponder.panHandlers}
