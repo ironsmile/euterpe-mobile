@@ -27,6 +27,10 @@ const HttpmsApp = TabNavigator({
       style: {
         backgroundColor: '#222327',
         height: TABBAR_HEIGHT,
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        left: 0,
       },
     },
 });

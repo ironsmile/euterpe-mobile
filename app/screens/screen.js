@@ -33,7 +33,6 @@ export class Screen extends Component {
 
     render() {
         let { navigation } = this.props;
-        console.log(navigation);
         return (
             <View style={[gs.bg, styles.container]}>
                 <StatusBar
@@ -43,7 +42,9 @@ export class Screen extends Component {
                     barStyle={'light-content'}
                     backgroundColor="transparent"
                 />
-                {this.props.children}
+                <View style={styles.children}>
+                    {this.props.children}
+                </View>
                 <Header title={this.props.title} />
                 <Footer ref='footer'
                         hide={() => {
@@ -71,7 +72,6 @@ export class Screen extends Component {
                                 if (navigation.state.params && navigation.state.params.translateY) {
                                     navigation.state.params.translateY.setValue(v);
                                 }
-                                // this.refs.tab.setHeight(v);
                             }
                         }
                 />
@@ -82,6 +82,10 @@ export class Screen extends Component {
 
 var styles = StyleSheet.create({
     container: {
+        flex: 1,
+    },
+    children: {
+        marginBottom: TABBAR_HEIGHT,
         flex: 1,
     }
 });
