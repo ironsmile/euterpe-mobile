@@ -52,9 +52,7 @@ export default class Footer extends Component {
             value = 0;
         }
 
-
         this.props.hideTabBarNavigation(value);
-        // console.log(value);
     }
 
     componentWillMount() {

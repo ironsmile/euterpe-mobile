@@ -50,7 +50,6 @@ export default class tabBarNavigation extends Component {
             this.state.translateY,
             {toValue: 56}
         ).start();
-
     }
 
     show() {

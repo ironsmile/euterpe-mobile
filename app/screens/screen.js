@@ -3,6 +3,7 @@
  */
 import React, { Component } from 'react';
 import {
+    Animated,
     View,
     StyleSheet,
     StatusBar
@@ -15,7 +16,17 @@ import TabBarNavigation from './common/tab-bar-navigation';
 import { gs } from '../styles/global';
 
 export class Screen extends Component {
+
+    componentWillMount() {
+        let { navigation } = this.props;
+        navigation.setParams({
+            translateY: new Animated.Value(0),
+        });
+    }
+
     render() {
+        let { navigation } = this.props;
+        console.log(navigation);
         return (
             <View style={[gs.bg, styles.container]}>
                 <StatusBar
@@ -29,22 +40,27 @@ export class Screen extends Component {
                 <Header title={this.props.title} />
                 <Footer ref='footer'
                         hide={() => {
-                            return;
-                            this.refs.tab.hide();
+                            Animated.timing(
+                                navigation.state.params.translateY,
+                                {toValue: 56}
+                            ).start();
                         }}
                         show={() => {
-                            return;
-                            this.refs.tab.show();
+                            Animated.timing(
+                                navigation.state.params.translateY,
+                                {toValue: 0}
+                            ).start();
                         }}
                         hideTabBarNavigation={
                             (v) => {
                                 if (!v) {
                                     return;
                                 }
-                                let { navigation } = this.props;
-                                navigation.setParams({
-                                    forcedHeight: v,
-                                });
+                                v = Math.abs((v/10) - 56);
+
+                                if (navigation.state.params && navigation.state.params.translateY) {
+                                    navigation.state.params.translateY.setValue(v);
+                                }
                                 // this.refs.tab.setHeight(v);
                             }
                         }

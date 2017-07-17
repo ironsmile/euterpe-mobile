@@ -129,15 +129,17 @@ export default class TabBarBottom
       style,
     } = this.props;
     const { routes, index } = navigation.state;
-    let forcedHeight = undefined;
-    if (routes && routes[index] && routes[index].params) {
-      forcedHeight = routes[index].params.forcedHeight;
-      console.log("Forced height", forcedHeight);
+
+    let transform = {};
+    if (routes && routes[index] && routes[index].params &&
+        routes[index].params.translateY != undefined)
+    {
+      transform = {transform: [{translateY: routes[index].params.translateY}]};
     }
     // Prepend '-1', so there are always at least 2 items in inputRange
     const inputRange = [-1, ...routes.map((x: *, i: number) => i)];
     return (
-      <Animated.View style={[styles.tabBar, style]}>
+      <Animated.View style={[styles.tabBar, style, transform]}>
         {routes.map((route: NavigationRoute, index: number) => {
           const focused = index === navigation.state.index;
           const scene = { route, index, focused };
