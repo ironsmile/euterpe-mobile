@@ -8,12 +8,19 @@ import {
     StyleSheet
 } from 'react-native';
 
-import D from './dimensions';
-
 export default (props) => {
+
+    if (props.children) {
+        return (
+            <View style={[styles.container, props.style]}>
+                {props.children}
+            </View>
+        );
+    }
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>{props.title}</Text>
+        <View style={[styles.container, props.style]}>
+            <Text style={[styles.text, props.textStyle]}>{props.title}</Text>
         </View>
     )
 }

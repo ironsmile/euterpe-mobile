@@ -19,6 +19,7 @@ const HttpmsApp = TabNavigator({
     tabBarPosition: 'bottom',
     animationEnabled: false,
     tabBarComponent: TabBarBottom,
+    initialRouteName: 'Search',
     tabBarOptions: {
       activeTintColor: 'white',
       inactiveTintColor: '#bdbec2',

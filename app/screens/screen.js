@@ -33,6 +33,11 @@ export class Screen extends Component {
 
     render() {
         let { navigation } = this.props;
+        let header = this.props.header;
+        if (!header) {
+            header = <Header title={this.props.title} />;
+        }
+
         return (
             <View style={[gs.bg, styles.container]}>
                 <StatusBar
@@ -45,7 +50,7 @@ export class Screen extends Component {
                 <View style={styles.children}>
                     {this.props.children}
                 </View>
-                <Header title={this.props.title} />
+                {header}
                 <Footer ref='footer'
                         hide={() => {
                             this.setFooterTransition();
