@@ -63,10 +63,10 @@ export class Screen extends Component {
                         }}
                         hideTabBarNavigation={
                             (v) => {
+                                this.setFooterTransition();
                                 if (!v) {
                                     return;
                                 }
-                                this.setFooterTransition();
                                 v = Math.abs((v/10) - TABBAR_HEIGHT);
 
                                 if (navigation.state.params && navigation.state.params.translateY) {
