@@ -3,13 +3,14 @@
  */
 import React from 'react';
 import {
-    View
+    View,
+    Text
 } from 'react-native';
 
 export default () => {
     return (
         <View>
-
+            <Text>Browse</Text>
         </View>
     )
 }

@@ -13,7 +13,7 @@ import D from './dimensions';
 export default (props) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>{props.name}</Text>
+            <Text style={styles.text}>{props.title}</Text>
         </View>
     )
 }
@@ -22,16 +22,17 @@ const styles = StyleSheet.create({
     container: {
         position:'absolute',
         top: 0,
+        left: 0,
+        right: 0,
         backgroundColor: 'rgba(27,27,27,.9)',
-        width: D.width,
-        height: 72,
-        justifyContent: 'center',
+        height: 44,
+        justifyContent: 'flex-end',
         alignItems: 'center',
-        paddingTop: 20
     },
 
     text: {
         fontWeight: '500',
-        color: 'white'
+        color: 'white',
+        marginBottom: 5,
     }
 });

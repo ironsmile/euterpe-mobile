@@ -2,24 +2,24 @@
  * Created by ggoma on 12/23/16.
  */
 import React from 'react';
-import Landing from './Landing';
+import { Text } from 'react-native';
 import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 
-export class HomeScreen extends React.Component {
+export class SearchScreen extends React.Component {
 
     static navigationOptions = ({ navigation }) => ({
-        tabBarLabel: CreateTabLabel('Home'),
-        tabBarIcon: CreateTabIcon('ios-home'),
+        tabBarLabel: CreateTabLabel('Search'),
+        tabBarIcon: CreateTabIcon('ios-search'),
     });
 
     render() {
         return (
             <Screen
-                title='HOME'
+                title='SEARCH'
                 navigation={this.props.navigation}
             >
-                <Landing />
+                <Text style={{color: 'white', marginTop: 50}}>Search Screen</Text>
             </Screen>
         )
     }

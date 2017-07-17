@@ -11,7 +11,7 @@ import {
 import Header from '../common/header';
 import PlayList from '../common/playlist';
 import img from '../common/imgs';
-import { TOGETHER } from '../common/footer';
+import { FOOTER_HEIGHT } from '../common/footer';
 import { gs } from '../../styles/global';
 
 export default class Landing extends Component {
@@ -52,7 +52,7 @@ export default class Landing extends Component {
                     {this.renderPlaylists()}
                 </ScrollView>
                 {/*for the gap*/}
-                <View style={{height: TOGETHER}}/>
+                <View style={{height: FOOTER_HEIGHT}}/>
             </View>
         )
     }

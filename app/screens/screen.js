@@ -10,29 +10,11 @@ import {
 
 import Landing from './Landing';
 import Footer from './common/footer';
+import Header from './common/header';
 import TabBarNavigation from './common/tab-bar-navigation';
 import { gs } from '../styles/global';
 
 export class Screen extends Component {
-
-    componentWillMount() {
-        this.props.navigation.setParams({
-            titleText: this.props.title
-        });
-    }
-
-    hideHeader() {
-        this.props.navigation.setParams({ 
-            header: null 
-        });
-    }
-
-    showHeader() {
-        this.props.navigation.setParams({ 
-            header: undefined 
-        });
-    }
-
     render() {
         return (
             <View style={[gs.bg, styles.container]}>
@@ -44,25 +26,29 @@ export class Screen extends Component {
                     backgroundColor="transparent"
                 />
                 {this.props.children}
+                <Header title={this.props.title} />
                 <Footer ref='footer'
                         hide={() => {
+                            return;
                             this.refs.tab.hide();
-                            this.hideHeader();
                         }}
                         show={() => {
+                            return;
                             this.refs.tab.show();
-                            this.showHeader();
                         }}
                         hideTabBarNavigation={
                             (v) => {
                                 if (!v) {
                                     return;
                                 }
-                                this.refs.tab.setHeight(v);
+                                let { navigation } = this.props;
+                                navigation.setParams({
+                                    forcedHeight: v,
+                                });
+                                // this.refs.tab.setHeight(v);
                             }
                         }
                 />
-                <TabBarNavigation ref='tab'/>
             </View>
         )
     }
