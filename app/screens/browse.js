@@ -2,7 +2,7 @@
  * Created by ggoma on 12/23/16.
  */
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 
@@ -19,8 +19,26 @@ export class BrowseScreen extends React.Component {
                 title='BROWSE'
                 navigation={this.props.navigation}
             >
-                <Text style={{color: 'white', marginTop: 50}}>Browse Screen</Text>
+                <View style={styles.container}>
+                    <Text style={styles.text}>
+                        There is nothing to browse.
+                    </Text>
+                </View>
             </Screen>
         )
     }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+  },
+  text: {
+    color: 'white',
+    marginTop: 50,
+    textAlign: 'center',
+  },
+});
