@@ -14,14 +14,21 @@ import Footer from './common/footer';
 import Header from './common/header';
 import TabBarNavigation from './common/tab-bar-navigation';
 import { gs } from '../styles/global';
+import { TABBAR_HEIGHT } from './common/footer';
 
 export class Screen extends Component {
 
     componentWillMount() {
+        this.setFooterTransition();
+    }
+
+    setFooterTransition() {
         let { navigation } = this.props;
-        navigation.setParams({
-            translateY: new Animated.Value(0),
-        });
+        if (!navigation.state.params || !navigation.state.params.translateY) {
+            navigation.setParams({
+                translateY: new Animated.Value(0),
+            });
+        }       
     }
 
     render() {
@@ -40,12 +47,14 @@ export class Screen extends Component {
                 <Header title={this.props.title} />
                 <Footer ref='footer'
                         hide={() => {
+                            this.setFooterTransition();
                             Animated.timing(
                                 navigation.state.params.translateY,
-                                {toValue: 56}
+                                {toValue: TABBAR_HEIGHT}
                             ).start();
                         }}
                         show={() => {
+                            this.setFooterTransition();
                             Animated.timing(
                                 navigation.state.params.translateY,
                                 {toValue: 0}
@@ -56,7 +65,8 @@ export class Screen extends Component {
                                 if (!v) {
                                     return;
                                 }
-                                v = Math.abs((v/10) - 56);
+                                this.setFooterTransition();
+                                v = Math.abs((v/10) - TABBAR_HEIGHT);
 
                                 if (navigation.state.params && navigation.state.params.translateY) {
                                     navigation.state.params.translateY.setValue(v);

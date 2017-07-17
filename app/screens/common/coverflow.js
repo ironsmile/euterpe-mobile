@@ -61,7 +61,6 @@ export default class CoverFlow extends Component {
                     <Ionicons name='ios-more' color='white' size={24}/>
                 </View>
                 <View style={styles.progress}/>
-
             </View>
         )
     }
@@ -117,7 +116,6 @@ const styles = StyleSheet.create({
     },
 
     infoContainer: {
-
 
     },
 
