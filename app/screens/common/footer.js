@@ -228,7 +228,8 @@ export default class Footer extends Component {
     }
 
     renderDefault() {
-        const {opacity} = this.state;
+        const { opacity } = this.state;
+        const { nowPlaying } = this.props;
         return (
             <Animated.View style={[styles.firstView, {opacity, height: opacity.interpolate({
                 inputRange: [0, 1],
@@ -246,12 +247,17 @@ export default class Footer extends Component {
                         <TouchableOpacity onPress={() => this.scrollUp()} >
                             <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
                         </TouchableOpacity>
-                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
                             <Text style={styles.title}>
-                                Awesome Title ·
-                                <Text style={styles.author}>
-                                    Artist ggomaeng
-                                </Text>
+                                {nowPlaying.title}
+                            </Text>
+                            <Text style={styles.albumDivider}>·</Text>
+                            <Text style={styles.author}>
+                                {nowPlaying.artist}
                             </Text>
                         </View>
                         <View style={styles.pause}>
@@ -270,7 +276,10 @@ export default class Footer extends Component {
                     {...this._panResponder.panHandlers}
                     style={[styles.playing, this.getStyle()]}>
 
-                    <CoverFlow scrollDown={() => this.scrollDown()}/>
+                    <CoverFlow
+                        scrollDown={() => this.scrollDown()}
+                        nowPlaying={this.props.nowPlaying}
+                    />
                     {this.renderDefault()}
                 </Animated.View>
             </View>
@@ -325,6 +334,14 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         color: '#40bf7c',
         fontSize: 12
+    },
+
+    albumDivider: {
+        marginLeft: 3,
+        marginRight: 3,
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 24,
     }
 
 })

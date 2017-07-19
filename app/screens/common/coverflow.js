@@ -50,13 +50,14 @@ export default class CoverFlow extends Component {
     }
 
     renderInfo() {
+        const { nowPlaying } = this.props;
         return (
             <View style={styles.infoContainer}>
                 <View style={styles.titleContainer}>
                     <Ionicons name='ios-add' color='white' size={24}/>
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={styles.title}>Awesome Title</Text>
-                        <Text style={styles.artist}>Artist ggomaeng</Text>
+                        <Text style={styles.title}>{nowPlaying.title}</Text>
+                        <Text style={styles.artist}>{nowPlaying.artist}</Text>
                     </View>
                     <Ionicons name='ios-more' color='white' size={24}/>
                 </View>

@@ -79,6 +79,10 @@ export class Screen extends Component {
                                 }
                             }
                         }
+                        nowPlaying={{
+                            title: "Awseome Track",
+                            artist: "Heaviest Metal"
+                        }}
                 />
             </View>
         )
