@@ -242,15 +242,23 @@ export default class Footer extends Component {
                     alignItems: 'center',
                 }}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between',
-                        alignItems: 'center', paddingLeft: 16, paddingRight: 16,
+                        alignItems: 'center', paddingRight: 16,
                         width: '100%'}}>
                         <TouchableOpacity onPress={() => this.scrollUp()} >
-                            <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
+                            <View style={{
+                                width: 36,
+                                height: 36,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                            }}>
+                                <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
+                            </View>
                         </TouchableOpacity>
                         <View style={{
                             flexDirection: 'row',
                             justifyContent: 'center',
-                            alignItems: 'center'
+                            alignItems: 'center',
                         }}>
                             <Text style={styles.title}>
                                 {nowPlaying.title}
