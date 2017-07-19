@@ -29,7 +29,9 @@ export default class CoverFlow extends Component {
         return (
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => this.props.scrollDown()}>
-                    <Ionicons name='ios-arrow-down' color='white' size={24}/>
+                    <View style={styles.downArrow}>
+                        <Ionicons name='ios-arrow-down' color='white' size={24}/>
+                    </View>
                 </TouchableOpacity>
                 <Text style={styles.playing}>NOW PLAYING</Text>
                 <Ionicons name='ios-list' color='white' size={26}/>
@@ -101,8 +103,16 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 
+    downArrow: {
+        width: 40,
+        height: 36,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+
     header: {
-        padding: 16,
+        paddingRight: 16,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
