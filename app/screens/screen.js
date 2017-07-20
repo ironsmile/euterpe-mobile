@@ -15,6 +15,7 @@ import Header from './common/header';
 import TabBarNavigation from './common/tab-bar-navigation';
 import { gs } from '../styles/global';
 import { TABBAR_HEIGHT } from './common/footer';
+import store from '../store';
 
 export class Screen extends Component {
 
@@ -38,6 +39,8 @@ export class Screen extends Component {
             header = <Header title={this.props.title} />;
         }
 
+        let footerHeight = (store.playing.now) ? TABBAR_HEIGHT : 0;
+
         return (
             <View style={[gs.bg, styles.container]}>
                 <StatusBar
@@ -47,7 +50,7 @@ export class Screen extends Component {
                     barStyle={'light-content'}
                     backgroundColor="transparent"
                 />
-                <View style={styles.children}>
+                <View style={[styles.children, {marginBottom: footerHeight}]}>
                     {this.props.children}
                 </View>
                 {header}
@@ -79,10 +82,7 @@ export class Screen extends Component {
                                 }
                             }
                         }
-                        nowPlaying={{
-                            title: "Awseome Track",
-                            artist: "Heaviest Metal"
-                        }}
+                        nowPlaying={store.playing.now}
                 />
             </View>
         )

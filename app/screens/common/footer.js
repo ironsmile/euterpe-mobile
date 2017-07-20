@@ -230,6 +230,11 @@ export default class Footer extends Component {
     renderDefault() {
         const { opacity } = this.state;
         const { nowPlaying } = this.props;
+
+        if (!nowPlaying) {
+            return null;
+        }
+
         return (
             <Animated.View style={[styles.firstView, {opacity, height: opacity.interpolate({
                 inputRange: [0, 1],
@@ -245,21 +250,11 @@ export default class Footer extends Component {
                         alignItems: 'center', paddingRight: 16,
                         width: '100%'}}>
                         <TouchableOpacity onPress={() => this.scrollUp()} >
-                            <View style={{
-                                width: 36,
-                                height: 36,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                            }}>
+                            <View style={styles.pullUpArrow}>
                                 <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
                             </View>
                         </TouchableOpacity>
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
+                        <View style={styles.nowPlayingContainer}>
                             <Text style={styles.title}>
                                 {nowPlaying.title}
                             </Text>
@@ -278,8 +273,10 @@ export default class Footer extends Component {
     }
 
     render() {
+        const height = (this.props.nowPlaying) ? TOGETHER : FOOTER_HEIGHT;
+
         return (
-            <View ref='view' style={styles.container}>
+            <View ref='view' style={[styles.container, {height: height}]}>
                 <Animated.View
                     {...this._panResponder.panHandlers}
                     style={[styles.playing, this.getStyle()]}>
@@ -299,7 +296,8 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         width: D.width,
-        top: D.height-TOGETHER
+        // top: D.height-TOGETHER,
+        bottom: 0,
     },
     playing: {
         backgroundColor: 'rgba(0,0,0,.95)',
@@ -307,7 +305,6 @@ const styles = StyleSheet.create({
         paddingBottom: FOOTER_HEIGHT,
     },
     firstView: {
-
         position: 'absolute',
         top: 0,
         height: FOOTER_HEIGHT + 10,
@@ -350,6 +347,20 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: 24,
-    }
+    },
+
+    pullUpArrow: {
+        width: 36,
+        height: 36,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+
+    nowPlayingContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 
 })

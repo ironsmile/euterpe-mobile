@@ -42,17 +42,32 @@ export default class CoverFlow extends Component {
     renderCoverflow() {
         const width = D.width * 3.2/5,
             height = D.width * 3.2/5;
+        const { nowPlaying } = this.props;
+
+        let covers = [];
+
+        if (nowPlaying) {
+            covers.push(nowPlaying.image);
+        }
+
         return (
             <ScrollView pagingEnabled={true} horizontal={true}>
-                <CoverFlowItem page_width={D.width} width={width} height={height} source={require('../../assets/images/1.jpg')}/>
-                <CoverFlowItem page_width={D.width} width={width} height={height} source={require('../../assets/images/2.jpeg')}/>
-                <CoverFlowItem page_width={D.width} width={width} height={height} source={require('../../assets/images/3.jpg')}/>
+                {covers.map((coverImage, i) => (
+                    <CoverFlowItem
+                        key={i}
+                        page_width={D.width}
+                        width={width}
+                        height={height}
+                        source={coverImage}
+                    />
+                ))}
             </ScrollView>
         )
     }
 
     renderInfo() {
         const { nowPlaying } = this.props;
+
         return (
             <View style={styles.infoContainer}>
                 <View style={styles.titleContainer}>
@@ -63,7 +78,7 @@ export default class CoverFlow extends Component {
                     </View>
                     <Ionicons name='ios-more' color='white' size={24}/>
                 </View>
-                <View style={styles.progress}/>
+                <View style={styles.progress} />
             </View>
         )
     }
@@ -87,6 +102,9 @@ export default class CoverFlow extends Component {
     }
 
     render() {
+        if (!this.props.nowPlaying) {
+            return null;
+        }
         return (
             <View style={styles.container}>
                 {this.renderHeader()}

@@ -12,7 +12,17 @@ import {
 export default (props) => {
     return (
         <View style={{width: props.page_width}}>
-            <Image style={{margin: 16, alignSelf: 'center', width: props.width, height: props.height}} source={props.source} />
+            <Image
+                style={[styles.image, {width: props.width, height: props.height}]}
+                source={props.source}
+            />
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    image: {
+        margin: 16,
+        alignSelf: 'center', 
+    },
+});

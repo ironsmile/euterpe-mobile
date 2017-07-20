@@ -37,13 +37,13 @@ export class SearchScreen extends React.Component {
                 navigation={this.props.navigation}
                 header={this.getSearchHeader()}
             >
-                <Text style={{color: 'white', marginTop: 50}}>Search Screen</Text>
+                <View style={styles.container}></View>
             </Screen>
         )
     }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
     searchContainer: {
         width: '100%',
         paddingLeft: 10,
@@ -61,5 +61,8 @@ var styles = StyleSheet.create({
     },
     header: {
         height: 66,
+    },
+    container: {
+        paddingTop: 66,
     }
 });
