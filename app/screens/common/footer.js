@@ -37,7 +37,7 @@ export default class Footer extends Component {
 
 
     componentDidMount() {
-        setTimeout(() => this.measureView(), 0);
+        this.measureView();
     }
 
     measureView() {
