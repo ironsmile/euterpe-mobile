@@ -236,19 +236,17 @@ export default class Footer extends Component {
         }
 
         return (
-            <Animated.View style={[styles.firstView, {opacity, height: opacity.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, FOOTER_HEIGHT]
-            })}]}>
-                <View style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between',
-                        alignItems: 'center', paddingRight: 16,
-                        width: '100%'}}>
+            <Animated.View style={
+                [styles.firstView, {
+                    opacity,
+                        height: opacity.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, FOOTER_HEIGHT]
+                    })
+                }
+            ]}>
+                <View style={styles.defaultContainer}>
+                    <View style={styles.defaultView}>
                         <TouchableOpacity onPress={() => this.scrollUp()} >
                             <View style={styles.pullUpArrow}>
                                 <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
@@ -298,6 +296,19 @@ const styles = StyleSheet.create({
         width: D.width,
         // top: D.height-TOGETHER,
         bottom: 0,
+    },
+    defaultContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    defaultView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingRight: 16,
+        width: '100%',
     },
     playing: {
         backgroundColor: 'rgba(0,0,0,.95)',
