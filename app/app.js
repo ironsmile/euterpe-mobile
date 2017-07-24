@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, AppState, AsyncStorage } from 'react-native';
+import { AppRegistry, AppState, AsyncStorage, Text } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import { HomeScreen } from './screens/home';
 import { BrowseScreen } from './screens/browse';
@@ -9,6 +9,7 @@ import { AboutScreen } from './screens/about';
 import { hs } from './styles/global';
 import TabBarBottom from './screens/common/TabBarBottom';
 import { TABBAR_HEIGHT } from './screens/common/footer';
+import { Loader } from './screens/common/loader';
 
 import { addNavigationHelpers } from 'react-navigation';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
@@ -98,17 +99,33 @@ const store = createStore(
     )
 );
 
-persistStore(store, {storage: AsyncStorage});
-
 class Root extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            store: store
+            store: store,
+            rehydrated: false,
         }
     }
 
+    componentWillMount() {
+        persistStore(
+            store,
+            {
+                storage: AsyncStorage,
+                debounce: 1000,
+            },
+            () => {
+                this.setState({rehydrated: true});
+            }
+        );
+    }
+
     render() {
+        if (!this.state.rehydrated) {
+            return (<Loader />);
+        }
+
         return (
             <Provider store={this.state.store}>
                 <AppWithNavigationState />
