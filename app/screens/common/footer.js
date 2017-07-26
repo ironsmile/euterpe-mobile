@@ -17,13 +17,14 @@ import D from './dimensions';
 
 import CoverFlow from './coverflow';
 import Icon from 'react-native-vector-icons/Ionicons';
-let Ionicons = Icon;
+import { connect } from 'react-redux';
+import { TOGGLE_PLAYING } from '../../reducers/playing';
 
 export const FOOTER_HEIGHT = 48;
 export const TABBAR_HEIGHT = 56;
 export const TOGETHER = FOOTER_HEIGHT + TABBAR_HEIGHT;
 
-export default class Footer extends Component {
+class FooterRenderer extends Component {
     state = {
         pan: new Animated.ValueXY(),
         opacity: new Animated.Value(1)
@@ -247,9 +248,9 @@ export default class Footer extends Component {
             ]}>
                 <View style={styles.defaultContainer}>
                     <View style={styles.defaultView}>
-                        <TouchableOpacity onPress={() => this.scrollUp()} >
+                        <TouchableOpacity onPress={() => this.scrollUp()}>
                             <View style={styles.pullUpArrow}>
-                                <Ionicons name='ios-arrow-up' color='#aeafb3' size={16}/>
+                                <Icon name='ios-arrow-up' color='#aeafb3' size={16}/>
                             </View>
                         </TouchableOpacity>
                         <View style={styles.nowPlayingContainer}>
@@ -261,9 +262,19 @@ export default class Footer extends Component {
                                 {nowPlaying.artist}
                             </Text>
                         </View>
-                        <View style={styles.pause}>
-                            <Ionicons name='ios-pause' color='white' size={16}/>
-                        </View>
+                        <TouchableOpacity onPress={() => {
+                            this.props.dispatch({
+                                type: TOGGLE_PLAYING,
+                            })
+                        }}>
+                            <View style={styles.pause}>
+                                <Icon
+                                    name={this.props.paused ? 'ios-pause': 'ios-play'}
+                                    color='white'
+                                    size={16}
+                                />
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Animated.View>
@@ -281,7 +292,6 @@ export default class Footer extends Component {
 
                     <CoverFlow
                         scrollDown={() => this.scrollDown()}
-                        nowPlaying={this.props.nowPlaying}
                     />
                     {this.renderDefault()}
                 </Animated.View>
@@ -374,4 +384,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-})
+});
+
+const mapStateToProps = (state) => ({
+    nowPlaying: state.playing.now,
+    paused: state.playing.paused,
+});
+
+export default Footer = connect(mapStateToProps)(FooterRenderer);

@@ -12,29 +12,26 @@ import {
 
 } from 'react-native';
 
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-let Ionicons = Icon;
-
+import { TOGGLE_PLAYING } from '../../reducers/playing';
 
 import D from './dimensions';
 
 import CoverFlowItem from './coverflow-item';
 
-export default class CoverFlow extends Component {
-    state = {
-        play: true,
-    };
+class CoverFlowRenderer extends Component {
 
     renderHeader() {
         return (
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => this.props.scrollDown()}>
                     <View style={styles.downArrow}>
-                        <Ionicons name='ios-arrow-down' color='white' size={24}/>
+                        <Icon name='ios-arrow-down' color='white' size={24}/>
                     </View>
                 </TouchableOpacity>
                 <Text style={styles.playing}>NOW PLAYING</Text>
-                <Ionicons name='ios-list' color='white' size={26}/>
+                <Icon name='ios-list' color='white' size={26}/>
             </View>
         )
     }
@@ -71,12 +68,12 @@ export default class CoverFlow extends Component {
         return (
             <View style={styles.infoContainer}>
                 <View style={styles.titleContainer}>
-                    <Ionicons name='ios-add' color='white' size={24}/>
+                    <Icon name='ios-add' color='white' size={24}/>
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={styles.title}>{nowPlaying.title}</Text>
                         <Text style={styles.artist}>{nowPlaying.artist}</Text>
                     </View>
-                    <Ionicons name='ios-more' color='white' size={24}/>
+                    <Icon name='ios-more' color='white' size={24}/>
                 </View>
                 <View style={styles.progress} />
             </View>
@@ -84,18 +81,22 @@ export default class CoverFlow extends Component {
     }
 
     renderButtons() {
-        const {play} = this.state;
+        const play = !this.props.paused;
         return (
             <View style={styles.buttonContainer}>
-                <Ionicons name='ios-shuffle' size={24} color='#c2beb3'/>
-                <Ionicons name='ios-skip-backward' size={32} color='white' />
+                <Icon name='ios-shuffle' size={24} color='#c2beb3'/>
+                <Icon name='ios-skip-backward' size={32} color='white' />
                 <TouchableOpacity
-                    onPress={() => this.setState({play: !play})}
+                    onPress={() => {
+                        this.props.dispatch({
+                            type: TOGGLE_PLAYING,
+                        });
+                    }}
                     style={[styles.playContainer, play ? {paddingLeft: 8} : {}]}>
-                    <Ionicons name={play ? 'ios-play' : 'ios-pause'} style={styles.play}/>
+                    <Icon name={play ? 'ios-play' : 'ios-pause'} style={styles.play}/>
                 </TouchableOpacity>
-                <Ionicons name='ios-skip-forward' size={32} color='white' />
-                <Ionicons name='ios-repeat' size={24} color='#c2beb3'/>
+                <Icon name='ios-skip-forward' size={32} color='white' />
+                <Icon name='ios-repeat' size={24} color='#c2beb3'/>
 
             </View>
         )
@@ -210,3 +211,10 @@ const styles = StyleSheet.create({
     }
 
 });
+
+const mapStateToProps = (state) => ({
+    nowPlaying: state.playing.now,
+    paused: state.playing.paused,
+});
+
+export default CoverFlow = connect(mapStateToProps)(CoverFlowRenderer);

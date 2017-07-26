@@ -12,12 +12,11 @@ import {
 import Landing from './Landing';
 import Footer from './common/footer';
 import Header from './common/header';
-import TabBarNavigation from './common/tab-bar-navigation';
 import { gs } from '../styles/global';
 import { TABBAR_HEIGHT } from './common/footer';
-import store from '../store';
+import { connect } from 'react-redux';
 
-export class Screen extends Component {
+class ScreenRenderer extends Component {
 
     componentWillMount() {
         this.setFooterTransition();
@@ -33,13 +32,13 @@ export class Screen extends Component {
     }
 
     render() {
-        let { navigation } = this.props;
+        let { navigation, nowPlaying } = this.props;
         let header = this.props.header;
         if (!header) {
             header = <Header title={this.props.title} />;
         }
 
-        let footerHeight = (store.playing.now) ? TABBAR_HEIGHT : 0;
+        let footerHeight = (nowPlaying.now) ? TABBAR_HEIGHT : 0;
 
         return (
             <View style={[gs.bg, styles.container]}>
@@ -82,7 +81,6 @@ export class Screen extends Component {
                                 }
                             }
                         }
-                        nowPlaying={store.playing.now}
                 />
             </View>
         )
@@ -98,3 +96,9 @@ var styles = StyleSheet.create({
         flex: 1,
     }
 });
+
+const mapStateToProps = (state) => ({
+    nowPlaying: state.playing
+});
+
+export const Screen = connect(mapStateToProps)(ScreenRenderer);

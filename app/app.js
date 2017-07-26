@@ -10,6 +10,7 @@ import { hs } from './styles/global';
 import TabBarBottom from './screens/common/TabBarBottom';
 import { TABBAR_HEIGHT } from './screens/common/footer';
 import { Loader } from './screens/common/loader';
+import { playingReducer } from './reducers/playing';
 
 import { addNavigationHelpers } from 'react-navigation';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
@@ -58,6 +59,7 @@ const navReducer = (state = initialState, action) => {
 
 const appReducer = combineReducers({
     nav: navReducer,
+    playing: playingReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {
