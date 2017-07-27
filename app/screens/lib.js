@@ -5,6 +5,7 @@ import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
+import { Settings } from './settings';
 
 export class LibraryScreen extends React.Component {
 
@@ -20,9 +21,7 @@ export class LibraryScreen extends React.Component {
                 navigation={this.props.navigation}
             >
                 <View style={styles.container}>
-                    <Text style={styles.text}>
-                        Nothing added into the library yet.
-                    </Text>
+                    <Settings />
                 </View>
             </Screen>
         )
@@ -42,4 +41,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
