@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, TextInput, StyleSheet, View } from 'react-native';
+import {
+    Text,
+    TextInput,
+    StyleSheet,
+    View,
+    Keyboard,
+    TouchableWithoutFeedback
+} from 'react-native';
 import { connect } from 'react-redux';
 import { SETTINGS_CHANGED } from '../reducers/settings';
 
@@ -7,58 +14,69 @@ import { SETTINGS_CHANGED } from '../reducers/settings';
 export class SettingsRenderer extends React.Component {
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.header}>Library Settings</Text>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    <Text style={styles.header}>Library Settings</Text>
 
-                <TextInput
-                    placeholder="Host Address"
-                    style={styles.input}
-                    returnKeyType="next"
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    value={this.props.settings.hostAddress}
-                    onChangeText={(text) => {
-                        this.props.dispatch({
-                            ...this.props.settings,
-                            type: SETTINGS_CHANGED,
-                            hostAddress: text,
-                        });
-                    }}
-                />
+                    <TextInput
+                        placeholder="Host Address"
+                        style={styles.input}
+                        returnKeyType="next"
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        value={this.props.settings.hostAddress}
+                        onChangeText={(text) => {
+                            this.props.dispatch({
+                                ...this.props.settings,
+                                type: SETTINGS_CHANGED,
+                                hostAddress: text,
+                            });
+                        }}
+                        onSubmitEditing={() => {
+                          this.refs.UsernameInput.focus();
+                        }}
+                    />
 
-                <TextInput
-                    placeholder="Username"
-                    style={styles.input}
-                    returnKeyType="next"
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    value={this.props.settings.username}
-                    onChangeText={(text) => {
-                        this.props.dispatch({
-                            ...this.props.settings,
-                            type: SETTINGS_CHANGED,
-                            username: text,
-                        });
-                    }}
-                />
+                    <TextInput
+                        ref="UsernameInput"
+                        placeholder="Username"
+                        style={styles.input}
+                        returnKeyType="next"
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        value={this.props.settings.username}
+                        onChangeText={(text) => {
+                            this.props.dispatch({
+                                ...this.props.settings,
+                                type: SETTINGS_CHANGED,
+                                username: text,
+                            });
+                        }}
+                        onSubmitEditing={() => {
+                          this.refs.PasswordInput.focus();
+                        }}
+                    />
 
-                <TextInput
-                    placeholder="Password"
-                    style={styles.input}
-                    returnKeyType="done"
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    value={this.props.settings.password}
-                    onChangeText={(text) => {
-                        this.props.dispatch({
-                            ...this.props.settings,
-                            type: SETTINGS_CHANGED,
-                            password: text,
-                        });
-                    }}
-                    secureTextEntry={true}
-                />
-            </View>
+                    <TextInput
+                        ref="PasswordInput"
+                        placeholder="Password"
+                        style={styles.input}
+                        returnKeyType="done"
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        value={this.props.settings.password}
+                        onChangeText={(text) => {
+                            this.props.dispatch({
+                                ...this.props.settings,
+                                type: SETTINGS_CHANGED,
+                                password: text,
+                            });
+                        }}
+                        secureTextEntry={true}
+                        onSubmitEditing={Keyboard.dismiss}
+                    />
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 }
