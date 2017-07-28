@@ -34,22 +34,11 @@ class FooterRenderer extends Component {
     moving = false;
     open = false;
     hiding = false;
-    offY = 0;
-
-
-    componentDidMount() {
-        this.measureView();
-    }
-
-    measureView() {
-        this.refs.view.measure((a, b, w, h, px, py) => {
-            this.offY = py;
-        })
-    }
+    offY = D.height - TOGETHER;
 
     hideTabBarNavigation(dy) {
         let value = (this.offY + dy) % (D.height - TOGETHER);
-        if(value < 0 ) {
+        if(value < 0) {
             value = 0;
         }
 
@@ -106,11 +95,15 @@ class FooterRenderer extends Component {
                     // console.log(offsetY);
 
                     if(!this.open) {
-                        /*s
-                            If you are swiping up quickly and your finger goes off the screen, the View doesn't always open fully (it stops a few px from the top).
-                            This sort of thing happens because the event system couldn't keep up with the fast swipe, and the last event it gets is from a few milliseconds before it hit the top.
-                            You can fix this by always fully opening the View when its `y` is within some distance from the top.
-                            I think you can just add `if (g.y0 <= 100) this.scrollUp();` in your `onPanResponderRelease`
+                        /*
+                            If you are swiping up quickly and your finger goes off the screen,
+                            the View doesn't always open fully (it stops a few px from the top).
+                            This sort of thing happens because the event system couldn't keep up
+                            with the fast swipe, and the last event it gets is from a few
+                            milliseconds before it hit the top.
+                            You can fix this by always fully opening the View when its `y` is
+                            within some distance from the top. I think you can just add
+                            `if (g.y0 <= 100) this.scrollUp();` in your `onPanResponderRelease`
                          */
                         if(g.y0 >= 100) this.openPlaying(offsetY);
                     } else {
@@ -125,7 +118,7 @@ class FooterRenderer extends Component {
 
     openPlaying(offsetY) {
         if (offsetY < -100) {
-            console.log('open');
+            // console.log('open');
             this.moving = true;
             this.props.hide();
             StatusBar.setHidden(true, true);
@@ -137,7 +130,7 @@ class FooterRenderer extends Component {
                     duration: 200,
                 }
             ).start(() => {
-                console.log('opened');
+                // console.log('opened');
                 //hide tab bar
 
                 setTimeout(() => {
@@ -150,7 +143,7 @@ class FooterRenderer extends Component {
         } else {
             this.moving = true;
             this.reset();
-            console.log('back to original state 1!', this.state.pan.y);
+            // console.log('back to original state 1!', this.state.pan.y);
             this.props.show();
             Animated.timing(
                 this.state.pan.y,
@@ -164,7 +157,7 @@ class FooterRenderer extends Component {
 
     closePlaying(offsetY) {
         if(offsetY > 100) {
-            console.log('closing');
+            // console.log('closing');
             this.reset();
             this.moving = true;
             this.props.show();
@@ -173,7 +166,7 @@ class FooterRenderer extends Component {
                 this.state.pan.y,
                 {toValue: D.height - TOGETHER, duration: 200}
             ).start(() => {
-                console.log('closed');
+                // console.log('closed');
                 setTimeout(() => {
                     this.open = false;
                     this.moving = false;
@@ -183,7 +176,7 @@ class FooterRenderer extends Component {
             });
         } else {
             this.moving = true;
-            console.log('back to original state 2!');
+            // console.log('back to original state 2!');
             this.props.hide();
             Animated.timing(
                 this.state.pan.y,
