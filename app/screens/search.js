@@ -7,6 +7,7 @@ import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import Header from './common/header';
 import { connect } from 'react-redux';
+import { SearchReults } from './search-results';
 
 import { SELECT_TRACK, STOP } from '../reducers/playing';
 import Images from '@assets/images';
@@ -48,7 +49,7 @@ class SearchRenderer extends React.Component {
                             track: {
                                 title: 'Awesome Track',
                                 artist: 'Heaviest Metal',
-                                image: Images.coverImage3,
+                                image: Images.unknownAlbum,
                             },
                         });
                     }}>
@@ -66,6 +67,8 @@ class SearchRenderer extends React.Component {
                             <Text>Hide</Text>
                         </View>
                     </TouchableOpacity>
+
+                    <SearchReults />
                 </View>
             </Screen>
         )
@@ -97,7 +100,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-    nowPlaying: state.playing
+    search: state.search
 });
 
 export const SearchScreen = connect(mapStateToProps)(SearchRenderer);
