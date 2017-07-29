@@ -69,9 +69,19 @@ class CoverFlowRenderer extends Component {
             <View style={styles.infoContainer}>
                 <View style={styles.titleContainer}>
                     <Icon name='ios-add' color='white' size={24}/>
-                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={styles.title}>{nowPlaying.title}</Text>
-                        <Text style={styles.artist}>{nowPlaying.artist}</Text>
+                    <View style={styles.titleTextContainer}>
+                        <Text
+                            numberOfLines={1}
+                            style={styles.title}
+                        >
+                            {nowPlaying.title}
+                        </Text>
+                        <Text
+                            numberOfLines={1}
+                            style={styles.artist}
+                        >
+                            {nowPlaying.artist}
+                        </Text>
                     </View>
                     <Icon name='ios-more' color='white' size={24}/>
                 </View>
@@ -208,8 +218,14 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         alignSelf: 'center',
         fontWeight: '300'
-    }
+    },
 
+    titleTextContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
 });
 
 const mapStateToProps = (state) => ({

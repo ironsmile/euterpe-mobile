@@ -246,11 +246,17 @@ class FooterRenderer extends Component {
                             </View>
                         </TouchableOpacity>
                         <View style={styles.nowPlayingContainer}>
-                            <Text style={styles.title}>
+                            <Text
+                                style={styles.title}
+                                numberOfLines={1}
+                            >
                                 {nowPlaying.title}
                             </Text>
                             <Text style={styles.albumDivider}>·</Text>
-                            <Text style={styles.author}>
+                            <Text
+                                style={styles.author}
+                                numberOfLines={1}
+                            >
                                 {nowPlaying.artist}
                             </Text>
                         </View>
@@ -259,12 +265,14 @@ class FooterRenderer extends Component {
                                 type: TOGGLE_PLAYING,
                             })
                         }}>
-                            <View style={styles.pause}>
-                                <Icon
-                                    name={this.props.paused ? 'ios-play': 'ios-pause'}
-                                    color='white'
-                                    size={16}
-                                />
+                            <View style={styles.pauseButton}>
+                                <View style={styles.pause}>
+                                    <Icon
+                                        name={this.props.paused ? 'ios-play': 'ios-pause'}
+                                        color='white'
+                                        size={16}
+                                    />
+                                </View>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -309,7 +317,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingRight: 16,
         width: '100%',
     },
     playing: {
@@ -333,19 +340,26 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: 'white'
+        borderColor: 'white',
+    },
+
+    pauseButton: {
+        width: 36,
+        height: 36,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     title: {
         fontSize: 12,
         color: 'white',
-        fontWeight: '600'
+        fontWeight: '600',
     },
 
     author: {
-        fontWeight: '600',
+        fontSize: 12,
         color: '#aeafb3',
-        fontSize: 12
+        fontWeight: '600',
     },
 
     music: {
@@ -371,9 +385,11 @@ const styles = StyleSheet.create({
     },
 
     nowPlayingContainer: {
+        overflow: 'hidden',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        width: D.width - 72,
     },
 
 });

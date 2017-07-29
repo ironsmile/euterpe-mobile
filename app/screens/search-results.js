@@ -18,6 +18,7 @@ class SearchReult extends React.Component {
                         title: this.props.title,
                         artist: this.props.album,
                         image: Images.unknownAlbum,
+                        id: this.props.id,
                     },
                 });
             }}>
@@ -45,6 +46,7 @@ export class SearchReultsRenderer extends React.Component {
                         return (
                             <SearchReult
                                 key={item.id}
+                                id={item.id}
                                 artist={item.artist}
                                 album={item.album}
                                 title={item.title}
