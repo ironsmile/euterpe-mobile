@@ -1,16 +1,25 @@
 
 const initialState = {
     results: [],
-    query: '',
+    recentSearches: [],
     searching: false,
 };
 
 export const searchReducer = (state = initialState, action) => {
     switch (action.type) {
         case RESULTS_FETCHED:
+            let recentSearches = [
+                ...state.recentSearches,
+                action.query,
+            ];
+
+            if (recentSearches.length > 10) {
+                recentSearches = recentSearches.splice(1);
+            }
+
             return {
                 ...state,
-                query: action.query,
+                recentSearches,
                 results: action.results,
                 searching: false,
             };

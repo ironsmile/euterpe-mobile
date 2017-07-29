@@ -81,7 +81,7 @@ class CoverFlowRenderer extends Component {
     }
 
     renderButtons() {
-        const play = !this.props.paused;
+        const play = this.props.paused;
         return (
             <View style={styles.buttonContainer}>
                 <Icon name='ios-shuffle' size={24} color='#c2beb3'/>

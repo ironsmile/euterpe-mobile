@@ -8,9 +8,10 @@ import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import Header from './common/header';
 import { connect } from 'react-redux';
 import { SearchReults } from './search-results';
+import _ from 'lodash';
 
-import { SELECT_TRACK, STOP } from '../reducers/playing';
-import Images from '@assets/images';
+import { HttpmsService } from '../common/httpms-service';
+import { RESULTS_FETCHED, START_SEARCH } from '../reducers/search';
 
 class SearchRenderer extends React.Component {
 
@@ -18,6 +19,32 @@ class SearchRenderer extends React.Component {
         tabBarLabel: CreateTabLabel('Search'),
         tabBarIcon: CreateTabIcon('ios-search'),
     });
+
+    handleSearchChange(text) {
+        const httpms = new HttpmsService(this.props.settings);
+
+        this.props.dispatch({
+            type: START_SEARCH
+        });
+
+        fetch(httpms.getSearchURL(text), {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            ...httpms.getAuthCredsHeader()
+          },
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            // !TODO: some validation checking
+            this.props.dispatch({
+                type: RESULTS_FETCHED,
+                results: responseJson,
+                query: text,
+            });
+        });        
+    }
 
     getSearchHeader() {
         return (
@@ -29,6 +56,9 @@ class SearchRenderer extends React.Component {
                         returnKeyType="search"
                         autoCorrect={false}
                         autoCapitalize="none"
+                        onChangeText={_.debounce((text) => {
+                            this.handleSearchChange(text);
+                        }, 500)}
                     ></TextInput>
                 </View>
             </Header>
@@ -43,31 +73,6 @@ class SearchRenderer extends React.Component {
                 header={this.getSearchHeader()}
             >
                 <View style={styles.container}>
-                    <TouchableOpacity onPress={() => {
-                        this.props.dispatch({
-                            type: SELECT_TRACK,
-                            track: {
-                                title: 'Awesome Track',
-                                artist: 'Heaviest Metal',
-                                image: Images.unknownAlbum,
-                            },
-                        });
-                    }}>
-                        <View style={{backgroundColor: 'blue'}}>
-                            <Text>Show</Text>
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => {
-                        this.props.dispatch({
-                            type: STOP,
-                        })
-                    }}>
-                        <View style={{backgroundColor: 'blue'}}>
-                            <Text>Hide</Text>
-                        </View>
-                    </TouchableOpacity>
-
                     <SearchReults />
                 </View>
             </Screen>
@@ -95,12 +100,15 @@ const styles = StyleSheet.create({
         height: 66,
     },
     container: {
+        flex: 1,
+        flexDirection: 'column',
         paddingTop: 66,
     }
 });
 
 const mapStateToProps = (state) => ({
-    search: state.search
+    search: state.search,
+    settings: state.settings,
 });
 
 export const SearchScreen = connect(mapStateToProps)(SearchRenderer);

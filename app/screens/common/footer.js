@@ -28,7 +28,6 @@ class FooterRenderer extends Component {
     state = {
         pan: new Animated.ValueXY(),
         opacity: new Animated.Value(1)
-
     };
 
     moving = false;
@@ -262,7 +261,7 @@ class FooterRenderer extends Component {
                         }}>
                             <View style={styles.pause}>
                                 <Icon
-                                    name={this.props.paused ? 'ios-pause': 'ios-play'}
+                                    name={this.props.paused ? 'ios-play': 'ios-pause'}
                                     color='white'
                                     size={16}
                                 />
