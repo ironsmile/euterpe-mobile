@@ -1,26 +1,30 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    TouchableOpacity,
+    Platform,
+} from 'react-native';
 import { connect } from 'react-redux';
-import { SELECT_TRACK } from '../reducers/playing';
+import { SELECT_TRACK, STOP } from '../reducers/playing';
 import Images from '@assets/images';
 
-class SearchReult extends React.Component {
+class SearchResult extends React.Component {
     constructor(props) {
-      super(props);
-      this.state = {};
+        super(props);
+        this.state = {};
     }
+
+    onSelect() {
+
+    }
+
     render() {
         return (
             <TouchableOpacity onPress={() => {
-                this.props.dispatch({
-                    type: SELECT_TRACK,
-                    track: {
-                        title: this.props.title,
-                        artist: this.props.album,
-                        image: Images.unknownAlbum,
-                        id: this.props.id,
-                    },
-                });
+                this.onSelect();
             }}>
                 <View style={styles.resultContainer}>
                     <Text style={styles.textTitle}>{this.props.title}</Text>
@@ -34,7 +38,7 @@ class SearchReult extends React.Component {
     }
 }
 
-export class SearchReultsRenderer extends React.Component {
+export class SearchResultsRenderer extends React.Component {
     render() {
         return (
             <View style={styles.container}>
@@ -44,18 +48,18 @@ export class SearchReultsRenderer extends React.Component {
                     data={this.props.search.results}
                     renderItem={({ item }) => {
                         return (
-                            <SearchReult
+                            <SearchResult
                                 key={item.id}
                                 id={item.id}
                                 artist={item.artist}
                                 album={item.album}
                                 title={item.title}
-                                dispatch={this.props.dispatch}
                             />
                         );
                     }}
                 />
-            </View>);
+            </View>
+        );
     }
 }
 
@@ -88,7 +92,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-    search: state.search
+    search: state.search,
 });
 
-export const SearchReults = connect(mapStateToProps)(SearchReultsRenderer);
+export const SearchResults = connect(mapStateToProps)(SearchResultsRenderer);

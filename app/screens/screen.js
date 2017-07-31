@@ -1,6 +1,3 @@
-/**
- * Created by ggoma on 12/23/16.
- */
 import React, { Component } from 'react';
 import {
     Animated,
@@ -83,7 +80,7 @@ class ScreenRenderer extends Component {
                         }
                 />
             </View>
-        )
+        );
     }
 }
 
@@ -98,7 +95,7 @@ var styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-    nowPlaying: state.playing
+    nowPlaying: state.playing,
 });
 
 export const Screen = connect(mapStateToProps)(ScreenRenderer);

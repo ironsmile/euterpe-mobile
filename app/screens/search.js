@@ -7,7 +7,7 @@ import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import Header from './common/header';
 import { connect } from 'react-redux';
-import { SearchReults } from './search-results';
+import { SearchResults } from './search-results';
 import _ from 'lodash';
 
 import { HttpmsService } from '../common/httpms-service';
@@ -73,7 +73,7 @@ class SearchRenderer extends React.Component {
                 header={this.getSearchHeader()}
             >
                 <View style={styles.container}>
-                    <SearchReults />
+                    <SearchResults />
                 </View>
             </Screen>
         )

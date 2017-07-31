@@ -1,6 +1,3 @@
-/**
- * Created by ggoma on 12/23/16.
- */
 import React, {Component} from 'react';
 import {
     View,
@@ -14,13 +11,137 @@ import {
 
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { TOGGLE_PLAYING } from '../../reducers/playing';
-
+import { setPlaylist, togglePlaying, setTrack, stopPlaying, trackLoaded } from '../../actions/playing';
 import D from './dimensions';
-
 import CoverFlowItem from './coverflow-item';
+import { HttpmsService } from '../../common/httpms-service';
 
-class CoverFlowRenderer extends Component {
+import MusicControl from 'react-native-music-control';
+const Sound = require('react-native-sound');
+
+let player = null;
+
+class PlaylerRenderer extends Component {
+
+    releaseSound() {
+        if (player === null) {
+            return;
+        }
+
+        player.stop();
+        player.release();
+        player = null;
+    }
+
+    onPreviousSong() {
+    }
+
+    onNextSong() {
+    }
+
+    onSetPlaylist(playlist) {
+        this.props.dispatch(setPlaylist(playlist));
+        this.setTrack(0);
+    }
+
+    setTrack(index) {
+        this.releaseSound();
+        const { playing } = this.props;
+        const track = playing.playlist[index];
+
+        if (!track) {
+            return;
+        }
+
+        this.props.dispatch(setTrack(index));
+
+        const trackURL = this.httpmsService.getTrackURL(track.id);
+
+        player = new Sound(trackURL, undefined, (error) => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                this.props.dispatch(stopPlaying());
+                return;
+            }
+
+            this.props.dispatch(trackLoaded());
+            this.props.dispatch(togglePlaying(true));
+
+            MusicControl.setNowPlaying({
+              title: track.title,
+              artist: track.artist,
+              album: track.album,
+              duration: player.getDuration(),
+            });
+
+            // Loaded successfully
+            player.play((success) => {
+                this.props.dispatch(stopPlaying());
+                MusicControl.resetNowPlaying();
+                if (success) {
+                    player.release();
+                    player = null;
+                } else {
+                    this.props.dispatch(stopPlaying());
+                    console.log('playback failed due to audio decoding errors');
+                }
+                this.onSongEnd();
+            });
+        });
+    }
+
+    onTogglePlay(state) {
+        this.props.dispatch(togglePlaying(state));
+    }
+
+    onSongEnd() {
+
+    }
+
+    componentWillMount() {
+        this.httpmsService = new HttpmsService(this.props.settings);
+
+        if (Platform.OS === 'ios') {
+            Sound.setCategory('Playback');
+        }
+
+        MusicControl.enableBackgroundMode(true);
+        MusicControl.enableControl('play', true);
+        MusicControl.enableControl('pause', true);
+        MusicControl.enableControl('stop', true);
+        MusicControl.enableControl('nextTrack', true);
+        MusicControl.enableControl('previousTrack', true);
+        MusicControl.enableControl('seekForward', true);
+        MusicControl.enableControl('seekBackward', true);
+
+        MusicControl.on('play', () => {
+            this.onTogglePlay(true);
+        });
+
+        MusicControl.on('pause', () => {
+            this.onTogglePlay(false);
+        });
+
+        MusicControl.on('stop', () => {
+            this.onStop();
+        });
+
+        MusicControl.on('nextTrack', () => {
+            this.onNextSong();
+        });
+
+        MusicControl.on('previousTrack', () => {
+            this.onPreviousSong();
+        });
+
+        MusicControl.on('seekForward', () => {
+
+        });
+
+        MusicControl.on('seekBackward', () => {
+
+        });
+    }
 
     renderHeader() {
         return (
@@ -33,12 +154,13 @@ class CoverFlowRenderer extends Component {
                 <Text style={styles.playing}>NOW PLAYING</Text>
                 <Icon name='ios-list' color='white' size={26}/>
             </View>
-        )
+        );
     }
 
     renderCoverflow() {
         const width = D.width * 3.2/5,
             height = D.width * 3.2/5;
+
         const { nowPlaying } = this.props;
 
         let covers = [];
@@ -91,16 +213,14 @@ class CoverFlowRenderer extends Component {
     }
 
     renderButtons() {
-        const play = this.props.paused;
+        const play = this.props.playing.paused;
         return (
             <View style={styles.buttonContainer}>
                 <Icon name='ios-shuffle' size={24} color='#c2beb3'/>
                 <Icon name='ios-skip-backward' size={32} color='white' />
                 <TouchableOpacity
                     onPress={() => {
-                        this.props.dispatch({
-                            type: TOGGLE_PLAYING,
-                        });
+                        this.onTogglePlay();
                     }}
                     style={[styles.playContainer, play ? {paddingLeft: 8} : {}]}>
                     <Icon name={play ? 'ios-play' : 'ios-pause'} style={styles.play}/>
@@ -113,7 +233,7 @@ class CoverFlowRenderer extends Component {
     }
 
     render() {
-        if (!this.props.nowPlaying) {
+        if (!this.props.playing.now) {
             return null;
         }
         return (
@@ -229,8 +349,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-    nowPlaying: state.playing.now,
-    paused: state.playing.paused,
+    playing: state.playing,
+    settings: state.settings,
 });
 
-export default CoverFlow = connect(mapStateToProps)(CoverFlowRenderer);
+export default Player = connect(mapStateToProps)(PlaylerRenderer);

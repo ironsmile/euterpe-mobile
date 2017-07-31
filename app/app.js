@@ -1,12 +1,11 @@
 import React from 'react';
-import { AppRegistry, AppState, AsyncStorage, Text } from 'react-native';
-import { TabNavigator } from 'react-navigation';
+import { AppRegistry, AsyncStorage } from 'react-native';
+import { TabNavigator, addNavigationHelpers } from 'react-navigation';
 import { HomeScreen } from './screens/home';
 import { BrowseScreen } from './screens/browse';
 import { SearchScreen } from './screens/search';
 import { LibraryScreen } from './screens/lib';
 import { AboutScreen } from './screens/about';
-import { hs } from './styles/global';
 import TabBarBottom from './screens/common/TabBarBottom';
 import { TABBAR_HEIGHT } from './screens/common/footer';
 import { Loader } from './screens/common/loader';
@@ -14,12 +13,12 @@ import { playingReducer } from './reducers/playing';
 import { searchReducer } from './reducers/search';
 import { settingsReducer } from './reducers/settings';
 
-import { addNavigationHelpers } from 'react-navigation';
-import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
+import { combineReducers, createStore, compose } from 'redux';
 import { connect, Provider } from 'react-redux';
-import { persistStore, autoRehydrate } from 'redux-persist'
-import { REHYDRATE } from 'redux-persist/constants'
+import { persistStore, autoRehydrate } from 'redux-persist';
+import { REHYDRATE } from 'redux-persist/constants';
 
+const Sound = require('react-native-sound');
 
 const navOptions = {
     tabBarPosition: 'bottom',
@@ -111,7 +110,9 @@ class Root extends React.Component {
         this.state = {
             store: store,
             rehydrated: false,
-        }
+        };
+
+        Sound.setCategory('Playback');
     }
 
     componentWillMount() {

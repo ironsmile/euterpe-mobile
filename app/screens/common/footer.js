@@ -15,10 +15,9 @@ import {
 
 import D from './dimensions';
 
-import CoverFlow from './coverflow';
+import Player from './player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
-import { TOGGLE_PLAYING } from '../../reducers/playing';
 
 export const FOOTER_HEIGHT = 48;
 export const TABBAR_HEIGHT = 56;
@@ -261,9 +260,7 @@ class FooterRenderer extends Component {
                             </Text>
                         </View>
                         <TouchableOpacity onPress={() => {
-                            this.props.dispatch({
-                                type: TOGGLE_PLAYING,
-                            })
+                            // this.refs.player.togglePlaying();
                         }}>
                             <View style={styles.pauseButton}>
                                 <View style={styles.pause}>
@@ -290,7 +287,8 @@ class FooterRenderer extends Component {
                     {...this._panResponder.panHandlers}
                     style={[styles.playing, this.getStyle()]}>
 
-                    <CoverFlow
+                    <Player
+                        ref="player"
                         scrollDown={() => this.scrollDown()}
                     />
                     {this.renderDefault()}

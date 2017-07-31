@@ -22,4 +22,8 @@ export class HttpmsService {
             'Authorization': 'Basic ' + encoded,
         };
     }
+
+    getTrackURL(trackID) {
+        return this.settings.hostAddress + '/file/' + trackID;
+    }
 }
