@@ -10,7 +10,8 @@ import {
     TouchableOpacity,
     StyleSheet,
     StatusBar,
-    Platform
+    Platform,
+    ActivityIndicator,
 } from 'react-native';
 
 import D from './dimensions';
@@ -19,6 +20,7 @@ import Player from './player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { togglePlaying } from '../../actions/playing';
+import ProgressBar from 'react-native-progress/Bar';
 
 export const FOOTER_HEIGHT = 48;
 export const TABBAR_HEIGHT = 56;
@@ -239,6 +241,16 @@ class FooterRenderer extends Component {
                 }
             ]}>
                 <View style={styles.defaultContainer}>
+                    <ProgressBar
+                        progress={this.props.progress}
+                        unfilledColor="#3c3d41"
+                        borderWidth={0}
+                        borderRadius={0}
+                        height={4}
+                        width={null}
+                        color="white"
+                        style={{width: '100%'}}
+                    />
                     <View style={styles.defaultView}>
                         <TouchableOpacity onPress={() => this.scrollUp()}>
                             <View style={styles.pullUpArrow}>
@@ -260,23 +272,37 @@ class FooterRenderer extends Component {
                                 {nowPlaying.artist}
                             </Text>
                         </View>
-                        <TouchableOpacity onPress={() => {
-                            this.props.dispatch(togglePlaying());
-                        }}>
-                            <View style={styles.pauseButton}>
-                                <View style={styles.pause}>
-                                    <Icon
-                                        name={this.props.paused ? 'ios-play': 'ios-pause'}
-                                        color='white'
-                                        size={16}
-                                    />
-                                </View>
-                            </View>
-                        </TouchableOpacity>
+                        {this.renderControlButton()}
                     </View>
                 </View>
             </Animated.View>
         )
+    }
+
+    renderControlButton() {
+        if (this.props.trackLoading) {
+            return (
+                <View style={styles.pauseButton}>
+                    <ActivityIndicator color="white" />
+                </View>
+            );
+        }
+
+        return (
+            <TouchableOpacity onPress={() => {
+                this.props.dispatch(togglePlaying());
+            }}>
+                <View style={styles.pauseButton}>
+                    <View style={styles.pause}>
+                        <Icon
+                            name={this.props.paused ? 'ios-play': 'ios-pause'}
+                            color='white'
+                            size={16}
+                        />
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
     }
 
     render() {
@@ -308,7 +334,7 @@ const styles = StyleSheet.create({
     defaultContainer: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
     },
     defaultView: {
@@ -328,8 +354,8 @@ const styles = StyleSheet.create({
         height: FOOTER_HEIGHT + 10,
         width: D.width,
         backgroundColor: '#222327',
-        borderTopColor: '#3c3d41',
-        borderTopWidth: 4,
+        // borderTopColor: '#3c3d41',
+        // borderTopWidth: 4,
     },
     pause: {
         width: 24,
@@ -395,6 +421,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
     nowPlaying: state.playing.now,
     paused: state.playing.paused,
+    trackLoading: state.playing.trackLoading,
+    progress: state.playing.progress,
 });
 
 export default Footer = connect(mapStateToProps)(FooterRenderer);

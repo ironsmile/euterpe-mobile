@@ -23,6 +23,7 @@ import {
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
 import MusicControl from 'react-native-music-control';
+import ProgressBar from 'react-native-progress/Bar';
 import Images from '@assets/images';
 
 class PlaylerRenderer extends Component {
@@ -129,7 +130,16 @@ class PlaylerRenderer extends Component {
                     </View>
                     <Icon name='ios-more' color='white' size={24}/>
                 </View>
-                <View style={styles.progress} />
+                <ProgressBar
+                    style={styles.progress}
+                    progress={this.props.playing.progress}
+                    unfilledColor="#3c3d41"
+                    borderWidth={0}
+                    borderRadius={0}
+                    height={2}
+                    width={null}
+                    color="white"
+                />
             </View>
         )
     }
@@ -247,11 +257,9 @@ const styles = StyleSheet.create({
     },
 
     progress: {
-        height: 2,
         marginLeft: 16,
         marginRight: 16,
         marginBottom: 16,
-        backgroundColor: '#3c3d41'
     },
 
     text: {

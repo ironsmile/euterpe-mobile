@@ -9,11 +9,14 @@ import {
     SET_IS_LOADING_STATUS,
     TRACK_ENDED,
     SELECT_TRACK,
+    SET_PROGRESS,
+    INCREASE_PROGRESS,
 } from '../reducers/playing';
 import { HttpmsService } from '../common/httpms-service';
 
 let player = null;
 let _httpms = null;
+let _timer = null;
 
 export const setPlaylist = (tracks) => ({
     type: SET_PLAYLIST,
@@ -23,17 +26,36 @@ export const setPlaylist = (tracks) => ({
 export const togglePlaying = (play) => {
 
     return (dispatch, getState) => {
+        const state = getState();
+
+        if (state.playing.trackLoading) {
+            return;
+        }
+
         let statePlaying = play;
 
         if (play === undefined) {
-            statePlaying = getState().playing.paused;
+            statePlaying = state.playing.paused;
         }
 
         if (player !== null && statePlaying) {
+            const duration = player.getDuration() * 1000;
+            const progressUpdate = 1000;
+
+            _timer = setInterval(() => {
+                dispatch({
+                    type: INCREASE_PROGRESS,
+                    delta: progressUpdate / duration,
+                });
+            }, progressUpdate);
             player.play(playCallback(dispatch));
         }
 
         if (player !== null && !statePlaying) {
+            if (_timer !== null) {
+                clearInterval(_timer);
+                _timer = null;
+            }
             player.pause();
         }
 
@@ -42,6 +64,10 @@ export const togglePlaying = (play) => {
                 MusicControl.updatePlayback({
                   state: isPlaying ? MusicControl.STATE_PLAYING : MusicControl.STATE_PAUSED,
                   elapsedTime: seconds,
+                });
+                dispatch({
+                    type: SET_PROGRESS,
+                    progress: seconds / player.getDuration(),
                 });
             });
         }
@@ -54,6 +80,11 @@ export const togglePlaying = (play) => {
 };
 
 export const stopPlaying = () => {
+    if (_timer !== null) {
+        clearInterval(_timer);
+        _timer = null;
+    }
+
     if (player !== null) {
         player.stop();
         player.release();
@@ -125,6 +156,14 @@ export const setTrack = (index) => {
     };
 };
 
+export const restorePlayingState = () => {
+    return (dispatch) => {
+        if (player === null) {
+            dispatch(stopPlaying());
+        }
+    };
+};
+
 const getHttpmsService = (getState) => {
     if (_httpms !== null) {
         return _httpms;
@@ -139,8 +178,6 @@ const playCallback = (dispatch) => {
     return (success) => {
         dispatch(stopPlaying());
         MusicControl.resetNowPlaying();
-        player.release();
-        player = null;
         if (success) {
             dispatch(trackEnded());
         } else {

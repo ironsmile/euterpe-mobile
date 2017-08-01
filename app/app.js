@@ -19,6 +19,7 @@ import thunkMiddleware from 'redux-thunk';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
 import MusicControl from 'react-native-music-control';
+import { restorePlayingState } from './actions/playing';
 
 const Sound = require('react-native-sound');
 
@@ -137,6 +138,7 @@ class Root extends React.Component {
             },
             () => {
                 this.setState({rehydrated: true});
+                store.dispatch(restorePlayingState());
             }
         );
     }

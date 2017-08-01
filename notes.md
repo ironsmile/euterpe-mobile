@@ -6,3 +6,4 @@ footer menu color: #222326
 
 * get only minimal build of lodash
 * UI за твърде дълги имена на албуми/артисти
+* По - ефективен progress indicator. Може би с анимация или като извадя ProgressBar-а в отделен компонент
