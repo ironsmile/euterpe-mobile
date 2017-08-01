@@ -12,7 +12,7 @@ export const playingReducer = (state = initialState, action) => {
             if (action.play !== undefined) {
                 return {
                     ...state,
-                    paused: action.play,
+                    paused: !action.play,
                 };
             }
 
@@ -44,6 +44,7 @@ export const playingReducer = (state = initialState, action) => {
                 trackLoading: action.status,
             };
 
+        case TRACK_ENDED:
         case STOP:
             return {
                 ...state,
@@ -64,3 +65,4 @@ export const PREVIOUS = 'Playing/Previous';
 export const SELECT_TRACK = 'Playing/SelectTrack';
 export const SET_PLAYLIST = 'Playing/SetPlaylist';
 export const SET_IS_LOADING_STATUS = 'Playing/SetLoadigStatus';
+export const TRACK_ENDED = 'Playing/TrackEnded';

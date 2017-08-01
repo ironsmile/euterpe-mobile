@@ -13,10 +13,12 @@ import { playingReducer } from './reducers/playing';
 import { searchReducer } from './reducers/search';
 import { settingsReducer } from './reducers/settings';
 
-import { combineReducers, createStore, compose } from 'redux';
+import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
+import MusicControl from 'react-native-music-control';
 
 const Sound = require('react-native-sound');
 
@@ -98,9 +100,11 @@ const AppWithNavigationState = connect(mapStateToProps)(App);
 
 const store = createStore(
     rehydratedReducer,
-    undefined,
+    applyMiddleware(
+        thunkMiddleware
+    ),
     compose(
-        autoRehydrate() 
+        autoRehydrate()
     )
 );
 
@@ -113,6 +117,15 @@ class Root extends React.Component {
         };
 
         Sound.setCategory('Playback');
+
+        MusicControl.enableBackgroundMode(true);
+        MusicControl.enableControl('play', true);
+        MusicControl.enableControl('pause', true);
+        MusicControl.enableControl('stop', false);
+        MusicControl.enableControl('nextTrack', false);
+        MusicControl.enableControl('previousTrack', false);
+        MusicControl.enableControl('seekForward', false);
+        MusicControl.enableControl('seekBackward', false);
     }
 
     componentWillMount() {

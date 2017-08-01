@@ -11,119 +11,41 @@ import {
 
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { setPlaylist, togglePlaying, setTrack, stopPlaying, trackLoaded } from '../../actions/playing';
+import {
+    setPlaylist,
+    togglePlaying,
+    setTrack,
+    stopPlaying,
+    trackLoaded,
+    previousSongInQueue,
+    nextSongInQueue,
+} from '../../actions/playing';
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
-import { HttpmsService } from '../../common/httpms-service';
-
 import MusicControl from 'react-native-music-control';
-const Sound = require('react-native-sound');
-
-let player = null;
+import Images from '@assets/images';
 
 class PlaylerRenderer extends Component {
 
-    releaseSound() {
-        if (player === null) {
-            return;
-        }
-
-        player.stop();
-        player.release();
-        player = null;
-    }
-
     onPreviousSong() {
+        this.props.dispatch(previousSongInQueue());
     }
 
     onNextSong() {
-    }
-
-    onSetPlaylist(playlist) {
-        this.props.dispatch(setPlaylist(playlist));
-        this.setTrack(0);
-    }
-
-    setTrack(index) {
-        this.releaseSound();
-        const { playing } = this.props;
-        const track = playing.playlist[index];
-
-        if (!track) {
-            return;
-        }
-
-        this.props.dispatch(setTrack(index));
-
-        const trackURL = this.httpmsService.getTrackURL(track.id);
-
-        player = new Sound(trackURL, undefined, (error) => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                this.props.dispatch(stopPlaying());
-                return;
-            }
-
-            this.props.dispatch(trackLoaded());
-            this.props.dispatch(togglePlaying(true));
-
-            MusicControl.setNowPlaying({
-              title: track.title,
-              artist: track.artist,
-              album: track.album,
-              duration: player.getDuration(),
-            });
-
-            // Loaded successfully
-            player.play((success) => {
-                this.props.dispatch(stopPlaying());
-                MusicControl.resetNowPlaying();
-                if (success) {
-                    player.release();
-                    player = null;
-                } else {
-                    this.props.dispatch(stopPlaying());
-                    console.log('playback failed due to audio decoding errors');
-                }
-                this.onSongEnd();
-            });
-        });
+        this.props.dispatch(nextSongInQueue());
     }
 
     onTogglePlay(state) {
         this.props.dispatch(togglePlaying(state));
     }
 
-    onSongEnd() {
-
-    }
-
     componentWillMount() {
-        this.httpmsService = new HttpmsService(this.props.settings);
-
-        if (Platform.OS === 'ios') {
-            Sound.setCategory('Playback');
-        }
-
-        MusicControl.enableBackgroundMode(true);
-        MusicControl.enableControl('play', true);
-        MusicControl.enableControl('pause', true);
-        MusicControl.enableControl('stop', true);
-        MusicControl.enableControl('nextTrack', true);
-        MusicControl.enableControl('previousTrack', true);
-        MusicControl.enableControl('seekForward', true);
-        MusicControl.enableControl('seekBackward', true);
-
         MusicControl.on('play', () => {
             this.onTogglePlay(true);
         });
 
         MusicControl.on('pause', () => {
             this.onTogglePlay(false);
-        });
-
-        MusicControl.on('stop', () => {
-            this.onStop();
         });
 
         MusicControl.on('nextTrack', () => {
@@ -161,12 +83,12 @@ class PlaylerRenderer extends Component {
         const width = D.width * 3.2/5,
             height = D.width * 3.2/5;
 
-        const { nowPlaying } = this.props;
+        const playing = this.props.playing.now;
 
         let covers = [];
 
-        if (nowPlaying) {
-            covers.push(nowPlaying.image);
+        if (playing) {
+            covers.push(Images.unknownAlbum);
         }
 
         return (
@@ -185,7 +107,7 @@ class PlaylerRenderer extends Component {
     }
 
     renderInfo() {
-        const { nowPlaying } = this.props;
+        const playing = this.props.playing.now;
 
         return (
             <View style={styles.infoContainer}>
@@ -196,13 +118,13 @@ class PlaylerRenderer extends Component {
                             numberOfLines={1}
                             style={styles.title}
                         >
-                            {nowPlaying.title}
+                            {playing.title}
                         </Text>
                         <Text
                             numberOfLines={1}
                             style={styles.artist}
                         >
-                            {nowPlaying.artist}
+                            {playing.artist}
                         </Text>
                     </View>
                     <Icon name='ios-more' color='white' size={24}/>

@@ -8,8 +8,7 @@ import {
     Platform,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SELECT_TRACK, STOP } from '../reducers/playing';
-import Images from '@assets/images';
+import { setPlaylist, setTrack } from '../actions/playing';
 
 class SearchResult extends React.Component {
     constructor(props) {
@@ -24,13 +23,13 @@ class SearchResult extends React.Component {
     render() {
         return (
             <TouchableOpacity onPress={() => {
-                this.onSelect();
+                this.props.onSelect();
             }}>
                 <View style={styles.resultContainer}>
-                    <Text style={styles.textTitle}>{this.props.title}</Text>
+                    <Text style={styles.textTitle}>{this.props.song.title}</Text>
                     <View style={styles.additional}>
-                        <Text style={styles.text}>{this.props.artist}, </Text>
-                        <Text style={styles.text}>{this.props.album}</Text>
+                        <Text style={styles.text}>{this.props.song.artist}, </Text>
+                        <Text style={styles.text}>{this.props.song.album}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -50,10 +49,11 @@ export class SearchResultsRenderer extends React.Component {
                         return (
                             <SearchResult
                                 key={item.id}
-                                id={item.id}
-                                artist={item.artist}
-                                album={item.album}
-                                title={item.title}
+                                song={item}
+                                onSelect={() => {
+                                    this.props.dispatch(setPlaylist([item]));
+                                    this.props.dispatch(setTrack(0));
+                                }}
                             />
                         );
                     }}
