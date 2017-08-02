@@ -156,10 +156,46 @@ export const setTrack = (index) => {
 };
 
 export const restorePlayingState = () => {
-    return (dispatch) => {
-        if (player === null) {
-            dispatch(stopPlaying());
+    return (dispatch, getState) => {
+        if (player !== null) {
+            return;
         }
+
+        const state = getState();
+
+        if (state.playing.now === null) {
+            return;
+        }
+
+        dispatch(togglePlaying(false));
+
+        const track = state.playing.now;
+        const httpms = getHttpmsService(getState);
+        const trackURL = httpms.getTrackURL(track.id);
+        const { progress } = state;
+
+
+        player = new Sound(trackURL, undefined, (error) => {
+            if (error) {
+                // console.log('failed to load the sound', error);
+                return dispatch(stopPlaying());
+            }
+
+            const duration = player.getDuration();
+
+            player.setCurrentTime(duration * progress);
+            MusicControl.setNowPlaying({
+              title: track.title,
+              artist: track.artist,
+              album: track.album,
+              state: MusicControl.STATE_PAUSED,
+              elapsedTime: duration * progress,
+              duration,
+            });
+            dispatch(trackLoaded());
+        });
+
+        return dispatch(trackIsLoading());
     };
 };
 
