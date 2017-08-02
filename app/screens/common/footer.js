@@ -1,6 +1,3 @@
-/**
- * Created by ggoma on 12/23/16.
- */
 import React, { Component } from 'react';
 import {
     Animated,
@@ -20,7 +17,7 @@ import Player from './player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { togglePlaying } from '../../actions/playing';
-import ProgressBar from 'react-native-progress/Bar';
+import TrackProgress from '../../common/track-progress';
 
 export const FOOTER_HEIGHT = 48;
 export const TABBAR_HEIGHT = 56;
@@ -241,14 +238,8 @@ class FooterRenderer extends Component {
                 }
             ]}>
                 <View style={styles.defaultContainer}>
-                    <ProgressBar
-                        progress={this.props.progress}
-                        unfilledColor="#3c3d41"
-                        borderWidth={0}
-                        borderRadius={0}
+                    <TrackProgress
                         height={4}
-                        width={null}
-                        color="white"
                         style={{width: '100%'}}
                     />
                     <View style={styles.defaultView}>
@@ -422,7 +413,6 @@ const mapStateToProps = (state) => ({
     nowPlaying: state.playing.now,
     paused: state.playing.paused,
     trackLoading: state.playing.trackLoading,
-    progress: state.playing.progress,
 });
 
 export default Footer = connect(mapStateToProps)(FooterRenderer);

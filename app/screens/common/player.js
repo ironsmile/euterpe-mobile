@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -23,10 +23,10 @@ import {
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
 import MusicControl from 'react-native-music-control';
-import ProgressBar from 'react-native-progress/Bar';
+import TrackProgress from '../../common/track-progress';
 import Images from '@assets/images';
 
-class PlaylerRenderer extends Component {
+class PlaylerRenderer extends React.Component {
 
     onPreviousSong() {
         this.props.dispatch(previousSongInQueue());
@@ -84,7 +84,7 @@ class PlaylerRenderer extends Component {
         const width = D.width * 3.2/5,
             height = D.width * 3.2/5;
 
-        const playing = this.props.playing.now;
+        const playing = this.props.playing;
 
         let covers = [];
 
@@ -108,7 +108,7 @@ class PlaylerRenderer extends Component {
     }
 
     renderInfo() {
-        const playing = this.props.playing.now;
+        const playing = this.props.playing;
 
         return (
             <View style={styles.infoContainer}>
@@ -130,22 +130,15 @@ class PlaylerRenderer extends Component {
                     </View>
                     <Icon name='ios-more' color='white' size={24}/>
                 </View>
-                <ProgressBar
+                <TrackProgress
                     style={styles.progress}
-                    progress={this.props.playing.progress}
-                    unfilledColor="#3c3d41"
-                    borderWidth={0}
-                    borderRadius={0}
-                    height={2}
-                    width={null}
-                    color="white"
                 />
             </View>
         )
     }
 
     renderButtons() {
-        const play = this.props.playing.paused;
+        const play = this.props.paused;
         return (
             <View style={styles.buttonContainer}>
                 <Icon name='ios-shuffle' size={24} color='#c2beb3'/>
@@ -165,7 +158,7 @@ class PlaylerRenderer extends Component {
     }
 
     render() {
-        if (!this.props.playing.now) {
+        if (!this.props.playing) {
             return null;
         }
         return (
@@ -279,8 +272,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-    playing: state.playing,
-    settings: state.settings,
+    playing: state.playing.now,
+    paused: state.playing.paused,
 });
 
 export default Player = connect(mapStateToProps)(PlaylerRenderer);
