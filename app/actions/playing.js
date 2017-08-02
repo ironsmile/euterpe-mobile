@@ -9,9 +9,13 @@ import {
     SET_IS_LOADING_STATUS,
     TRACK_ENDED,
     SELECT_TRACK,
-    SET_PROGRESS,
-    INCREASE_PROGRESS,
 } from '../reducers/playing';
+
+import {
+    increaseProgress,
+    setProgress,
+} from '../actions/progress';
+
 import { HttpmsService } from '../common/httpms-service';
 
 let player = null;
@@ -43,10 +47,7 @@ export const togglePlaying = (play) => {
             const progressUpdate = 1000;
 
             _timer = setInterval(() => {
-                dispatch({
-                    type: INCREASE_PROGRESS,
-                    delta: progressUpdate / duration,
-                });
+                dispatch(increaseProgress(progressUpdate / duration));
             }, progressUpdate);
             player.play(playCallback(dispatch));
         }
@@ -65,10 +66,7 @@ export const togglePlaying = (play) => {
                   state: isPlaying ? MusicControl.STATE_PLAYING : MusicControl.STATE_PAUSED,
                   elapsedTime: seconds,
                 });
-                dispatch({
-                    type: SET_PROGRESS,
-                    progress: seconds / player.getDuration(),
-                });
+                dispatch(setProgress(seconds / player.getDuration()));
             });
         }
 
@@ -123,18 +121,19 @@ export const setTrack = (index) => {
         const track = state.playing.playlist[index];
 
         if (!track) {
-            console.log("Track index out of range!", index);
+            // console.log("Track index out of range!", index);
             return;
         }
 
         dispatch(selectTrack(track));
+        dispatch(setProgress(0));
 
         const httpms = getHttpmsService(getState);
         const trackURL = httpms.getTrackURL(track.id);
 
         player = new Sound(trackURL, undefined, (error) => {
             if (error) {
-                console.log('failed to load the sound', error);
+                // console.log('failed to load the sound', error);
                 return dispatch(stopPlaying());
             }
 
@@ -181,7 +180,7 @@ const playCallback = (dispatch) => {
         if (success) {
             dispatch(trackEnded());
         } else {
-            console.log('playback failed due to audio decoding errors');
+            // console.log('playback failed due to audio decoding errors');
         }
     };
 };

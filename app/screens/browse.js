@@ -13,6 +13,10 @@ export class BrowseScreen extends React.Component {
         tabBarIcon: CreateTabIcon('ios-albums'),
     });
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.navigation.state.key == "Browse";
+    }
+
     render() {
         return (
             <Screen

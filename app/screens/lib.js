@@ -14,6 +14,10 @@ export class LibraryScreen extends React.Component {
         tabBarIcon: CreateTabIcon('ios-book'),
     });
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.navigation.state.key == "Library";
+    }
+
     render() {
         return (
             <Screen

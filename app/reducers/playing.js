@@ -1,7 +1,6 @@
 
 const initialState = {
     paused: true,
-    progress: 0,
     trackLoading: false,
     playlist: [],
     curretIndex: null,
@@ -37,25 +36,12 @@ export const playingReducer = (state = initialState, action) => {
                 paused: true,
                 now: action.track,
                 trackLoading: true,
-                progress: 0,
             };
 
         case SET_IS_LOADING_STATUS:
             return {
                 ...state,
                 trackLoading: action.status,
-            };
-
-        case SET_PROGRESS:
-            return {
-                ...state,
-                progress: action.progress,
-            };
-
-        case INCREASE_PROGRESS:
-            return {
-                ...state,
-                progress: state.progress + action.delta,
             };
 
         case TRACK_ENDED:
@@ -80,5 +66,3 @@ export const SELECT_TRACK = 'Playing/SelectTrack';
 export const SET_PLAYLIST = 'Playing/SetPlaylist';
 export const SET_IS_LOADING_STATUS = 'Playing/SetLoadigStatus';
 export const TRACK_ENDED = 'Playing/TrackEnded';
-export const SET_PROGRESS = 'Playing/SetProgress';
-export const INCREASE_PROGRESS = 'Playing/IncreaseProgress';

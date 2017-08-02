@@ -10,6 +10,7 @@ import TabBarBottom from './screens/common/TabBarBottom';
 import { TABBAR_HEIGHT } from './screens/common/footer';
 import { Loader } from './screens/common/loader';
 import { playingReducer } from './reducers/playing';
+import { progressReducer } from './reducers/progress';
 import { searchReducer } from './reducers/search';
 import { settingsReducer } from './reducers/settings';
 
@@ -66,6 +67,7 @@ const appReducer = combineReducers({
     playing: playingReducer,
     search: searchReducer,
     settings: settingsReducer,
+    progress: progressReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {

@@ -13,6 +13,10 @@ export class AboutScreen extends React.Component {
         tabBarIcon: CreateTabIcon('ios-information-circle'),
     });
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.navigation.state.key == "About";
+    }
+
     render() {
         return (
             <Screen

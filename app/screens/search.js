@@ -20,6 +20,10 @@ class SearchRenderer extends React.Component {
         tabBarIcon: CreateTabIcon('ios-search'),
     });
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.navigation.state.key == "Search";
+    }
+
     handleSearchChange(text) {
         const httpms = new HttpmsService(this.props.settings);
 

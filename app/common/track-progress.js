@@ -12,7 +12,7 @@ class TrackProgressRenderer extends React.Component {
             height: 2,
             width: null,
             color: 'white',
-            animated: false,
+            animated: true,
             ...this.props,
             style: [
                 styles.progress,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-    progress: state.playing.progress,
+    progress: state.progress,
 });
 
 export default TrackProgress = connect(mapStateToProps)(TrackProgressRenderer);

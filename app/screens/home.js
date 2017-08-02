@@ -13,6 +13,10 @@ export class HomeScreen extends React.Component {
         tabBarIcon: CreateTabIcon('ios-home'),
     });
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.navigation.state.key == "Home";
+    }
+
     render() {
         return (
             <Screen
