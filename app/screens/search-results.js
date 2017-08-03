@@ -15,6 +15,7 @@ import { setPlaylist, setTrack } from '../actions/playing';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FOOTER_HEIGHT } from './common/footer';
 import Images from '@assets/images';
+import D from './common/dimensions';
 
 class SearchResult extends React.Component {
     render() {
@@ -61,7 +62,7 @@ class AlbumResult extends React.Component {
                         source={Images.unknownAlbum}
                     />
                 </View>
-                <View style={[styles.resultContainer, {width: null, flexGrow: 2}]}>
+                <View style={[styles.resultContainer, {width: D.width-50}]}>
                     <Text
                         numberOfLines={1}
                         style={styles.textTitle}
