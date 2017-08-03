@@ -23,6 +23,6 @@ export default (props) => {
 const styles = StyleSheet.create({
     image: {
         margin: 16,
-        alignSelf: 'center', 
+        alignSelf: 'center',
     },
 });

@@ -2,7 +2,7 @@
 const initialState = {
     results: [],
     recentSearches: [],
-    searching: false,
+    isSearching: false,
 };
 
 export const searchReducer = (state = initialState, action) => {
@@ -21,19 +21,19 @@ export const searchReducer = (state = initialState, action) => {
                 ...state,
                 recentSearches,
                 results: action.results,
-                searching: false,
+                isSearching: false,
             };
 
         case START_SEARCH:
             return {
                 ...state,
-                searching: true,
+                isSearching: true,
             };
 
         case HIDE_ACTIVITY_INDICATOR:
             return {
                 ...state,
-                searching: false,
+                isSearching: false,
             };
 
         default:
