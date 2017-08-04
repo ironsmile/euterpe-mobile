@@ -35,6 +35,7 @@ export class SettingsRenderer extends React.Component {
                         onSubmitEditing={() => {
                           this.refs.UsernameInput.focus();
                         }}
+                        underlineColorAndroid="rgba(0,0,0,0)"
                     />
 
                     <TextInput
@@ -55,6 +56,7 @@ export class SettingsRenderer extends React.Component {
                         onSubmitEditing={() => {
                           this.refs.PasswordInput.focus();
                         }}
+                        underlineColorAndroid="rgba(0,0,0,0)"
                     />
 
                     <TextInput
@@ -74,6 +76,7 @@ export class SettingsRenderer extends React.Component {
                         }}
                         secureTextEntry={true}
                         onSubmitEditing={Keyboard.dismiss}
+                        underlineColorAndroid="rgba(0,0,0,0)"
                     />
                 </View>
             </TouchableWithoutFeedback>

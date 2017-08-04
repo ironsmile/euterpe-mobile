@@ -3,6 +3,7 @@ const initialState = {
     results: [],
     recentSearches: [],
     isSearching: false,
+    query: null,
 };
 
 export const searchReducer = (state = initialState, action) => {
@@ -28,6 +29,7 @@ export const searchReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSearching: true,
+                query: action.query,
             };
 
         case HIDE_ACTIVITY_INDICATOR:

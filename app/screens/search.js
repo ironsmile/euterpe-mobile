@@ -2,7 +2,7 @@
  * Created by ggoma on 12/23/16.
  */
 import React from 'react';
-import { Text, TextInput, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text, TextInput, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
 import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import Header from './common/header';
@@ -24,11 +24,16 @@ class SearchRenderer extends React.Component {
         return this.props.navigation.state.key == "Search";
     }
 
-    handleSearchChange(text) {
+    componentWillMount() {
+        // this.refs.searchInput.value = 'blaa';
+    }
+
+    handleSearchChange = _.debounce((text) => {
         const httpms = new HttpmsService(this.props.settings);
 
         this.props.dispatch({
-            type: START_SEARCH
+            type: START_SEARCH,
+            query: text,
         });
 
         fetch(httpms.getSearchURL(text), {
@@ -48,7 +53,7 @@ class SearchRenderer extends React.Component {
                 query: text,
             });
         });        
-    }
+    }, 500)
 
     getSearchHeader() {
         return (
@@ -60,9 +65,8 @@ class SearchRenderer extends React.Component {
                         returnKeyType="search"
                         autoCorrect={false}
                         autoCapitalize="none"
-                        onChangeText={_.debounce((text) => {
-                            this.handleSearchChange(text);
-                        }, 500)}
+                        onChangeText={this.handleSearchChange}
+                        underlineColorAndroid="rgba(0,0,0,0)"
                     ></TextInput>
                 </View>
             </Header>
@@ -101,12 +105,12 @@ const styles = StyleSheet.create({
         paddingRight: 10,
     },
     header: {
-        height: 66,
+        height: (Platform.OS == 'ios') ? 66 : 74,
     },
     container: {
         flex: 1,
         flexDirection: 'column',
-        paddingTop: 66,
+        paddingTop: (Platform.OS == 'ios') ? 66 : 74,
     }
 });
 

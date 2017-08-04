@@ -22,12 +22,12 @@ export default (props) => {
         <View style={[styles.container, props.style]}>
             <Text style={[styles.text, props.textStyle]}>{props.title}</Text>
         </View>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-        position:'absolute',
+        position: 'absolute',
         top: 0,
         left: 0,
         right: 0,

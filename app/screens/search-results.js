@@ -158,8 +158,18 @@ export class SearchResultsRenderer extends React.Component {
 
         if (this.props.search.isSearching) {
             return (
-                <View style={styles.loading}>
+                <View style={styles.centered}>
                     <ActivityIndicator color="white" />
+                </View>
+            );
+        }
+
+        if (this.props.search.results.length === 0) {
+            return (
+                <View style={styles.centered}>
+                    <Text style={[styles.textTitle, styles.textNotFound]}>
+                        Nothing found for "{this.props.search.query}"
+                    </Text>
                 </View>
             );
         }
@@ -224,12 +234,14 @@ const styles = StyleSheet.create({
         height: 50,
     },
     text: {
-        color: 'white',
         fontSize: 12,
         color: '#aeafb3',
     },
     textTitle: {
         color: 'white',
+    },
+    textNotFound: {
+        textAlign: 'center',
     },
     header: {
         color: 'white',
@@ -240,7 +252,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
-    loading: {
+    centerd: {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
