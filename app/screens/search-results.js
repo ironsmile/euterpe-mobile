@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
     resultContainer: {
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
         width: '100%',
         height: 50,
     },
@@ -269,8 +270,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingLeft: 10,
-        paddingRight: 10,
     },
     seeMoreText: {
         color: 'white',

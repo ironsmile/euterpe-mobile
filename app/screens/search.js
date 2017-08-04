@@ -24,8 +24,9 @@ class SearchRenderer extends React.Component {
         return this.props.navigation.state.key == "Search";
     }
 
-    componentWillMount() {
-        // this.refs.searchInput.value = 'blaa';
+    componentDidMount() {
+        this.refs.searchBox.setNativeProps({value: this.props.search.query});
+        console.log(this.refs.searchBox);
     }
 
     handleSearchChange = _.debounce((text) => {
@@ -50,7 +51,6 @@ class SearchRenderer extends React.Component {
             this.props.dispatch({
                 type: RESULTS_FETCHED,
                 results: responseJson,
-                query: text,
             });
         });        
     }, 500)
@@ -67,6 +67,7 @@ class SearchRenderer extends React.Component {
                         autoCapitalize="none"
                         onChangeText={this.handleSearchChange}
                         underlineColorAndroid="rgba(0,0,0,0)"
+                        ref="searchBox"
                     ></TextInput>
                 </View>
             </Header>
