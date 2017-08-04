@@ -11,7 +11,7 @@ import {
     Image,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { setPlaylist, setTrack } from '../actions/playing';
+import { setPlaylist, setTrack, playAlbum } from '../actions/playing';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { FOOTER_HEIGHT } from './common/footer';
 import Images from '@assets/images';
@@ -55,30 +55,36 @@ class SearchResult extends React.Component {
 class AlbumResult extends React.Component {
     render() {
         return (
-            <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                    <Image
-                        style={{width: 40, height: 40, alignSelf: 'center'}}
-                        source={Images.unknownAlbum}
-                    />
-                </View>
-                <View style={[styles.resultContainer, {width: D.width-50}]}>
-                    <Text
-                        numberOfLines={1}
-                        style={styles.textTitle}
-                    >
-                        {this.props.album.album}
-                    </Text>
-                    <View style={styles.additional}>
+            <TouchableOpacity
+                onPress={() => {
+                    this.props.onSelect();
+                }}
+            >
+                <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                        <Image
+                            style={{width: 40, height: 40, alignSelf: 'center'}}
+                            source={Images.unknownAlbum}
+                        />
+                    </View>
+                    <View style={[styles.resultContainer, {paddingLeft: 10, width: D.width-50}]}>
                         <Text
                             numberOfLines={1}
-                            style={styles.text}
+                            style={styles.textTitle}
                         >
-                            {this.props.album.artist}
+                            {this.props.album.album}
                         </Text>
+                        <View style={styles.additional}>
+                            <Text
+                                numberOfLines={1}
+                                style={styles.text}
+                            >
+                                {this.props.album.artist}
+                            </Text>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     }
 }
@@ -188,7 +194,10 @@ export class SearchResultsRenderer extends React.Component {
                                 key={index}
                                 album={item}
                                 onSelect={() => {
-                                    //!TODO: make this album the palylist queue
+                                    this.props.dispatch(playAlbum(
+                                        item,
+                                        this.props.onNetworkError
+                                    ));
                                 }}
                             />
                         ))}
@@ -253,7 +262,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
-    centerd: {
+    centered: {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',

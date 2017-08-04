@@ -36,6 +36,7 @@ export const playingReducer = (state = initialState, action) => {
                 paused: true,
                 now: action.track,
                 trackLoading: true,
+                currentIndex: action.index,
             };
 
         case SET_IS_LOADING_STATUS:

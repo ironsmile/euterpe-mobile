@@ -125,8 +125,8 @@ class Root extends React.Component {
         MusicControl.enableControl('play', true);
         MusicControl.enableControl('pause', true);
         MusicControl.enableControl('stop', false);
-        MusicControl.enableControl('nextTrack', false);
-        MusicControl.enableControl('previousTrack', false);
+        MusicControl.enableControl('nextTrack', true);
+        MusicControl.enableControl('previousTrack', true);
         MusicControl.enableControl('seekForward', false);
         MusicControl.enableControl('seekBackward', false);
     }

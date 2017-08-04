@@ -142,15 +142,21 @@ class PlaylerRenderer extends React.Component {
         return (
             <View style={styles.buttonContainer}>
                 <Icon name='ios-shuffle' size={24} color='#c2beb3'/>
-                <Icon name='ios-skip-backward' size={32} color='white' />
                 <TouchableOpacity
-                    onPress={() => {
-                        this.onTogglePlay();
-                    }}
+                    onPress={this.onPreviousSong.bind(this)}
+                >
+                    <Icon name='ios-skip-backward' size={32} color='white' />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={this.onTogglePlay.bind(this)}
                     style={[styles.playContainer, play ? {paddingLeft: 8} : {}]}>
                     <Icon name={play ? 'ios-play' : 'ios-pause'} style={styles.play}/>
                 </TouchableOpacity>
-                <Icon name='ios-skip-forward' size={32} color='white' />
+                <TouchableOpacity
+                    onPress={this.onNextSong.bind(this)}
+                >
+                    <Icon name='ios-skip-forward' size={32} color='white' />
+                </TouchableOpacity>
                 <Icon name='ios-repeat' size={24} color='#c2beb3'/>
 
             </View>

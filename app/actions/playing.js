@@ -106,13 +106,51 @@ export const trackIsLoading = () => ({
     status: true,
 });
 
-export const trackEnded = () => ({
-    type: TRACK_ENDED,
-});
+export const trackEnded = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const currentIndex = state.playing.currentIndex;
 
-export const selectTrack = (track) => ({
+        dispatch({
+            type: TRACK_ENDED,
+        });
+
+        if (!state.playing.playlist[currentIndex + 1]) {
+            return;
+        }
+
+        dispatch(setTrack(currentIndex + 1));
+    };
+};
+
+export const previousSongInQueue = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const currentIndex = state.playing.currentIndex;
+
+        dispatch({
+            type: TRACK_ENDED,
+        });
+
+
+        if (!state.playing.playlist[currentIndex - 1]) {
+            return;
+        }
+
+        dispatch(setTrack(currentIndex - 1));
+    };
+};
+
+export const nextSongInQueue = () => {
+    return (dispatch) => {
+        dispatch(trackEnded());
+    };
+};
+
+export const selectTrack = (track, index) => ({
     type: SELECT_TRACK,
     track,
+    index,
 });
 
 export const setTrack = (index) => {
@@ -127,7 +165,8 @@ export const setTrack = (index) => {
             return;
         }
 
-        dispatch(selectTrack(track));
+        MusicControl.resetNowPlaying();
+        dispatch(selectTrack(track, index));
         dispatch(setProgress(0));
 
         const httpms = getHttpmsService(getState);
@@ -180,7 +219,9 @@ export const restorePlayingState = () => {
         player = new Sound(trackURL, undefined, (error) => {
             if (error) {
                 // console.log('failed to load the sound', error);
-                return dispatch(stopPlaying());
+                dispatch(stopPlaying());
+
+                return;
             }
 
             const duration = player.getDuration();
@@ -197,7 +238,46 @@ export const restorePlayingState = () => {
             dispatch(trackLoaded());
         });
 
-        return dispatch(trackIsLoading());
+        dispatch(trackIsLoading());
+    };
+};
+
+export const playAlbum = (album, errorCallback = null) => {
+    return (dispatch, getState) => {
+        const httpms = getHttpmsService(getState);
+
+        fetch(httpms.getSearchURL(album.album), {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            ...httpms.getAuthCredsHeader()
+          },
+        })
+        .then((response) => {
+            if (response.status !== 200) {
+                throw response;
+            }
+
+            return response.json();
+        })
+        .then((responseJson) => {
+            // !TODO: some validation checking
+            const albumSongs = responseJson.filter((item) => {
+                return item.album_id === album.albumID;
+            });
+
+            console.log("Album selected tracks", albumSongs);
+
+            dispatch(setPlaylist(albumSongs));
+            dispatch(setTrack(0));
+        })
+        .catch((error) => {
+            if (errorCallback !== null) {
+                errorCallback(error);
+            }
+        });
+
     };
 };
 

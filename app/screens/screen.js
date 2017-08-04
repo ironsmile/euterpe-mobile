@@ -40,7 +40,7 @@ class ScreenRenderer extends Component {
         return (
             <View style={[gs.bg, styles.container]}>
                 <StatusBar
-                    ref='status'
+                    ref="status"
                     translucent
                     animated={true}
                     barStyle={'light-content'}

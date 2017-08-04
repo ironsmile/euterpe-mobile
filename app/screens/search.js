@@ -9,9 +9,10 @@ import Header from './common/header';
 import { connect } from 'react-redux';
 import { SearchResults } from './search-results';
 import _ from 'lodash';
+import DropdownAlert from 'react-native-dropdownalert'
 
 import { HttpmsService } from '../common/httpms-service';
-import { RESULTS_FETCHED, START_SEARCH } from '../reducers/search';
+import { RESULTS_FETCHED, START_SEARCH, HIDE_ACTIVITY_INDICATOR } from '../reducers/search';
 
 class SearchRenderer extends React.Component {
 
@@ -25,11 +26,20 @@ class SearchRenderer extends React.Component {
     }
 
     componentDidMount() {
-        this.refs.searchBox.setNativeProps({value: this.props.search.query});
-        console.log(this.refs.searchBox);
+        //
     }
 
     handleSearchChange = _.debounce((text) => {
+
+        if (!this.props.settings.hostAddress) {
+            this.dropdown.alertWithType(
+                'error',
+                'No HTTPMS server selected',
+                'Go to "Library" and add an HTTPMS server for usage.'
+            );
+            return;
+        }
+
         const httpms = new HttpmsService(this.props.settings);
 
         this.props.dispatch({
@@ -45,15 +55,42 @@ class SearchRenderer extends React.Component {
             ...httpms.getAuthCredsHeader()
           },
         })
-        .then((response) => response.json())
+        .then((response) => {
+            if (response.status !== 200) {
+                throw response;
+            }
+            return response.json();
+        })
         .then((responseJson) => {
             // !TODO: some validation checking
             this.props.dispatch({
                 type: RESULTS_FETCHED,
                 results: responseJson,
             });
-        });        
+        })
+        .catch((error) => {
+            this.props.dispatch({
+                type: HIDE_ACTIVITY_INDICATOR,
+            });
+            this._onError(error);
+        });
     }, 500)
+
+    _onError(error) {
+        if (error.status === 401) {
+            this.dropdown.alertWithType(
+                'error',
+                'Wrong Username or Password',
+                'Wrong HTTPMS server username or password. Go to Library and correct them.'
+            );
+        } else {
+            this.dropdown.alertWithType(
+                'error',
+                'Unknown Error',
+                'Contacting the server failed. Try again later.'
+            );
+        }
+    }
 
     getSearchHeader() {
         return (
@@ -76,15 +113,26 @@ class SearchRenderer extends React.Component {
 
     render() {
         return (
-            <Screen
-                title='SEARCH'
-                navigation={this.props.navigation}
-                header={this.getSearchHeader()}
-            >
-                <View style={styles.container}>
-                    <SearchResults />
-                </View>
-            </Screen>
+            <View style={{height: '100%', width: '100%'}}>
+                <Screen
+                    title='SEARCH'
+                    navigation={this.props.navigation}
+                    header={this.getSearchHeader()}
+                >
+                    <View style={styles.container}>
+                        <SearchResults
+                            onNetworkError={this._onError.bind(this)}
+                        />
+                    </View>
+                </Screen>
+                <DropdownAlert
+                    ref={(ref) => this.dropdown = ref}
+                    onClose={(data) => {}}
+                    updateStatusBar={false}
+                    errorColor="#ea6d6d"
+                    closeInterval={30000}
+                />
+            </View>
         )
     }
 }
