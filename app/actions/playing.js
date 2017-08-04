@@ -43,11 +43,13 @@ export const togglePlaying = (play) => {
         }
 
         if (player !== null && statePlaying) {
-            const duration = player.getDuration() * 1000;
+            const duration = player.getDuration();
             const progressUpdate = 1000;
 
             _timer = setInterval(() => {
-                dispatch(increaseProgress(progressUpdate / duration));
+                player.getCurrentTime((seconds) => {
+                    dispatch(setProgress(seconds / duration));
+                });
             }, progressUpdate);
             player.play(playCallback(dispatch));
         }
