@@ -31,6 +31,34 @@ class TrackProgressRenderer extends React.Component {
     }
 }
 
+export class LoadingInProgress extends React.Component {
+    componentWillMount() {
+        this.renderProps = {
+            unfilledColor: '#3c3d41',
+            borderWidth: 0,
+            borderRadius: 0,
+            height: 2,
+            width: null,
+            color: 'white',
+            animated: true,
+            ...this.props,
+            style: [
+                styles.progress,
+                this.props.style,
+            ],
+        };
+    }
+
+    render() {
+        return (
+            <ProgressBar
+                {...this.renderProps}
+                indeterminate={true}
+            />
+        );
+    }
+}
+
 const styles = StyleSheet.create({
     progress: {
 

@@ -23,20 +23,29 @@ import {
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
 import MusicControl from 'react-native-music-control';
-import TrackProgress from '../../common/track-progress';
+import TrackProgress, { LoadingInProgress } from '../../common/track-progress';
 import Images from '@assets/images';
 
 class PlaylerRenderer extends React.Component {
 
     onPreviousSong() {
+        if (this.props.trackLoading) {
+            return;
+        }
         this.props.dispatch(previousSongInQueue());
     }
 
     onNextSong() {
+        if (this.props.trackLoading) {
+            return;
+        }
         this.props.dispatch(nextSongInQueue());
     }
 
     onTogglePlay(state) {
+        if (this.props.trackLoading) {
+            return;
+        }
         this.props.dispatch(togglePlaying(state));
     }
 
@@ -106,7 +115,13 @@ class PlaylerRenderer extends React.Component {
     }
 
     renderInfo() {
-        const { playing } = this.props;
+        const { playing, trackLoading } = this.props;
+
+        let progressBar = <TrackProgress style={styles.progress} />;
+
+        if (trackLoading) {
+            progressBar = <LoadingInProgress style={styles.progress} />;
+        }
 
         return (
             <View style={styles.infoContainer}>
@@ -128,15 +143,22 @@ class PlaylerRenderer extends React.Component {
                     </View>
                     <Icon name="ios-more" color="white" size={24}/>
                 </View>
-                <TrackProgress
-                    style={styles.progress}
-                />
+                {progressBar}
             </View>
         );
     }
 
     renderButtons() {
-        const play = this.props.paused;
+        const { paused, trackLoading } = this.props;
+
+        let iconColor = 'white';
+        let disabledStyle = {};
+        if (trackLoading) {
+            iconColor = '#cbccc9';
+            disabledStyle = {
+                borderColor: iconColor,
+            };
+        }
 
         return (
             <View style={styles.buttonContainer}>
@@ -144,17 +166,25 @@ class PlaylerRenderer extends React.Component {
                 <TouchableOpacity
                     onPress={this.onPreviousSong.bind(this)}
                 >
-                    <Icon name="ios-skip-backward" size={32} color="white" />
+                    <Icon name="ios-skip-backward" size={32} color={iconColor} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={this.onTogglePlay.bind(this)}
-                    style={[styles.playContainer, play ? { paddingLeft: 8 } : {}]}>
-                    <Icon name={play ? 'ios-play' : 'ios-pause'} style={styles.play}/>
+                    onPress={() => { this.onTogglePlay() }}
+                    style={[
+                        styles.playContainer,
+                        paused ? { paddingLeft: 8 } : {},
+                        disabledStyle,
+                    ]}>
+                    <Icon
+                        name={paused ? 'ios-play' : 'ios-pause'}
+                        style={styles.play}
+                        color={iconColor}
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={this.onNextSong.bind(this)}
                 >
-                    <Icon name="ios-skip-forward" size={32} color="white" />
+                    <Icon name="ios-skip-forward" size={32} color={iconColor} />
                 </TouchableOpacity>
                 <Icon name="ios-repeat" size={24} color="#c2beb3"/>
 
@@ -248,7 +278,6 @@ const styles = StyleSheet.create({
     },
 
     play: {
-        color: 'white',
         backgroundColor: 'transparent',
         margin: 16,
         fontSize: 48,
@@ -280,6 +309,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
     playing: state.playing.now,
     paused: state.playing.paused,
+    trackLoading: state.playing.trackLoading,
 });
 
 export default Player = connect(mapStateToProps)(PlaylerRenderer);

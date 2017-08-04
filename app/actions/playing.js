@@ -11,11 +11,7 @@ import {
     SELECT_TRACK,
 } from '../reducers/playing';
 
-import {
-    increaseProgress,
-    setProgress,
-} from '../actions/progress';
-
+import { setProgress, } from '../actions/progress';
 import { HttpmsService } from '../common/httpms-service';
 
 let player = null;
@@ -72,7 +68,7 @@ export const togglePlaying = (play) => {
             });
         }
 
-        return dispatch({
+        dispatch({
             type: TOGGLE_PLAYING,
             statePlaying,
         });
@@ -266,8 +262,6 @@ export const playAlbum = (album, errorCallback = null) => {
             const albumSongs = responseJson.filter((item) => {
                 return item.album_id === album.albumID;
             });
-
-            console.log("Album selected tracks", albumSongs);
 
             dispatch(setPlaylist(albumSongs));
             dispatch(setTrack(0));
