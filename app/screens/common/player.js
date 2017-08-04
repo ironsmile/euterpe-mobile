@@ -71,22 +71,20 @@ class PlaylerRenderer extends React.Component {
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => this.props.scrollDown()}>
                     <View style={styles.downArrow}>
-                        <Icon name='ios-arrow-down' color='white' size={24}/>
+                        <Icon name="ios-arrow-down" color="white" size={24}/>
                     </View>
                 </TouchableOpacity>
                 <Text style={styles.playing}>NOW PLAYING</Text>
-                <Icon name='ios-list' color='white' size={26}/>
+                <Icon name="ios-list" color="white" size={26}/>
             </View>
         );
     }
 
     renderCoverflow() {
-        const width = D.width * 3.2/5,
-            height = D.width * 3.2/5;
-
-        const playing = this.props.playing;
-
-        let covers = [];
+        const height = D.width * 3.2 / 5;
+        const width = D.width * 3.2 / 5;
+        const { playing } = this.props;
+        const covers = [];
 
         if (playing) {
             covers.push(Images.unknownAlbum);
@@ -94,9 +92,9 @@ class PlaylerRenderer extends React.Component {
 
         return (
             <ScrollView pagingEnabled={true} horizontal={true}>
-                {covers.map((coverImage, i) => (
+                {covers.map((coverImage, ind) => (
                     <CoverFlowItem
-                        key={i}
+                        key={ind}
                         page_width={D.width}
                         width={width}
                         height={height}
@@ -104,16 +102,16 @@ class PlaylerRenderer extends React.Component {
                     />
                 ))}
             </ScrollView>
-        )
+        );
     }
 
     renderInfo() {
-        const playing = this.props.playing;
+        const { playing } = this.props;
 
         return (
             <View style={styles.infoContainer}>
                 <View style={styles.titleContainer}>
-                    <Icon name='ios-add' color='white' size={24}/>
+                    <Icon name="ios-add" color="white" size={24}/>
                     <View style={styles.titleTextContainer}>
                         <Text
                             numberOfLines={1}
@@ -128,45 +126,47 @@ class PlaylerRenderer extends React.Component {
                             {playing.artist}
                         </Text>
                     </View>
-                    <Icon name='ios-more' color='white' size={24}/>
+                    <Icon name="ios-more" color="white" size={24}/>
                 </View>
                 <TrackProgress
                     style={styles.progress}
                 />
             </View>
-        )
+        );
     }
 
     renderButtons() {
         const play = this.props.paused;
+
         return (
             <View style={styles.buttonContainer}>
-                <Icon name='ios-shuffle' size={24} color='#c2beb3'/>
+                <Icon name="ios-shuffle" size={24} color="#c2beb3"/>
                 <TouchableOpacity
                     onPress={this.onPreviousSong.bind(this)}
                 >
-                    <Icon name='ios-skip-backward' size={32} color='white' />
+                    <Icon name="ios-skip-backward" size={32} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={this.onTogglePlay.bind(this)}
-                    style={[styles.playContainer, play ? {paddingLeft: 8} : {}]}>
+                    style={[styles.playContainer, play ? { paddingLeft: 8 } : {}]}>
                     <Icon name={play ? 'ios-play' : 'ios-pause'} style={styles.play}/>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={this.onNextSong.bind(this)}
                 >
-                    <Icon name='ios-skip-forward' size={32} color='white' />
+                    <Icon name="ios-skip-forward" size={32} color="white" />
                 </TouchableOpacity>
-                <Icon name='ios-repeat' size={24} color='#c2beb3'/>
+                <Icon name="ios-repeat" size={24} color="#c2beb3"/>
 
             </View>
-        )
+        );
     }
 
     render() {
         if (!this.props.playing) {
             return null;
         }
+
         return (
             <View style={styles.container}>
                 {this.renderHeader()}
@@ -174,7 +174,7 @@ class PlaylerRenderer extends React.Component {
                 {this.renderInfo()}
                 {this.renderButtons()}
             </View>
-        )
+        );
     }
 }
 
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
 
     play: {
         color: 'white',
-        backgroundColor:'transparent',
+        backgroundColor: 'transparent',
         margin: 16,
         fontSize: 48,
         fontWeight: '800'
