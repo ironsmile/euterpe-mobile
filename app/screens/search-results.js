@@ -16,41 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { FOOTER_HEIGHT } from './common/footer';
 import Images from '@assets/images';
 import D from './common/dimensions';
-
-class SearchResult extends React.Component {
-    render() {
-        return (
-            <TouchableOpacity
-                onPress={() => {
-                    this.props.onSelect();
-                }}
-                style={styles.resultContainer}
-            >
-                <Text
-                    style={styles.textTitle}
-                    numberOfLines={1}
-                >
-                    {this.props.song.title}
-                </Text>
-                <View style={styles.additional}>
-                    <Text
-                        style={styles.text}
-                        numberOfLines={1}
-                    >
-                        {this.props.song.artist},
-                    </Text>
-                    <Text> </Text>
-                    <Text
-                        style={styles.text}
-                        numberOfLines={1}
-                    >
-                        {this.props.song.album}
-                    </Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-}
+import { SongSmall } from '../common/song-small';
 
 class AlbumResult extends React.Component {
     render() {
@@ -60,14 +26,14 @@ class AlbumResult extends React.Component {
                     this.props.onSelect();
                 }}
             >
-                <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                <View style={styles.albumContainer}>
+                    <View style={styles.albumImageContainer}>
                         <Image
-                            style={{width: 40, height: 40, alignSelf: 'center'}}
+                            style={styles.albumImage}
                             source={Images.unknownAlbum}
                         />
                     </View>
-                    <View style={[styles.resultContainer, {paddingLeft: 10, width: D.width-50}]}>
+                    <View style={styles.resultContainer}>
                         <Text
                             numberOfLines={1}
                             style={styles.textTitle}
@@ -210,7 +176,7 @@ export class SearchResultsRenderer extends React.Component {
                         onSeeMorePress={() => {}}
                     >
                         {this.getFewSongs().map((item, index) => (
-                            <SearchResult
+                            <SongSmall
                                 key={index}
                                 song={item}
                                 onSelect={() => {
@@ -221,7 +187,7 @@ export class SearchResultsRenderer extends React.Component {
                         ))}
                     </ResultSection>
                 </ScrollView>
-                <View style={{height: FOOTER_HEIGHT}}/>
+                <View style={{ height: FOOTER_HEIGHT }} />
             </View>
         );
     }
@@ -236,12 +202,10 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     resultContainer: {
-        flexDirection: 'column',
+        paddingTop: 3,
         justifyContent: 'center',
-        paddingTop: 10,
-        paddingBottom: 10,
-        width: '100%',
-        height: 50,
+        paddingLeft: 10,
+        width: D.width - 50,
     },
     text: {
         fontSize: 12,
@@ -287,7 +251,23 @@ const styles = StyleSheet.create({
     resultSection: {
         marginTop: 10,
         marginBottom: 10,
-    }
+    },
+    albumContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        paddingTop: 2,
+        paddingBottom: 2,
+    },
+    albumImageContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    albumImage: {
+        width: 40,
+        height: 40,
+        alignSelf: 'center',
+    },
 });
 
 const mapStateToProps = (state) => ({

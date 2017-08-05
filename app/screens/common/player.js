@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     ScrollView,
     StyleSheet,
-
+    FlatList,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -27,6 +27,8 @@ import MusicControl from 'react-native-music-control';
 import TrackProgress, { LoadingInProgress } from '../../common/track-progress';
 import Images from '@assets/images';
 import { FOOTER_HEIGHT } from './footer';
+import { SongSmall } from '../../common/song-small';
+import { NowPlaying } from '../../common/now-playing-small';
 
 class PlaylerRenderer extends React.Component {
 
@@ -244,10 +246,38 @@ class PlaylerRenderer extends React.Component {
         );
     }
 
+    renderQueue() {
+        return (
+            <View style={styles.queueListsContainer}>
+                <Text style={styles.queueHeader}>Now Playing</Text>
+                <NowPlaying
+                    song={this.props.playing}
+                    style={{ marginBottom: 20 }}
+                />
+                <Text style={styles.queueHeader}>Play Queue</Text>
+                <FlatList
+                    data={this.props.playlist}
+                    renderItem={({ item, index }) => {
+                        return (
+                            <SongSmall
+                                song={item}
+                                onSelect={() => {
+                                    this.props.dispatch(setTrack(index));
+                                }}
+                            />
+                        );
+                    }}
+                    keyExtractor={(item, index) => item.id}
+                />
+            </View>
+        );
+    }
+
     renderQueueView() {
         return (
             <View style={styles.queueContainer}>
                 {this.renderHeader()}
+                {this.renderQueue()}
                 {this.renderButtons()}
             </View>
         );
@@ -367,6 +397,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 10,
         paddingRight: 10,
+    },
+
+    queueListsContainer: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        width: '100%',
+        height: D.height - 160,
+    },
+
+    queueHeader: {
+        color: 'white',
+        fontWeight: '900',
+        fontSize: 16,
+        marginBottom: 20,
     },
 });
 
