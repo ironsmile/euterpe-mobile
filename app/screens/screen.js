@@ -7,10 +7,9 @@ import {
 } from 'react-native';
 
 import Landing from './Landing';
-import Footer from './common/footer';
+import Footer, { TABBAR_HEIGHT } from './common/footer';
 import Header from './common/header';
 import { gs } from '../styles/global';
-import { TABBAR_HEIGHT } from './common/footer';
 import { connect } from 'react-redux';
 
 class ScreenRenderer extends Component {
@@ -20,22 +19,24 @@ class ScreenRenderer extends Component {
     }
 
     setFooterTransition() {
-        let { navigation } = this.props;
+        const { navigation } = this.props;
+
         if (!navigation.state.params || !navigation.state.params.translateY) {
             navigation.setParams({
                 translateY: new Animated.Value(0),
             });
-        }       
+        }
     }
 
     render() {
-        let { navigation, nowPlaying } = this.props;
-        let header = this.props.header;
+        const { navigation, nowPlaying } = this.props;
+        let { header } = this.props;
+
         if (!header) {
             header = <Header title={this.props.title} />;
         }
 
-        let footerHeight = (nowPlaying.now) ? TABBAR_HEIGHT : 0;
+        const footerHeight = nowPlaying.now ? TABBAR_HEIGHT : 0;
 
         return (
             <View style={[gs.bg, styles.container]}>
@@ -46,35 +47,35 @@ class ScreenRenderer extends Component {
                     barStyle={'light-content'}
                     backgroundColor="transparent"
                 />
-                <View style={[styles.children, {marginBottom: footerHeight}]}>
+                <View style={[styles.children, { marginBottom: footerHeight }]}>
                     {this.props.children}
                 </View>
                 {header}
-                <Footer ref='footer'
+                <Footer ref="footer"
                         hide={() => {
                             this.setFooterTransition();
                             Animated.timing(
                                 navigation.state.params.translateY,
-                                {toValue: TABBAR_HEIGHT}
+                                { toValue: TABBAR_HEIGHT }
                             ).start();
                         }}
                         show={() => {
                             this.setFooterTransition();
                             Animated.timing(
                                 navigation.state.params.translateY,
-                                {toValue: 0}
+                                { toValue: 0 }
                             ).start();
                         }}
                         hideTabBarNavigation={
-                            (v) => {
+                            (val) => {
                                 this.setFooterTransition();
-                                if (!v) {
+                                if (!val) {
                                     return;
                                 }
-                                v = Math.abs((v/10) - TABBAR_HEIGHT);
+                                const yVal = Math.abs((val / 10) - TABBAR_HEIGHT);
 
                                 if (navigation.state.params && navigation.state.params.translateY) {
-                                    navigation.state.params.translateY.setValue(v);
+                                    navigation.state.params.translateY.setValue(yVal);
                                 }
                             }
                         }
@@ -84,7 +85,7 @@ class ScreenRenderer extends Component {
     }
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
