@@ -149,45 +149,73 @@ class PlaylerRenderer extends React.Component {
     }
 
     renderButtons() {
-        const { paused, trackLoading } = this.props;
-        let iconColor = 'white';
-        let disabledStyle = {};
+        const { paused, trackLoading, playlist, currentIndex } = this.props;
+        const disabledColor = '#5a6060';
+        const iconColor = 'white';
+
+        let prevButton = (
+            <TouchableOpacity
+                onPress={this.onPreviousSong.bind(this)}
+            >
+                <Icon name="ios-skip-backward" size={32} color={iconColor} />
+            </TouchableOpacity>
+        );
+
+        if (currentIndex - 1 < 0 || !playlist[currentIndex - 1] || trackLoading) {
+            prevButton = <Icon name="ios-skip-backward" size={32} color={disabledColor} />;
+        }
+
+        let nextButton = (
+            <TouchableOpacity
+                onPress={this.onNextSong.bind(this)}
+            >
+                <Icon name="ios-skip-forward" size={32} color={iconColor} />
+            </TouchableOpacity>
+        );
+
+        if (!playlist[currentIndex + 1] || trackLoading) {
+            nextButton = <Icon name="ios-skip-forward" size={32} color={disabledColor} />;
+        }
+
+        let playButton = (
+            <TouchableOpacity
+                onPress={() => {
+                    this.onTogglePlay();
+                }}
+                style={[
+                    styles.playContainer,
+                    paused ? { paddingLeft: 8 } : {},
+                ]}>
+                <Icon
+                    name={paused ? 'ios-play' : 'ios-pause'}
+                    style={styles.play}
+                    color={iconColor}
+                />
+            </TouchableOpacity>
+        );
 
         if (trackLoading) {
-            iconColor = '#cbccc9';
-            disabledStyle = {
-                borderColor: iconColor,
-            };
+            playButton = (
+                <View style={[
+                    styles.playContainer,
+                    paused ? { paddingLeft: 8 } : {},
+                    { borderColor: disabledColor },
+                ]}>
+                    <Icon
+                        name={paused ? 'ios-play' : 'ios-pause'}
+                        style={styles.play}
+                        color={disabledColor}
+                    />
+                </View>
+            );
         }
 
         return (
             <View style={styles.buttonContainer}>
                 <Icon name="ios-shuffle" size={24} color="#c2beb3"/>
-                <TouchableOpacity
-                    onPress={this.onPreviousSong.bind(this)}
-                >
-                    <Icon name="ios-skip-backward" size={32} color={iconColor} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        this.onTogglePlay();
-                    }}
-                    style={[
-                        styles.playContainer,
-                        paused ? { paddingLeft: 8 } : {},
-                        disabledStyle,
-                    ]}>
-                    <Icon
-                        name={paused ? 'ios-play' : 'ios-pause'}
-                        style={styles.play}
-                        color={iconColor}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={this.onNextSong.bind(this)}
-                >
-                    <Icon name="ios-skip-forward" size={32} color={iconColor} />
-                </TouchableOpacity>
+                {prevButton}
+                {playButton}
+                {nextButton}
                 <Icon name="ios-repeat" size={24} color="#c2beb3"/>
 
             </View>
@@ -312,6 +340,8 @@ const mapStateToProps = (state) => ({
     playing: state.playing.now,
     paused: state.playing.paused,
     trackLoading: state.playing.trackLoading,
+    currentIndex: state.playing.currentIndex,
+    playlist: state.playing.playlist,
 });
 
 export default Player = connect(mapStateToProps)(PlaylerRenderer);
