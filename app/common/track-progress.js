@@ -12,7 +12,7 @@ class TrackProgressRenderer extends React.Component {
             height: 2,
             width: null,
             color: 'white',
-            animated: true,
+            animated: false,
             ...this.props,
             style: [
                 styles.progress,

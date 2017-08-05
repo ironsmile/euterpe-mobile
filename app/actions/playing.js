@@ -156,7 +156,7 @@ export const setTrack = (index) => {
 
         const track = state.playing.playlist[index];
 
-        if (!track) {
+        if (!track || !track.id) {
             // console.log("Track index out of range!", index);
             return;
         }
@@ -200,7 +200,7 @@ export const restorePlayingState = () => {
 
         const state = getState();
 
-        if (state.playing.now === null) {
+        if (!state.playing.now || !state.playing.now.id) {
             return;
         }
 
