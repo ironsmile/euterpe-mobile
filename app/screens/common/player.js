@@ -20,11 +20,13 @@ import {
     previousSongInQueue,
     nextSongInQueue,
 } from '../../actions/playing';
+import { togglePlayerViewState } from '../../actions/player';
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
 import MusicControl from 'react-native-music-control';
 import TrackProgress, { LoadingInProgress } from '../../common/track-progress';
 import Images from '@assets/images';
+import { FOOTER_HEIGHT } from './footer';
 
 class PlaylerRenderer extends React.Component {
 
@@ -75,16 +77,26 @@ class PlaylerRenderer extends React.Component {
         });
     }
 
+    toggleViewState() {
+        this.props.dispatch(togglePlayerViewState());
+    }
+
     renderHeader() {
+        const stateIcon = this.props.player.showQueue ? 'ios-list-box' : 'ios-list';
+
         return (
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => this.props.scrollDown()}>
-                    <View style={styles.downArrow}>
+                    <View style={styles.headerButton}>
                         <Icon name="ios-arrow-down" color="white" size={24}/>
                     </View>
                 </TouchableOpacity>
                 <Text style={styles.playing}>NOW PLAYING</Text>
-                <Icon name="ios-list" color="white" size={26}/>
+                <TouchableOpacity onPress={this.toggleViewState.bind(this)}>
+                    <View style={styles.headerButton}>
+                        <Icon name={stateIcon} color="white" size={26}/>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -217,16 +229,11 @@ class PlaylerRenderer extends React.Component {
                 {playButton}
                 {nextButton}
                 <Icon name="ios-repeat" size={24} color="#c2beb3"/>
-
             </View>
         );
     }
 
-    render() {
-        if (!this.props.playing) {
-            return null;
-        }
-
+    renderSongView() {
         return (
             <View style={styles.container}>
                 {this.renderHeader()}
@@ -236,14 +243,42 @@ class PlaylerRenderer extends React.Component {
             </View>
         );
     }
+
+    renderQueueView() {
+        return (
+            <View style={styles.queueContainer}>
+                {this.renderHeader()}
+                {this.renderButtons()}
+            </View>
+        );
+    }
+
+    render() {
+        if (!this.props.playing) {
+            return null;
+        }
+
+        if (this.props.player.showQueue) {
+            return this.renderQueueView();
+        }
+
+        return this.renderSongView();
+    }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingBottom: 48,
+        justifyContent: 'space-between',
     },
 
-    downArrow: {
+    queueContainer: {
+        flex: 1,
+        justifyContent: 'space-between',
+    },
+
+    headerButton: {
         width: 40,
         height: 36,
         alignItems: 'center',
@@ -252,7 +287,6 @@ const styles = StyleSheet.create({
     },
 
     header: {
-        paddingRight: 16,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
@@ -342,6 +376,7 @@ const mapStateToProps = (state) => ({
     trackLoading: state.playing.trackLoading,
     currentIndex: state.playing.currentIndex,
     playlist: state.playing.playlist,
+    player: state.player,
 });
 
 export default Player = connect(mapStateToProps)(PlaylerRenderer);

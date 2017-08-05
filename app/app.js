@@ -10,6 +10,7 @@ import TabBarBottom from './screens/common/TabBarBottom';
 import { TABBAR_HEIGHT } from './screens/common/footer';
 import { Loader } from './screens/common/loader';
 import { playingReducer } from './reducers/playing';
+import { playerReducer } from './reducers/player';
 import { progressReducer } from './reducers/progress';
 import { searchReducer } from './reducers/search';
 import { settingsReducer } from './reducers/settings';
@@ -65,6 +66,7 @@ const navReducer = (state = initialState, action) => {
 const appReducer = combineReducers({
     nav: navReducer,
     playing: playingReducer,
+    player: playerReducer,
     search: searchReducer,
     settings: settingsReducer,
     progress: progressReducer,

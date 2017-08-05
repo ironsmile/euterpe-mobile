@@ -337,7 +337,6 @@ const styles = StyleSheet.create({
     playing: {
         backgroundColor: 'rgba(0,0,0,.95)',
         height: D.height,
-        paddingBottom: FOOTER_HEIGHT,
     },
     firstView: {
         position: 'absolute',
