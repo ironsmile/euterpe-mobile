@@ -104,12 +104,9 @@ export const trackEnded = () => {
         const { currentIndex } = state.playing;
 
         cleanupProgressTimer();
+        dispatch(stopPlaying());
 
-        dispatch({
-            type: TRACK_ENDED,
-        });
-
-        if (!state.playing.playlist[currentIndex + 1]) {
+        if (currentIndex >= state.playing.playlist.length) {
             return;
         }
 
@@ -120,7 +117,7 @@ export const trackEnded = () => {
 export const previousSongInQueue = () => {
     return (dispatch, getState) => {
         const state = getState();
-        const currentIndex = state.playing.currentIndex;
+        const { currentIndex } = state.playing;
 
         dispatch({
             type: TRACK_ENDED,
@@ -311,7 +308,6 @@ const getHttpmsService = (getState) => {
 
 const playCallback = (dispatch) => {
     return (success) => {
-        dispatch(stopPlaying());
         MusicControl.resetNowPlaying();
         if (success) {
             dispatch(trackEnded());
