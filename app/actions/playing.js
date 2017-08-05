@@ -42,6 +42,8 @@ export const togglePlaying = (play) => {
             const duration = player.getDuration();
             const progressUpdate = 1000;
 
+            cleanupProgressTimer();
+
             _timer = setInterval(() => {
                 player.getCurrentTime((seconds) => {
                     dispatch(setProgress(seconds / duration));
@@ -51,10 +53,7 @@ export const togglePlaying = (play) => {
         }
 
         if (player !== null && !statePlaying) {
-            if (_timer !== null) {
-                clearInterval(_timer);
-                _timer = null;
-            }
+            cleanupProgressTimer();
             player.pause();
         }
 
@@ -70,16 +69,13 @@ export const togglePlaying = (play) => {
 
         dispatch({
             type: TOGGLE_PLAYING,
-            statePlaying,
+            play: statePlaying,
         });
     };
 };
 
 export const stopPlaying = () => {
-    if (_timer !== null) {
-        clearInterval(_timer);
-        _timer = null;
-    }
+    cleanupProgressTimer();
 
     if (player !== null) {
         player.stop();
@@ -105,7 +101,9 @@ export const trackIsLoading = () => ({
 export const trackEnded = () => {
     return (dispatch, getState) => {
         const state = getState();
-        const currentIndex = state.playing.currentIndex;
+        const { currentIndex } = state.playing;
+
+        cleanupProgressTimer();
 
         dispatch({
             type: TRACK_ENDED,
@@ -162,6 +160,8 @@ export const setTrack = (index) => {
         }
 
         MusicControl.resetNowPlaying();
+        setMuscControlNextPre(state.playing.playlist, index);
+
         dispatch(selectTrack(track, index));
         dispatch(setProgress(0));
 
@@ -188,7 +188,7 @@ export const setTrack = (index) => {
             player.play(playCallback(dispatch));
         });
 
-        return dispatch(trackIsLoading());
+        dispatch(trackIsLoading());
     };
 };
 
@@ -204,6 +204,7 @@ export const restorePlayingState = () => {
             return;
         }
 
+        setMuscControlNextPre(state.playing.playlist, state.playing.currentIndex);
         dispatch(togglePlaying(false));
 
         const track = state.playing.now;
@@ -227,9 +228,11 @@ export const restorePlayingState = () => {
               title: track.title,
               artist: track.artist,
               album: track.album,
-              state: MusicControl.STATE_PAUSED,
-              elapsedTime: duration * progress,
               duration,
+            });
+            MusicControl.updatePlayback({
+                state: MusicControl.STATE_PAUSED,
+                elapsedTime: duration * progress,
             });
             dispatch(trackLoaded());
         });
@@ -273,6 +276,27 @@ export const playAlbum = (album, errorCallback = null) => {
         });
 
     };
+};
+
+const setMuscControlNextPre = (playlist, index) => {
+    if (playlist[index + 1]) {
+        MusicControl.enableControl('nextTrack', true);
+    } else {
+        MusicControl.enableControl('nextTrack', false);
+    }
+
+    if (index - 1 >= 0 && playlist[index - 1]) {
+        MusicControl.enableControl('previousTrack', true);
+    } else {
+        MusicControl.enableControl('previousTrack', false);
+    }
+};
+
+const cleanupProgressTimer = () => {
+    if (_timer !== null) {
+        clearInterval(_timer);
+        _timer = null;
+    }
 };
 
 const getHttpmsService = (getState) => {

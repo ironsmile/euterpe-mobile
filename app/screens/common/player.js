@@ -150,9 +150,9 @@ class PlaylerRenderer extends React.Component {
 
     renderButtons() {
         const { paused, trackLoading } = this.props;
-
         let iconColor = 'white';
         let disabledStyle = {};
+
         if (trackLoading) {
             iconColor = '#cbccc9';
             disabledStyle = {
@@ -169,7 +169,9 @@ class PlaylerRenderer extends React.Component {
                     <Icon name="ios-skip-backward" size={32} color={iconColor} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => { this.onTogglePlay() }}
+                    onPress={() => {
+                        this.onTogglePlay();
+                    }}
                     style={[
                         styles.playContainer,
                         paused ? { paddingLeft: 8 } : {},
