@@ -13,6 +13,7 @@ import DropdownAlert from 'react-native-dropdownalert'
 
 import { HttpmsService } from '../common/httpms-service';
 import { RESULTS_FETCHED, START_SEARCH, HIDE_ACTIVITY_INDICATOR } from '../reducers/search';
+import { gs } from '../styles/global';
 
 class SearchRenderer extends React.Component {
 
@@ -131,6 +132,8 @@ class SearchRenderer extends React.Component {
                     updateStatusBar={false}
                     errorColor="#ea6d6d"
                     closeInterval={30000}
+                    titleStyle={gs.dropdownTitleStyle}
+                    imageStyle={gs.dropdownImageStyle}
                 />
             </View>
         )
