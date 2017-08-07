@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, AsyncStorage } from 'react-native';
+import { AppRegistry, AsyncStorage, Platform } from 'react-native';
 import { TabNavigator, addNavigationHelpers } from 'react-navigation';
 import { HomeScreen } from './screens/home';
 import { BrowseScreen } from './screens/browse';
@@ -149,6 +149,10 @@ class Root extends React.Component {
 
     render() {
         if (!this.state.rehydrated) {
+            if (Platform.OS === 'android') {
+                return null;
+            }
+
             return (<Loader />);
         }
 
