@@ -1,5 +1,5 @@
-
 import MusicControl from 'react-native-music-control';
+import CallDetectorManager from 'react-native-call-detection';
 const Sound = require('react-native-sound');
 
 import {
@@ -17,13 +17,14 @@ import { HttpmsService } from '../common/httpms-service';
 let player = null;
 let _httpms = null;
 let _timer = null;
+let _cdm = null; // call detection manager
 
 export const setPlaylist = (tracks) => ({
     type: SET_PLAYLIST,
     playlist: tracks,
 });
 
-export const togglePlaying = (play) => {
+export const togglePlaying = (play, fromCallManager = false) => {
 
     return (dispatch, getState) => {
         const state = getState();
@@ -54,6 +55,9 @@ export const togglePlaying = (play) => {
 
         if (player !== null && !statePlaying) {
             cleanupProgressTimer();
+            if (!fromCallManager) {
+                stopCallDetection();
+            }
             player.pause();
         }
 
@@ -307,6 +311,8 @@ const getHttpmsService = (getState) => {
 };
 
 const playCallback = (dispatch) => {
+    setUpCallDetection(dispatch);
+
     return (success) => {
         MusicControl.resetNowPlaying();
         if (success) {
@@ -315,4 +321,49 @@ const playCallback = (dispatch) => {
             // console.log('playback failed due to audio decoding errors');
         }
     };
+};
+
+const setUpCallDetection = (dispatch) => {
+    if (_cdm) {
+        // Call detection is already active
+        return;
+    }
+
+    _cdm = new CallDetectorManager((event) => {
+        // For iOS event will be either "Connected",
+        // "Disconnected","Dialing" and "Incoming"
+
+        // For Android event will be either "Offhook",
+        // "Disconnected" and "Incoming"
+
+        if (event === 'Disconnected') {
+            // Do something call got disconnected
+            dispatch(togglePlaying(true, true));
+        } else if (event === 'Connected') {
+            // Do something call got connected
+            // This clause will only be executed for iOS
+        } else if (event === 'Incoming') {
+            // Do something call got incoming
+            dispatch(togglePlaying(false, true));
+        } else if (event === 'Dialing') {
+            // Do something call got dialing
+            // This clause will only be executed for iOS
+            dispatch(togglePlaying(false, true));
+        } else if (event === 'Offhook') {
+            // Device call state: Off-hook. 
+            // At least one call exists that is dialing,
+            // active, or on hold, 
+            // and no calls are ringing or waiting.
+            // This clause will only be executed for Android
+            dispatch(togglePlaying(false, true));
+        }
+    });
+};
+
+const stopCallDetection = () => {
+    if (!_cdm) {
+        return;
+    }
+    _cdm.dispose();
+    _cdm = null;
 };
