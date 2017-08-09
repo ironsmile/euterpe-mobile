@@ -80,6 +80,7 @@ export const togglePlaying = (play, fromCallManager = false) => {
 
 export const stopPlaying = () => {
     cleanupProgressTimer();
+    stopCallDetection();
 
     if (player !== null) {
         player.stop();
