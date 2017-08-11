@@ -153,7 +153,7 @@ export const selectTrack = (track, index) => ({
     index,
 });
 
-export const setTrack = (index) => {
+export const setTrack = (index, errorHandler) => {
     return (dispatch, getState) => {
         dispatch(stopPlaying());
         const state = getState();
@@ -161,7 +161,10 @@ export const setTrack = (index) => {
         const track = state.playing.playlist[index];
 
         if (!track || !track.id) {
-            // console.log("Track index out of range!", index);
+            if (errorHandler) {
+                errorHandler(`Track index out of range: ${index}`);
+            }
+
             return;
         }
 
@@ -176,8 +179,12 @@ export const setTrack = (index) => {
 
         player = new Sound(trackURL, undefined, (error) => {
             if (error) {
-                // console.log('failed to load the sound', error);
-                return dispatch(stopPlaying());
+                if (errorHandler) {
+                    errorHandler(`failed to load the sound: ${error}`);
+                }
+                dispatch(stopPlaying());
+
+                return;
             }
 
             dispatch(trackLoaded());
