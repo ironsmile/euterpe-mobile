@@ -1,5 +1,6 @@
 import MusicControl from 'react-native-music-control';
 import CallDetectorManager from 'react-native-call-detection';
+import Wakeful from 'react-native-wakeful';
 const Sound = require('react-native-sound');
 
 import {
@@ -18,6 +19,7 @@ let player = null;
 let _httpms = null;
 let _timer = null;
 let _cdm = null; // call detection manager
+let _wakeful = new Wakeful();
 
 export const setPlaylist = (tracks) => ({
     type: SET_PLAYLIST,
@@ -56,6 +58,7 @@ export const togglePlaying = (play, fromCallManager = false) => {
         if (player !== null && !statePlaying) {
             cleanupProgressTimer();
             if (!fromCallManager) {
+                _wakeful.release();
                 stopCallDetection();
             }
             player.pause();
@@ -81,6 +84,7 @@ export const togglePlaying = (play, fromCallManager = false) => {
 export const stopPlaying = () => {
     cleanupProgressTimer();
     stopCallDetection();
+    _wakeful.release();
 
     if (player !== null) {
         player.stop();
@@ -313,6 +317,7 @@ const getHttpmsService = (getState) => {
 
 const playCallback = (dispatch) => {
     setUpCallDetection(dispatch);
+    _wakeful.acquire();
 
     return (success) => {
         MusicControl.resetNowPlaying();
