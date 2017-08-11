@@ -47,14 +47,19 @@ class SearchRenderer extends React.Component {
             query: text,
         });
 
-        fetch(httpms.getSearchURL(text), {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            ...httpms.getAuthCredsHeader()
-          },
-        })
+        Promise.race([
+            fetch(httpms.getSearchURL(text), {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                ...httpms.getAuthCredsHeader()
+              },
+            }),
+            new Promise(function (resolve, reject) {
+                setTimeout(() => reject(new Error('Request timed out')), 15000)
+            }),
+        ])
         .then((response) => {
             if (response.status !== 200) {
                 throw response;
@@ -82,6 +87,18 @@ class SearchRenderer extends React.Component {
                 'error',
                 'Wrong Username or Password',
                 'Wrong HTTPMS server username or password. Go to Library and correct them.'
+            );
+        } else if (typeof error === 'string') {
+            this.dropdown.alertWithType(
+                'error',
+                'Playback Error',
+                error
+            );
+        } else if (error.message) {
+            this.dropdown.alertWithType(
+                'error',
+                'Network Error',
+                error.message
             );
         } else {
             this.dropdown.alertWithType(

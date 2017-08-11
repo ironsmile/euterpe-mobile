@@ -181,7 +181,7 @@ export class SearchResultsRenderer extends React.Component {
                                 song={item}
                                 onSelect={() => {
                                     this.props.dispatch(setPlaylist([item]));
-                                    this.props.dispatch(setTrack(0));
+                                    this.props.dispatch(setTrack(0, this.props.onNetworkError));
                                 }}
                             />
                         ))}

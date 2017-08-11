@@ -106,7 +106,7 @@ export const trackIsLoading = () => ({
     status: true,
 });
 
-export const trackEnded = () => {
+export const trackEnded = (errorHandler) => {
     return (dispatch, getState) => {
         const state = getState();
         const { currentIndex } = state.playing;
@@ -120,7 +120,7 @@ export const trackEnded = () => {
             return;
         }
 
-        dispatch(setTrack(currentIndex + 1));
+        dispatch(setTrack(currentIndex + 1, errorHandler));
     };
 };
 
@@ -199,7 +199,7 @@ export const setTrack = (index, errorHandler) => {
             });
 
             // Loaded successfully
-            player.play(playCallback(dispatch));
+            player.play(playCallback(dispatch, errorHandler));
         });
 
         dispatch(trackIsLoading());
@@ -226,7 +226,7 @@ export const restorePlayingState = () => {
         const trackURL = httpms.getTrackURL(track.id);
         const { progress } = state;
 
-
+        dispatch(trackIsLoading());
         player = new Sound(trackURL, undefined, (error) => {
             if (error) {
                 // console.log('failed to load the sound', error);
@@ -250,8 +250,6 @@ export const restorePlayingState = () => {
             });
             dispatch(trackLoaded());
         });
-
-        dispatch(trackIsLoading());
     };
 };
 
@@ -330,7 +328,7 @@ const playCallback = (dispatch, errorHandler) => {
     return (success) => {
         MusicControl.resetNowPlaying();
         if (success) {
-            dispatch(trackEnded());
+            dispatch(trackEnded(errorHandler));
         } else {
             _wakeful.release();
             stopCallDetection();
