@@ -56,9 +56,9 @@ export const togglePlaying = (play, fromCallManager = false) => {
         }
 
         if (player !== null && !statePlaying) {
+            _wakeful.release();
             cleanupProgressTimer();
             if (!fromCallManager) {
-                _wakeful.release();
                 stopCallDetection();
             }
             player.pause();
@@ -84,7 +84,6 @@ export const togglePlaying = (play, fromCallManager = false) => {
 export const stopPlaying = () => {
     cleanupProgressTimer();
     stopCallDetection();
-    _wakeful.release();
 
     if (player !== null) {
         player.stop();
@@ -116,6 +115,8 @@ export const trackEnded = () => {
         dispatch(stopPlaying());
 
         if (currentIndex >= state.playing.playlist.length) {
+            _wakeful.release();
+
             return;
         }
 
@@ -322,7 +323,7 @@ const getHttpmsService = (getState) => {
     return _httpms;
 };
 
-const playCallback = (dispatch) => {
+const playCallback = (dispatch, errorHandler) => {
     setUpCallDetection(dispatch);
     _wakeful.acquire();
 
@@ -331,7 +332,11 @@ const playCallback = (dispatch) => {
         if (success) {
             dispatch(trackEnded());
         } else {
-            // console.log('playback failed due to audio decoding errors');
+            _wakeful.release();
+            stopCallDetection();
+            if (errorHandler) {
+                errorHandler('playback failed due to audio decoding errors');
+            }
         }
     };
 };
