@@ -75,14 +75,18 @@ const appReducer = combineReducers({
 const rehydratedReducer = (state = {}, action) => {
     switch (action.type) {
         case REHYDRATE:
-            var incoming = action.payload.myReducer
+            const incoming = action.payload.myReducer;
+
             if (incoming) {
-                return {...state, ...incoming}
+                return {
+                    ...state,
+                    ...incoming,
+                };
             }
         default:
             return appReducer(state, action);
     }
-}
+};
 
 const mapStateToProps = (state) => ({
     nav: state.nav
@@ -99,7 +103,7 @@ class App extends React.Component {
         />
     );
   }
-};
+}
 
 const AppWithNavigationState = connect(mapStateToProps)(App);
 
@@ -114,11 +118,11 @@ const store = createStore(
 );
 
 class Root extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            store: store,
             rehydrated: false,
+            store,
         };
 
         Sound.setCategory('Playback');
@@ -141,7 +145,7 @@ class Root extends React.Component {
                 debounce: 1000,
             },
             () => {
-                this.setState({rehydrated: true});
+                this.setState({ rehydrated: true });
                 store.dispatch(restorePlayingState());
             }
         );
