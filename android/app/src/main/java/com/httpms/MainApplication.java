@@ -3,6 +3,7 @@ package com.httpms;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.RNFetchBlob.RNFetchBlobPackage;
 import com.ironsmile.RNWakeful.RNWakefulPackage;
 import com.pritesh.calldetection.CallDetectionManager;
 import com.tanguyantoine.react.MusicControl;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFetchBlobPackage(),
             new RNWakefulPackage(),
             new CallDetectionManager(MainApplication.this),
             new MusicControl(),

@@ -15,21 +15,31 @@ import {
 import { setProgress, } from '../actions/progress';
 import { HttpmsService } from '../common/httpms-service';
 
+// The player instance which would be used in these action creators
 let player = null;
+
+// The cached httpms service object which would be used in these action creators
 let _httpms = null;
+
+// A setInterval timer for updating a track progress
 let _timer = null;
-let _cdm = null; // call detection manager
-let _wakeful = new Wakeful();
+
+// Call detection manager
+let _cdm = null;
+
+// Instance of the Wakeful class for keeping the CPU and WiFi awake during playback
+const _wakeful = new Wakeful();
 
 export const setPlaylist = (tracks) => ({
     type: SET_PLAYLIST,
     playlist: tracks,
 });
 
-export const togglePlaying = (play, fromCallManager = false) => {
+export const togglePlaying = (play, fromCallManager = false, errorHandler = undefined) => {
 
     return (dispatch, getState) => {
         const state = getState();
+        // console.log("state:", state);
 
         if (state.playing.trackLoading) {
             return;
@@ -52,11 +62,12 @@ export const togglePlaying = (play, fromCallManager = false) => {
                     dispatch(setProgress(seconds / duration));
                 });
             }, progressUpdate);
-            player.play(playCallback(dispatch));
+            // console.log(`Starting player playback with playCallback`);
+            player.play(playCallback(dispatch, errorHandler));
         }
 
         if (player !== null && !statePlaying) {
-            _wakeful.release();
+            releaseLocks();
             cleanupProgressTimer();
             if (!fromCallManager) {
                 stopCallDetection();
@@ -81,9 +92,16 @@ export const togglePlaying = (play, fromCallManager = false) => {
     };
 };
 
-export const stopPlaying = () => {
+// The `hardStop` arguments means this would be the end of the playback and all resources
+// should be released no matter what. On the other hand, when `hardStop` is false then
+// new playback is expected immediately after this call so not all resources may be relesed.
+export const stopPlaying = (hardStop = true) => {
     cleanupProgressTimer();
     stopCallDetection();
+
+    if (hardStop) {
+        releaseLocks();
+    }
 
     if (player !== null) {
         player.stop();
@@ -112,10 +130,10 @@ export const trackEnded = (errorHandler) => {
         const { currentIndex } = state.playing;
 
         cleanupProgressTimer();
-        dispatch(stopPlaying());
+        dispatch(stopPlaying(false));
 
         if (currentIndex >= state.playing.playlist.length) {
-            _wakeful.release();
+            releaseLocks();
 
             return;
         }
@@ -156,7 +174,7 @@ export const selectTrack = (track, index) => ({
 
 export const setTrack = (index, errorHandler) => {
     return (dispatch, getState) => {
-        dispatch(stopPlaying());
+        dispatch(stopPlaying(false));
         const state = getState();
 
         const track = state.playing.playlist[index];
@@ -176,37 +194,47 @@ export const setTrack = (index, errorHandler) => {
         dispatch(setProgress(0));
 
         const httpms = getHttpmsService(getState);
-        const trackURL = httpms.getTrackURL(track.id);
 
-        player = new Sound(trackURL, undefined, (error) => {
-            if (error) {
-                if (errorHandler) {
-                    errorHandler(`failed to load the sound: ${error}`);
-                }
-                dispatch(stopPlaying());
-
-                return;
-            }
-
-            dispatch(trackLoaded());
-            dispatch(togglePlaying(true));
-
-            MusicControl.setNowPlaying({
-              title: track.title,
-              artist: track.artist,
-              album: track.album,
-              duration: player.getDuration(),
-            });
-
-            // Loaded successfully
-            player.play(playCallback(dispatch, errorHandler));
-        });
-
+        // console.log(`Loading track ${track.id}`);
         dispatch(trackIsLoading());
+
+        httpms.downloadTrack(track).then((songPath) => {
+
+            player = new Sound(songPath, undefined, (error) => {
+                // console.log(`Loaded track ${track.id}`);
+                if (error) {
+                    if (errorHandler) {
+                        errorHandler(`failed to load the sound: ${error}`);
+                    }
+                    // console.log('Error loading track:', error);
+                    dispatch(stopPlaying());
+
+                    return;
+                }
+
+                // Loaded successfully
+                dispatch(trackLoaded());
+                // console.log(`Track loaded ${track.id}. Dispatching togglePlaying`);
+                dispatch(togglePlaying(true, false, errorHandler));
+
+                MusicControl.setNowPlaying({
+                  title: track.title,
+                  artist: track.artist,
+                  album: track.album,
+                  duration: player.getDuration(),
+                });
+            });
+        })
+        .catch((error) => {
+            dispatch(stopPlaying());
+            if (errorHandler) {
+                errorHandler(error);
+            }
+        });
     };
 };
 
-export const restorePlayingState = () => {
+export const restorePlayingState = (errorHandler) => {
     return (dispatch, getState) => {
         if (player !== null) {
             return;
@@ -223,32 +251,43 @@ export const restorePlayingState = () => {
 
         const track = state.playing.now;
         const httpms = getHttpmsService(getState);
-        const trackURL = httpms.getTrackURL(track.id);
         const { progress } = state;
 
         dispatch(trackIsLoading());
-        player = new Sound(trackURL, undefined, (error) => {
-            if (error) {
-                // console.log('failed to load the sound', error);
-                dispatch(stopPlaying());
 
-                return;
+        httpms.downloadTrack(track).then((songPath) => {
+
+            player = new Sound(songPath, undefined, (error) => {
+                if (error) {
+                    dispatch(stopPlaying());
+                    if (errorHandler) {
+                        errorHandler(error);
+                    }
+
+                    return;
+                }
+
+                const duration = player.getDuration();
+
+                player.setCurrentTime(duration * progress);
+                MusicControl.setNowPlaying({
+                  title: track.title,
+                  artist: track.artist,
+                  album: track.album,
+                  duration,
+                });
+                MusicControl.updatePlayback({
+                    state: MusicControl.STATE_PAUSED,
+                    elapsedTime: duration * progress,
+                });
+                dispatch(trackLoaded());
+            });
+        })
+        .catch((error) => {
+            dispatch(stopPlaying());
+            if (errorHandler) {
+                errorHandler(error);
             }
-
-            const duration = player.getDuration();
-
-            player.setCurrentTime(duration * progress);
-            MusicControl.setNowPlaying({
-              title: track.title,
-              artist: track.artist,
-              album: track.album,
-              duration,
-            });
-            MusicControl.updatePlayback({
-                state: MusicControl.STATE_PAUSED,
-                elapsedTime: duration * progress,
-            });
-            dispatch(trackLoaded());
         });
     };
 };
@@ -286,7 +325,6 @@ export const playAlbum = (album, errorCallback = null) => {
                 errorCallback(error);
             }
         });
-
     };
 };
 
@@ -323,14 +361,14 @@ const getHttpmsService = (getState) => {
 
 const playCallback = (dispatch, errorHandler) => {
     setUpCallDetection(dispatch);
-    _wakeful.acquire();
+    acquireLocks();
 
     return (success) => {
         MusicControl.resetNowPlaying();
         if (success) {
             dispatch(trackEnded(errorHandler));
         } else {
-            _wakeful.release();
+            releaseLocks();
             stopCallDetection();
             if (errorHandler) {
                 errorHandler('playback failed due to audio decoding errors');
@@ -382,4 +420,14 @@ const stopCallDetection = () => {
     }
     _cdm.dispose();
     _cdm = null;
+};
+
+const acquireLocks = () => {
+    // console.log('Wakeful lock acquired');
+    _wakeful.acquire();
+};
+
+const releaseLocks = () => {
+    // console.log('Wakeful lock released');
+    _wakeful.release();
 };
