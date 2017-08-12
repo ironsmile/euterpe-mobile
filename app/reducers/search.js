@@ -9,6 +9,13 @@ const initialState = {
 export const searchReducer = (state = initialState, action) => {
     switch (action.type) {
         case RESULTS_FETCHED:
+            return {
+                ...state,
+                results: action.results,
+                isSearching: false,
+            };
+
+        case START_SEARCH:
             let recentSearches = [
                 ...state.recentSearches,
                 action.query,
@@ -21,13 +28,6 @@ export const searchReducer = (state = initialState, action) => {
             return {
                 ...state,
                 recentSearches,
-                results: action.results,
-                isSearching: false,
-            };
-
-        case START_SEARCH:
-            return {
-                ...state,
                 isSearching: true,
                 query: action.query,
             };
