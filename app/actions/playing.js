@@ -12,7 +12,8 @@ import {
     SELECT_TRACK,
 } from '../reducers/playing';
 
-import { setProgress, } from '../actions/progress';
+import { setProgress } from '../actions/progress';
+import { downloadSong } from '../actions/library';
 import { HttpmsService } from '../common/httpms-service';
 
 // The player instance which would be used in these action creators
@@ -39,7 +40,6 @@ export const togglePlaying = (play, fromCallManager = false, errorHandler = unde
 
     return (dispatch, getState) => {
         const state = getState();
-        // console.log("state:", state);
 
         if (state.playing.trackLoading) {
             return;
@@ -198,7 +198,8 @@ export const setTrack = (index, errorHandler) => {
         // console.log(`Loading track ${track.id}`);
         dispatch(trackIsLoading());
 
-        httpms.downloadTrack(track).then((songPath) => {
+        dispatch(downloadSong(track, errorHandler)).then((songPath) => {
+            // console.log(`Track ${track.id} downloaded, creating player instance`);
 
             player = new Sound(songPath, undefined, (error) => {
                 // console.log(`Loaded track ${track.id}`);
@@ -226,6 +227,7 @@ export const setTrack = (index, errorHandler) => {
             });
         })
         .catch((error) => {
+            // console.log(`Error downloading song ${track.id}`, error);
             dispatch(stopPlaying());
             if (errorHandler) {
                 errorHandler(error);
@@ -255,7 +257,7 @@ export const restorePlayingState = (errorHandler) => {
 
         dispatch(trackIsLoading());
 
-        httpms.downloadTrack(track).then((songPath) => {
+        dispatch(downloadSong(track, errorHandler)).then((songPath) => {
 
             player = new Sound(songPath, undefined, (error) => {
                 if (error) {
@@ -318,7 +320,7 @@ export const playAlbum = (album, errorCallback = null) => {
             });
 
             dispatch(setPlaylist(albumSongs));
-            dispatch(setTrack(0));
+            dispatch(setTrack(0, errorCallback));
         })
         .catch((error) => {
             if (errorCallback !== null) {
@@ -368,11 +370,10 @@ const playCallback = (dispatch, errorHandler) => {
         if (success) {
             dispatch(trackEnded(errorHandler));
         } else {
-            releaseLocks();
-            stopCallDetection();
             if (errorHandler) {
                 errorHandler('playback failed due to audio decoding errors');
             }
+            dispatch(togglePlaying(false, false, errorHandler));
         }
     };
 };

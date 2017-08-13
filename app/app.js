@@ -14,6 +14,7 @@ import { playerReducer } from './reducers/player';
 import { progressReducer } from './reducers/progress';
 import { searchReducer } from './reducers/search';
 import { settingsReducer } from './reducers/settings';
+import { libraryReducer } from './reducers/library';
 
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
@@ -22,6 +23,7 @@ import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
 import MusicControl from 'react-native-music-control';
 import { restorePlayingState } from './actions/playing';
+import { restoreLibrary } from './actions/library';
 
 const Sound = require('react-native-sound');
 
@@ -71,6 +73,7 @@ const appReducer = combineReducers({
     search: searchReducer,
     settings: settingsReducer,
     progress: progressReducer,
+    library: libraryReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {
@@ -154,8 +157,9 @@ class Root extends React.Component {
                 debounce: 1000,
             },
             () => {
-                this.setState({ rehydrated: true });
                 store.dispatch(restorePlayingState());
+                this.setState({ rehydrated: true });
+                store.dispatch(restoreLibrary());
             }
         );
     }

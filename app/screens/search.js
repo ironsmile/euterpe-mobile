@@ -97,7 +97,7 @@ class SearchRenderer extends React.Component {
         } else if (error.message) {
             this.dropdown.alertWithType(
                 'error',
-                'Network Error',
+                'General Error',
                 error.message
             );
         } else {
