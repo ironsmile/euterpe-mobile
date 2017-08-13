@@ -29,6 +29,7 @@ const navOptions = {
     tabBarPosition: 'bottom',
     animationEnabled: false,
     tabBarComponent: TabBarBottom,
+    swipeEnabled: false,
     tabBarOptions: {
         activeTintColor: 'white',
         inactiveTintColor: '#bdbec2',
@@ -93,16 +94,24 @@ const mapStateToProps = (state) => ({
 });
 
 class App extends React.Component {
-  render() {
-    return (
-        <HttpmsApp
-            navigation={addNavigationHelpers({
-                dispatch: this.props.dispatch,
-                state: this.props.nav,
-            })}
-        />
-    );
-  }
+
+    componentWillMount() {
+        // Fix hidden nav bug with otuside of redux changes
+        for (let ind = 0; ind < this.props.nav.routes.length; ind += 1) {
+            this.props.nav.routes[ind].params.translateY = 0;
+        }
+    }
+
+    render() {
+        return (
+            <HttpmsApp
+                navigation={addNavigationHelpers({
+                    dispatch: this.props.dispatch,
+                    state: this.props.nav,
+                })}
+            />
+        );
+    }
 }
 
 const AppWithNavigationState = connect(mapStateToProps)(App);
