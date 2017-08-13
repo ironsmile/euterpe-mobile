@@ -101,7 +101,9 @@ class App extends React.Component {
     componentWillMount() {
         // Fix hidden nav bug with otuside of redux changes
         for (let ind = 0; ind < this.props.nav.routes.length; ind += 1) {
-            this.props.nav.routes[ind].params.translateY = 0;
+            if (this.props.nav.routes[ind].params) {
+                this.props.nav.routes[ind].params.translateY = 0;
+            }
         }
     }
 
