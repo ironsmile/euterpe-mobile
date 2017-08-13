@@ -29,6 +29,11 @@ export const searchReducer = (state = initialState, action) => {
                 ...state,
                 recentSearches,
                 isSearching: true,
+            };
+
+        case SET_SEARCH_QUERY:
+            return {
+                ...state,
                 query: action.query,
             };
 
@@ -46,3 +51,4 @@ export const searchReducer = (state = initialState, action) => {
 export const RESULTS_FETCHED = 'Search/ResultsFetched';
 export const START_SEARCH = 'Search/Start';
 export const HIDE_ACTIVITY_INDICATOR = 'Search/HideActivityIndicator';
+export const SET_SEARCH_QUERY = 'Search/SetQuery';

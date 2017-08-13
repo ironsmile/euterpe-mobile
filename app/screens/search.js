@@ -12,7 +12,12 @@ import _ from 'lodash';
 import DropdownAlert from 'react-native-dropdownalert'
 
 import { HttpmsService } from '../common/httpms-service';
-import { RESULTS_FETCHED, START_SEARCH, HIDE_ACTIVITY_INDICATOR } from '../reducers/search';
+import {
+    RESULTS_FETCHED,
+    START_SEARCH,
+    HIDE_ACTIVITY_INDICATOR,
+    SET_SEARCH_QUERY
+} from '../reducers/search';
 
 class SearchRenderer extends React.Component {
 
@@ -29,7 +34,15 @@ class SearchRenderer extends React.Component {
         //
     }
 
-    handleSearchChange = _.debounce((text) => {
+    handleSearchChange = (text) => {
+        this.props.dispatch({
+            type: SET_SEARCH_QUERY,
+            query: text,
+        });
+        this.searchForText(text);
+    }
+
+    searchForText = _.debounce((text) => {
 
         if (!this.props.settings.hostAddress) {
             this.dropdown.alertWithType(
@@ -119,7 +132,11 @@ class SearchRenderer extends React.Component {
                         returnKeyType="search"
                         autoCorrect={false}
                         autoCapitalize="none"
+                        value={this.props.search.query}
                         onChangeText={this.handleSearchChange}
+                        onSubmitEditing={() => {
+                            this.handleSearchChange(this.props.search.query);
+                        }}
                         underlineColorAndroid="rgba(0,0,0,0)"
                         ref="searchBox"
                     ></TextInput>
