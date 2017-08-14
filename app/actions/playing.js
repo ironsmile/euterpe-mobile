@@ -136,7 +136,7 @@ export const trackEnded = (errorHandler) => {
         cleanupProgressTimer();
         dispatch(stopPlaying(false));
 
-        if (currentIndex >= state.playing.playlist.length) {
+        if (currentIndex >= state.playing.playlist.length - 1) {
             releaseLocks();
 
             return;
