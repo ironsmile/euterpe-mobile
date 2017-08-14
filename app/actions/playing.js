@@ -125,9 +125,13 @@ export const trackIsLoading = () => ({
 });
 
 export const trackEnded = (errorHandler) => {
+    // console.log('Creating trackEnded action');
+
     return (dispatch, getState) => {
         const state = getState();
         const { currentIndex } = state.playing;
+
+        // console.log(`Executing trackEnded for track with index ${currentIndex}`);
 
         cleanupProgressTimer();
         dispatch(stopPlaying(false));
@@ -180,6 +184,7 @@ export const setTrack = (index, errorHandler) => {
         const track = state.playing.playlist[index];
 
         if (!track || !track.id) {
+            // console.log(`Track index out of range: ${index}`);
             if (errorHandler) {
                 errorHandler(`Track index out of range: ${index}`);
             }
@@ -366,10 +371,12 @@ const playCallback = (dispatch, errorHandler) => {
     acquireLocks();
 
     return (success) => {
+        // console.log('track playback ended');
         MusicControl.resetNowPlaying();
         if (success) {
             dispatch(trackEnded(errorHandler));
         } else {
+            // console.log('playback failed due to audio decoding errors');
             if (errorHandler) {
                 errorHandler('playback failed due to audio decoding errors');
             }

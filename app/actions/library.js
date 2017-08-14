@@ -11,6 +11,7 @@ let _httpms = null;
 let _downloading = null;
 
 export const downloadSong = (song, errorHandler) => {
+    // console.log(`downloadSong action creator filer for ${song.id}`);
     return async (dispatch, getState) => {
         const httpms = getHttpmsService(getState);
         const filePath = songFilePath(song.id);
@@ -25,6 +26,7 @@ export const downloadSong = (song, errorHandler) => {
         });
 
         if (fileExists) {
+            // console.log(`Song ${song.id} already saved on disk. Using it.`);
             dispatch(songUsed(song));
             return filePath;
         }
@@ -33,6 +35,7 @@ export const downloadSong = (song, errorHandler) => {
             _downloading.cancel();
         }
 
+        // console.log(`Starging song ${song.id} downloading with RNFetchBlob.`);
         _downloading = RNFetchBlob.config({
             path: filePath,
         }).fetch(
@@ -50,9 +53,11 @@ export const downloadSong = (song, errorHandler) => {
             if (errorHandler) {
                 errorHandler(error);
             }
+            // console.log(`Downloading ${song.id} failed`, error);
             throw error;
         })
 
+        // console.log(`Song ${song.id} downloaded to ${songRes.path()} and ready for use`);
         return songRes.path();
     }
 }
@@ -98,7 +103,7 @@ unlinkSong = (songID) => {
 
     RNFetchBlob.fs.unlink(filePath)
     .catch((error) => {
-        // console.log(`Error unlinking song ${songID}`, error);
+        console.log(`Error unlinking song ${songID}`, error);
     });
 }
 
@@ -110,10 +115,10 @@ export const restoreLibrary = () => {
     return (dispatch, getState) => {
         RNFetchBlob.fs.ls(RNFetchBlob.fs.dirs.DocumentDir)
             .then((files) => {
-                // console.log(getState().library, files);
+                console.log(getState().library, files);
             })
             .catch((error) => {
-                // console.log("Error restoring library", error);
+                console.log("Error restoring library", error);
             });
     }
 }
