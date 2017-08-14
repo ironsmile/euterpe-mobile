@@ -2,7 +2,15 @@
  * Created by ggoma on 12/23/16.
  */
 import React from 'react';
-import { Text, TextInput, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
+import {
+    Text,
+    TextInput,
+    StyleSheet,
+    View,
+    TouchableOpacity,
+    Platform,
+    Keyboard
+} from 'react-native';
 import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import Header from './common/header';
@@ -129,14 +137,12 @@ class SearchRenderer extends React.Component {
                     <TextInput
                         placeholder="Search"
                         style={styles.search}
-                        returnKeyType="search"
+                        returnKeyType="done"
                         autoCorrect={false}
                         autoCapitalize="none"
                         value={this.props.search.query}
                         onChangeText={this.handleSearchChange}
-                        onSubmitEditing={() => {
-                            this.handleSearchChange(this.props.search.query);
-                        }}
+                        onSubmitEditing={Keyboard.dismiss}
                         underlineColorAndroid="rgba(0,0,0,0)"
                         ref="searchBox"
                     ></TextInput>

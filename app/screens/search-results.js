@@ -148,7 +148,10 @@ export class SearchResultsRenderer extends React.Component {
 
         return (
             <View style={styles.container}>
-                <ScrollView>
+                <ScrollView
+                    keyboardShouldPersistTaps="always"
+                    keyboardDismissMode="on-drag"
+                >
                     <ResultSection
                         key={0}
                         title="Albums"
