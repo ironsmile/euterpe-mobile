@@ -279,6 +279,7 @@ class PlaylerRenderer extends React.Component {
                 <NowPlaying
                     song={this.props.playing}
                     style={{ marginBottom: 20 }}
+                    loading={this.props.trackLoading}
                 />
                 <Text style={styles.queueHeader}>Play Queue</Text>
                 <FlatList

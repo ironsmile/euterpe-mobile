@@ -5,20 +5,32 @@ import {
     Text,
     StyleSheet,
     Image,
+    ActivityIndicator,
 } from 'react-native';
 import Images from '@assets/images';
 import D from '../screens/common/dimensions';
 
 
 export class NowPlaying extends React.Component {
+
+    renderImageArea() {
+        if (this.props.loading) {
+            return <ActivityIndicator style={styles.image} />;
+        }
+
+        return (
+            <Image
+                style={styles.image}
+                source={Images.unknownAlbum}
+            />
+        );
+    }
+
     render() {
         return (
             <View style={[styles.container, this.props.style]}>
                 <View style={styles.imageContainer}>
-                    <Image
-                        style={styles.image}
-                        source={Images.unknownAlbum}
-                    />
+                    {this.renderImageArea()}
                 </View>
                 <View style={styles.textContainer}>
                     <Text
