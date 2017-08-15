@@ -26,7 +26,7 @@ import { togglePlayerViewState } from '../../actions/player';
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
 import MusicControl from 'react-native-music-control';
-import TrackProgress, { LoadingInProgress } from '../../common/track-progress';
+import { TimedProgress } from '../../common/track-progress';
 import Images from '@assets/images';
 import { FOOTER_HEIGHT } from './footer';
 import { NowPlaying } from '../../common/now-playing-small';
@@ -153,9 +153,8 @@ class PlaylerRenderer extends React.Component {
                     </View>
                     <Icon name="ios-more" color="white" size={24}/>
                 </View>
-                <TrackProgress
+                <TimedProgress
                     style={styles.progress}
-                    showTimes={true}
                     loading={trackLoading}
                 />
             </View>
@@ -402,8 +401,8 @@ const styles = StyleSheet.create({
     },
 
     progress: {
-        marginLeft: 16,
-        marginRight: 16,
+        marginLeft: 8,
+        marginRight: 8,
         marginBottom: 16,
     },
 

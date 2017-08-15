@@ -14,7 +14,7 @@ import {
     SELECT_TRACK,
 } from '../reducers/playing';
 
-import { setProgress } from '../actions/progress';
+import { setProgress, setDuration } from '../actions/progress';
 import { downloadSong } from '../actions/library';
 import { HttpmsService } from '../common/httpms-service';
 
@@ -129,10 +129,15 @@ export const trackLoaded = () => ({
     status: false,
 });
 
-export const trackIsLoading = () => ({
-    type: SET_IS_LOADING_STATUS,
-    status: true,
-});
+export const trackIsLoading = () => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_IS_LOADING_STATUS,
+            status: true,
+        });
+        dispatch(setDuration(null));
+    };
+};
 
 export const trackEnded = (errorHandler) => {
     // console.log('Creating trackEnded action');
@@ -245,16 +250,19 @@ export const setTrack = (index, errorHandler) => {
                     return;
                 }
 
+                const duration = player.getDuration();
+
                 // Loaded successfully
                 dispatch(trackLoaded());
                 // console.log(`Track loaded ${track.id}. Dispatching togglePlaying`);
                 dispatch(togglePlaying(true, false, errorHandler));
+                dispatch(setDuration(duration));
 
                 MusicControl.setNowPlaying({
                   title: track.title,
                   artist: track.artist,
                   album: track.album,
-                  duration: player.getDuration(),
+                  duration,
                 });
             });
         })
@@ -315,6 +323,7 @@ export const restorePlayingState = (errorHandler) => {
                     elapsedTime: duration * progress.value,
                 });
                 dispatch(trackLoaded());
+                dispatch(setDuration(duration));
             });
         })
         .catch((error) => {

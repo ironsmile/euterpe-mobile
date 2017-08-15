@@ -17,7 +17,7 @@ import Player from './player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { togglePlaying } from '../../actions/playing';
-import TrackProgress from '../../common/track-progress';
+import { TrackProgress } from '../../common/track-progress';
 
 export const FOOTER_HEIGHT = 48;
 export const TABBAR_HEIGHT = 56;
