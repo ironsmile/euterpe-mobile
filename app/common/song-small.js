@@ -21,6 +21,7 @@ export class SongSmall extends React.Component {
                     styles.container,
                     this.props.style,
                     this.props.highlighted ? styles.highlightedContainer : null,
+                    this.props.noLeftRightPadding ? styles.noLeftRightPadding : null,
                 ]}
             >
                 <Text
@@ -84,5 +85,9 @@ const styles = StyleSheet.create({
     },
     highlightedContainer: {
         backgroundColor: '#222327',
+    },
+    noLeftRightPadding: {
+        paddingLeft: 0,
+        paddingRight: 0,
     },
 });

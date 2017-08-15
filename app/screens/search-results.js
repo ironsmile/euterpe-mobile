@@ -186,6 +186,7 @@ export class SearchResultsRenderer extends React.Component {
                                     this.props.dispatch(setPlaylist([item]));
                                     this.props.dispatch(setTrack(0, this.props.onNetworkError));
                                 }}
+                                noLeftRightPadding={true}
                             />
                         ))}
                     </ResultSection>
