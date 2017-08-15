@@ -303,7 +303,7 @@ export const restorePlayingState = (errorHandler) => {
 
                 const duration = player.getDuration();
 
-                player.setCurrentTime(duration * progress);
+                player.setCurrentTime(duration * progress.value);
                 MusicControl.setNowPlaying({
                   title: track.title,
                   artist: track.artist,
@@ -312,7 +312,7 @@ export const restorePlayingState = (errorHandler) => {
                 });
                 MusicControl.updatePlayback({
                     state: MusicControl.STATE_PAUSED,
-                    elapsedTime: duration * progress,
+                    elapsedTime: duration * progress.value,
                 });
                 dispatch(trackLoaded());
             });
