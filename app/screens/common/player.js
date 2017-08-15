@@ -4,6 +4,7 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     ScrollView,
     StyleSheet,
     FlatList,
@@ -14,6 +15,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {
     setPlaylist,
     togglePlaying,
+    toggleShuffle,
+    toggleRepeat,
     setTrack,
     stopPlaying,
     trackLoaded,
@@ -164,6 +167,7 @@ class PlaylerRenderer extends React.Component {
 
     renderButtons() {
         const { paused, trackLoading, playlist, currentIndex } = this.props;
+        const inactiveColor = '#5a6060';
         const disabledColor = '#5a6060';
         const iconColor = 'white';
 
@@ -187,7 +191,7 @@ class PlaylerRenderer extends React.Component {
             </TouchableOpacity>
         );
 
-        if (!playlist[currentIndex + 1] || trackLoading) {
+        if ((!playlist[currentIndex + 1] && !this.props.shuffle && !this.props.repeat) || trackLoading) {
             nextButton = <Icon name="ios-skip-forward" size={32} color={disabledColor} />;
         }
 
@@ -226,11 +230,33 @@ class PlaylerRenderer extends React.Component {
 
         return (
             <View style={styles.buttonContainer}>
-                <Icon name="ios-shuffle" size={24} color="#c2beb3"/>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        this.props.dispatch(toggleShuffle());
+                    }}
+                >
+                    <View style={styles.repeatToggleContainer}>
+                        <Icon name="ios-shuffle" size={26}
+                            color={this.props.shuffle ? iconColor : inactiveColor}
+                            style={this.props.shuffle ? styles.repeatToggleActive : null}
+                        />
+                    </View>
+                </TouchableWithoutFeedback>
                 {prevButton}
                 {playButton}
                 {nextButton}
-                <Icon name="ios-repeat" size={24} color="#c2beb3"/>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        this.props.dispatch(toggleRepeat());
+                    }}
+                >
+                    <View style={styles.repeatToggleContainer}>
+                        <Icon name="ios-repeat" size={26}
+                            color={this.props.repeat ? iconColor : inactiveColor}
+                            style={this.props.repeat ? styles.repeatToggleActive : null}
+                        />
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
         );
     }
@@ -412,6 +438,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 20,
     },
+
+    repeatToggleContainer: {
+        height: 36,
+        width: 36,
+        // backgroundColor: 'blue',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    repeatToggleActive: {
+        fontWeight: '900',
+    }
 });
 
 const mapStateToProps = (state) => ({
@@ -420,6 +458,8 @@ const mapStateToProps = (state) => ({
     trackLoading: state.playing.trackLoading,
     currentIndex: state.playing.currentIndex,
     playlist: state.playing.playlist,
+    shuffle: state.playing.shuffle,
+    repeat: state.playing.repeat,
     player: state.player,
 });
 

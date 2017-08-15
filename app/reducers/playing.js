@@ -4,6 +4,8 @@ const initialState = {
     trackLoading: false,
     playlist: [],
     curretIndex: null,
+    shuffle: false,
+    repeat: false,
 };
 
 export const playingReducer = (state = initialState, action) => {
@@ -19,6 +21,18 @@ export const playingReducer = (state = initialState, action) => {
             return {
                 ...state,
                 paused: !state.paused,
+            };
+
+        case TOGGLE_SHUFFLE:
+            return {
+                ...state,
+                shuffle: !state.shuffle,
+            };
+
+        case TOGGLE_REPEAT:
+            return {
+                ...state,
+                repeat: !state.repeat,
             };
 
         case SET_PLAYLIST:
@@ -60,6 +74,8 @@ export const playingReducer = (state = initialState, action) => {
 };
 
 export const TOGGLE_PLAYING = 'Playing/TogglePlay';
+export const TOGGLE_SHUFFLE = 'Playing/ToggleShuffle';
+export const TOGGLE_REPEAT = 'Playing/ToggleRepeat';
 export const STOP = 'Playing/Stop';
 export const NEXT = 'Playing/Next';
 export const PREVIOUS = 'Playing/Previous';

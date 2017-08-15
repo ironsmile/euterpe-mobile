@@ -6,6 +6,8 @@ const Sound = require('react-native-sound');
 import {
     SET_PLAYLIST,
     TOGGLE_PLAYING,
+    TOGGLE_SHUFFLE,
+    TOGGLE_REPEAT,
     STOP,
     SET_IS_LOADING_STATUS,
     TRACK_ENDED,
@@ -92,6 +94,14 @@ export const togglePlaying = (play, fromCallManager = false, errorHandler = unde
     };
 };
 
+export const toggleShuffle = () => ({
+    type: TOGGLE_SHUFFLE,
+});
+
+export const toggleRepeat = () => ({
+    type: TOGGLE_REPEAT,
+});
+
 // The `hardStop` arguments means this would be the end of the playback and all resources
 // should be released no matter what. On the other hand, when `hardStop` is false then
 // new playback is expected immediately after this call so not all resources may be relesed.
@@ -136,8 +146,25 @@ export const trackEnded = (errorHandler) => {
         cleanupProgressTimer();
         dispatch(stopPlaying(false));
 
-        if (currentIndex >= state.playing.playlist.length - 1) {
-            releaseLocks();
+        const playlistLen = state.playing.playlist.length;
+
+        if (state.playing.shuffle && playlistLen > 1) {
+            let randomIndex = currentIndex;
+
+            while (randomIndex === currentIndex) {
+                randomIndex = parseInt(Math.random() * playlistLen, 10);
+            }
+            dispatch(setTrack(randomIndex, errorHandler));
+
+            return;
+        }
+
+        if (currentIndex >= playlistLen - 1) {
+            if (state.playing.repeat) {
+                dispatch(setTrack(0, errorHandler));
+            } else {
+                releaseLocks();
+            }
 
             return;
         }
