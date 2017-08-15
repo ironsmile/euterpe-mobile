@@ -133,12 +133,6 @@ class PlaylerRenderer extends React.Component {
     renderInfo() {
         const { playing, trackLoading } = this.props;
 
-        let progressBar = <TrackProgress style={styles.progress} />;
-
-        if (trackLoading) {
-            progressBar = <LoadingInProgress style={styles.progress} />;
-        }
-
         return (
             <View style={styles.infoContainer}>
                 <View style={styles.titleContainer}>
@@ -159,7 +153,11 @@ class PlaylerRenderer extends React.Component {
                     </View>
                     <Icon name="ios-more" color="white" size={24}/>
                 </View>
-                {progressBar}
+                <TrackProgress
+                    style={styles.progress}
+                    showTimes={true}
+                    loading={trackLoading}
+                />
             </View>
         );
     }
