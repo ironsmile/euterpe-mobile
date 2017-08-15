@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingTop: 5,
         paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     text: {
         fontSize: 12,
@@ -82,6 +84,5 @@ const styles = StyleSheet.create({
     },
     highlightedContainer: {
         backgroundColor: '#222327',
-        paddingLeft: 10,
     },
 });
