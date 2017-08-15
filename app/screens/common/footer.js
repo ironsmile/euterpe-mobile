@@ -43,6 +43,10 @@ class FooterRenderer extends Component {
         this.props.hideTabBarNavigation(value);
     }
 
+    panResponderEnabled() {
+        return !this.open || !this.props.playerQueueShown;
+    }
+
     componentWillMount() {
         let panMover = Animated.event([null,{
             dy : this.state.pan.y,
@@ -58,6 +62,9 @@ class FooterRenderer extends Component {
             },
 
             onPanResponderMove: (e, g) => {
+                if (!this.panResponderEnabled()) {
+                    return;
+                }
 
                 if(this.moving || (!this.open && g.dy > 0) || (this.open && g.dy < 0)) {
                     // console.log('shouldnt move!!');
@@ -85,6 +92,10 @@ class FooterRenderer extends Component {
                 return panMover(e,g);
             },
             onPanResponderRelease: (e, g) => {
+                if (!this.panResponderEnabled()) {
+                    return;
+                }
+
                 if(this.moving || (!this.open && g.dy > 0) || (this.open && g.dy < 0)) {
                     // console.log('shouldnt release');
                     return
@@ -412,6 +423,7 @@ const mapStateToProps = (state) => ({
     nowPlaying: state.playing.now,
     paused: state.playing.paused,
     trackLoading: state.playing.trackLoading,
+    playerQueueShown: state.player.showQueue,
 });
 
 export default Footer = connect(mapStateToProps)(FooterRenderer);
