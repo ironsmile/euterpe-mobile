@@ -49,6 +49,7 @@ class RecentSearchesRenderer extends React.PureComponent {
             <ScrollView
                 keyboardShouldPersistTaps="always"
                 keyboardDismissMode="on-drag"
+                showsVerticalScrollIndicator={false}
             >
                 {this.props.recentSearches.map((text, index) => (
                     <RecentSearch

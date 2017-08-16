@@ -116,7 +116,11 @@ class PlaylerRenderer extends React.Component {
         }
 
         return (
-            <ScrollView pagingEnabled={true} horizontal={true}>
+            <ScrollView
+                pagingEnabled={true}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+            >
                 {covers.map((coverImage, ind) => (
                     <CoverFlowItem
                         key={ind}

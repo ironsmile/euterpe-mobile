@@ -48,7 +48,9 @@ export default class Landing extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <ScrollView>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                >
                     {this.renderPlaylists()}
                 </ScrollView>
                 {/*for the gap*/}

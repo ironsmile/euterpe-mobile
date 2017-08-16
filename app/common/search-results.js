@@ -150,6 +150,7 @@ export class SearchResultsRenderer extends React.Component {
                 <ScrollView
                     keyboardShouldPersistTaps="always"
                     keyboardDismissMode="on-drag"
+                    showsVerticalScrollIndicator={false}
                 >
                     <ResultSection
                         key={0}

@@ -1,7 +1,7 @@
 /**
  * Created by ggoma on 12/22/16.
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     View,
     Text,
@@ -15,7 +15,8 @@ export default class PlayList extends Component {
 
 
     renderItems() {
-        const {circle} = this.props;
+        const { circle } = this.props;
+
         return this.props.items.map((a, i) => {
             return (
                 <PlaylistItem
@@ -25,23 +26,26 @@ export default class PlayList extends Component {
                     title={a.name}
                     key={i}
                 />
-            )
-        })
+            );
+        });
 
     }
     render() {
-        const {title} = this.props;
+        const { title } = this.props;
 
         return (
             <View style={styles.container}>
                 <View>
                     <Text style={styles.title}>{title}</Text>
-                    <ScrollView horizontal={true}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                    >
                         {this.renderItems()}
                     </ScrollView>
                 </View>
             </View>
-        )
+        );
     }
 }
 
