@@ -5,6 +5,8 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
+    TouchableWithoutFeedback,
+    Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -73,23 +75,25 @@ class RecentSearchesRenderer extends React.PureComponent {
 
     renderHelpfulScreen() {
         return (
-            <View style={styles.helpfulContainer}>
-                <Icon
-                    name="ios-search-outline"
-                    color="#aeafb3"
-                    size={128}
-                />
-                <Text style={styles.helpfulHeader} numberOfLines={1}>
-                    Search Your Music
-                </Text>
-                <Text style={styles.helpfulText}>
-                    Listen to your own songs, artists,
-                </Text>
-                <Text style={styles.helpfulText}>
-                    albums. Wherever you go they would follow.
-                </Text>
-                <View style={{ height: FOOTER_HEIGHT }} />
-            </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.helpfulContainer}>
+                    <Icon
+                        name="ios-search-outline"
+                        color="#aeafb3"
+                        size={128}
+                    />
+                    <Text style={styles.helpfulHeader} numberOfLines={1}>
+                        Search Your Music
+                    </Text>
+                    <Text style={styles.helpfulText}>
+                        Listen to your own songs, artists,
+                    </Text>
+                    <Text style={styles.helpfulText}>
+                        albums. Wherever you go they would follow.
+                    </Text>
+                    <View style={{ height: FOOTER_HEIGHT }} />
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 
