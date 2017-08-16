@@ -5,6 +5,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     StyleSheet,
     StatusBar,
     Platform,
@@ -259,21 +260,23 @@ class FooterRenderer extends Component {
                                 <Icon name='ios-arrow-up' color='#aeafb3' size={16}/>
                             </View>
                         </TouchableOpacity>
-                        <View style={styles.nowPlayingContainer}>
-                            <Text
-                                style={styles.title}
-                                numberOfLines={1}
-                            >
-                                {nowPlaying.title}
-                            </Text>
-                            <Text style={styles.albumDivider}>·</Text>
-                            <Text
-                                style={styles.author}
-                                numberOfLines={1}
-                            >
-                                {nowPlaying.artist}
-                            </Text>
-                        </View>
+                        <TouchableWithoutFeedback onPress={() => this.scrollUp()}>
+                            <View style={styles.nowPlayingContainer}>
+                                <Text
+                                    style={styles.title}
+                                    numberOfLines={1}
+                                >
+                                    {nowPlaying.title}
+                                </Text>
+                                <Text style={styles.albumDivider}>·</Text>
+                                <Text
+                                    style={styles.author}
+                                    numberOfLines={1}
+                                >
+                                    {nowPlaying.artist}
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
                         {this.renderControlButton()}
                     </View>
                 </View>
