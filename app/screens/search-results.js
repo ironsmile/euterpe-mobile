@@ -165,7 +165,7 @@ export class SearchResultsRenderer extends React.Component {
                                 onSelect={() => {
                                     this.props.dispatch(playAlbum(
                                         item,
-                                        this.props.onNetworkError
+                                        this.props.onError
                                     ));
                                 }}
                             />
@@ -184,7 +184,7 @@ export class SearchResultsRenderer extends React.Component {
                                 song={item}
                                 onSelect={() => {
                                     this.props.dispatch(setPlaylist([item]));
-                                    this.props.dispatch(setTrack(0, this.props.onNetworkError));
+                                    this.props.dispatch(setTrack(0, this.props.onError));
                                 }}
                                 noLeftRightPadding={true}
                             />

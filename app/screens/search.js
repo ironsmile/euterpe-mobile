@@ -161,7 +161,7 @@ class SearchRenderer extends React.Component {
                 >
                     <View style={styles.container}>
                         <SearchResults
-                            onNetworkError={this._onError.bind(this)}
+                            onError={this._onError.bind(this)}
                         />
                     </View>
                 </Screen>
