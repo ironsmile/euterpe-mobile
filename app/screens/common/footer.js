@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { togglePlaying } from '../../actions/playing';
 import { TrackProgress } from '../../common/track-progress';
+import { PlatformIcon } from '../../common/platform-icon';
 
 export const FOOTER_HEIGHT = 48;
 export const TABBAR_HEIGHT = 56;
@@ -299,8 +300,8 @@ class FooterRenderer extends Component {
             }}>
                 <View style={styles.pauseButton}>
                     <View style={styles.pause}>
-                        <Icon
-                            name={this.props.paused ? 'ios-play': 'ios-pause'}
+                        <PlatformIcon
+                            platform={this.props.paused ? 'play': 'pause'}
                             color='white'
                             size={16}
                         />

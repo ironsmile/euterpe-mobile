@@ -9,7 +9,7 @@ import {
     Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { PlatformIcon } from './platform-icon';
 import { gs } from '../styles/global';
 import { FOOTER_HEIGHT } from '../screens/common/footer';
 
@@ -33,9 +33,9 @@ class RecentSearch extends React.PureComponent {
                     <Text numberOfLines={1} style={gs.font}>
                         {this.props.text}
                     </Text>
-                    <Icon
+                    <PlatformIcon
                         style={styles.rotatedIcon}
-                        name="ios-arrow-round-up"
+                        platform="arrow-round-up"
                         color="#aeafb3"
                         size={24}
                     />
@@ -77,8 +77,9 @@ class RecentSearchesRenderer extends React.PureComponent {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.helpfulContainer}>
-                    <Icon
-                        name="ios-search-outline"
+                    <PlatformIcon
+                        ios="ios-search-outline"
+                        md="md-search"
                         color="#aeafb3"
                         size={128}
                     />

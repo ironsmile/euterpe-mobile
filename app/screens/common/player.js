@@ -31,6 +31,7 @@ import Images from '@assets/images';
 import { FOOTER_HEIGHT } from './footer';
 import { NowPlaying } from '../../common/now-playing-small';
 import { PlayQueue } from '../../common/play-queue';
+import { PlatformIcon } from '../../common/platform-icon';
 
 class PlaylerRenderer extends React.Component {
 
@@ -155,7 +156,12 @@ class PlaylerRenderer extends React.Component {
                             {playing.artist}
                         </Text>
                     </View>
-                    <Icon name="ios-more" color="white" size={24}/>
+                    <PlatformIcon
+                        ios="ios-share-outline"
+                        md="md-share"
+                        color="white"
+                        size={24}
+                    />
                 </View>
                 <TimedProgress
                     style={styles.progress}
@@ -175,24 +181,24 @@ class PlaylerRenderer extends React.Component {
             <TouchableOpacity
                 onPress={this.onPreviousSong.bind(this)}
             >
-                <Icon name="ios-skip-backward" size={32} color={iconColor} />
+                <PlatformIcon platform="skip-backward" size={32} color={iconColor} />
             </TouchableOpacity>
         );
 
         if (currentIndex - 1 < 0 || !playlist[currentIndex - 1] || trackLoading) {
-            prevButton = <Icon name="ios-skip-backward" size={32} color={disabledColor} />;
+            prevButton = <PlatformIcon platform="skip-backward" size={32} color={disabledColor} />;
         }
 
         let nextButton = (
             <TouchableOpacity
                 onPress={this.onNextSong.bind(this)}
             >
-                <Icon name="ios-skip-forward" size={32} color={iconColor} />
+                <PlatformIcon platform="skip-forward" size={32} color={iconColor} />
             </TouchableOpacity>
         );
 
         if ((!playlist[currentIndex + 1] && !this.props.shuffle && !this.props.repeat) || trackLoading) {
-            nextButton = <Icon name="ios-skip-forward" size={32} color={disabledColor} />;
+            nextButton = <PlatformIcon platform="skip-forward" size={32} color={disabledColor} />;
         }
 
         let playButton = (
@@ -204,8 +210,8 @@ class PlaylerRenderer extends React.Component {
                     styles.playContainer,
                     paused ? { paddingLeft: 8 } : {},
                 ]}>
-                <Icon
-                    name={paused ? 'ios-play' : 'ios-pause'}
+                <PlatformIcon
+                    platform={paused ? 'play' : 'pause'}
                     style={styles.play}
                     color={iconColor}
                 />
@@ -219,8 +225,8 @@ class PlaylerRenderer extends React.Component {
                     paused ? { paddingLeft: 8 } : {},
                     { borderColor: disabledColor },
                 ]}>
-                    <Icon
-                        name={paused ? 'ios-play' : 'ios-pause'}
+                    <PlatformIcon
+                        name={paused ? 'play' : 'pause'}
                         style={styles.play}
                         color={disabledColor}
                     />
@@ -236,7 +242,7 @@ class PlaylerRenderer extends React.Component {
                     }}
                 >
                     <View style={styles.repeatToggleContainer}>
-                        <Icon name="ios-shuffle" size={26}
+                        <PlatformIcon platform="shuffle" size={26}
                             color={this.props.shuffle ? iconColor : inactiveColor}
                             style={this.props.shuffle ? styles.repeatToggleActive : null}
                         />
@@ -251,7 +257,7 @@ class PlaylerRenderer extends React.Component {
                     }}
                 >
                     <View style={styles.repeatToggleContainer}>
-                        <Icon name="ios-repeat" size={26}
+                        <PlatformIcon platform="repeat" size={26}
                             color={this.props.repeat ? iconColor : inactiveColor}
                             style={this.props.repeat ? styles.repeatToggleActive : null}
                         />
