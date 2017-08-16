@@ -7,6 +7,7 @@ import {
     TouchableWithoutFeedback,
     ScrollView,
     StyleSheet,
+    Share,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -32,6 +33,7 @@ import { FOOTER_HEIGHT } from './footer';
 import { NowPlaying } from '../../common/now-playing-small';
 import { PlayQueue } from '../../common/play-queue';
 import { PlatformIcon } from '../../common/platform-icon';
+import { HttpmsService } from '../../common/httpms-service';
 
 class PlaylerRenderer extends React.Component {
 
@@ -156,12 +158,26 @@ class PlaylerRenderer extends React.Component {
                             {playing.artist}
                         </Text>
                     </View>
-                    <PlatformIcon
-                        ios="ios-share-outline"
-                        md="md-share"
-                        color="white"
-                        size={24}
-                    />
+                    <TouchableOpacity
+                        onPress={() => {
+                            const httpms = new HttpmsService(this.props.settings);
+
+                            Share.share({
+                                message: httpms.getShareURL(playing),
+                                title: 'Share this song',
+                            }).catch((error) => {
+                                // ignored
+                                console.log(`Error happened while sharing: ${error}`);
+                            });
+                        }}
+                    >
+                        <PlatformIcon
+                            ios="ios-share-outline"
+                            md="md-share"
+                            color="white"
+                            size={24}
+                        />
+                    </TouchableOpacity>
                 </View>
                 <TimedProgress
                     style={styles.progress}
@@ -465,6 +481,7 @@ const mapStateToProps = (state) => ({
     shuffle: state.playing.shuffle,
     repeat: state.playing.repeat,
     player: state.player,
+    settings: state.settings,
 });
 
 export default Player = connect(mapStateToProps)(PlaylerRenderer);

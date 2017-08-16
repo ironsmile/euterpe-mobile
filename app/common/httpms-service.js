@@ -25,4 +25,10 @@ export class HttpmsService {
     getSongURL(songID) {
         return `${this.settings.hostAddress}/file/${songID}`;
     }
+
+    getShareURL(song) {
+        const e = encodeURIComponent;
+
+        return `${this.settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(song.album_id)}&at=${e(song.artist)}`;
+    }
 }
