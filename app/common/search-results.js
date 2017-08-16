@@ -2,7 +2,6 @@ import React from 'react';
 import {
     View,
     Text,
-    FlatList,
     StyleSheet,
     TouchableOpacity,
     Platform,
@@ -13,10 +12,10 @@ import {
 import { connect } from 'react-redux';
 import { setPlaylist, setTrack, playAlbum } from '../actions/playing';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { FOOTER_HEIGHT } from './common/footer';
+import { FOOTER_HEIGHT } from '../screens/common/footer';
 import Images from '@assets/images';
-import D from './common/dimensions';
-import { SongSmall } from '../common/song-small';
+import D from '../screens/common/dimensions';
+import { SongSmall } from './song-small';
 
 class AlbumResult extends React.Component {
     render() {

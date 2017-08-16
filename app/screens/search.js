@@ -15,17 +15,21 @@ import { Screen } from './screen';
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import Header from './common/header';
 import { connect } from 'react-redux';
-import { SearchResults } from './search-results';
+import { SearchResults } from '../common/search-results';
+import { RecentSearches } from '../common/recent-searches';
 import _ from 'lodash';
 import DropdownAlert from 'react-native-dropdownalert'
 
 import { HttpmsService } from '../common/httpms-service';
 import {
-    RESULTS_FETCHED,
-    START_SEARCH,
-    HIDE_ACTIVITY_INDICATOR,
-    SET_SEARCH_QUERY
-} from '../reducers/search';
+    setSearchQuery,
+    resultsFetched,
+    startSearch,
+    hideActivityIndicator,
+    showActivityIndicator,
+    clearRecentSearches,
+    clearSearchResults,
+} from '../actions/search';
 
 class SearchRenderer extends React.Component {
 
@@ -43,14 +47,19 @@ class SearchRenderer extends React.Component {
     }
 
     handleSearchChange = (text) => {
-        this.props.dispatch({
-            type: SET_SEARCH_QUERY,
-            query: text,
-        });
+        this.props.dispatch(setSearchQuery(text));
         this.searchForText(text);
     }
 
     searchForText = _.debounce((text) => {
+        if (text.length === 0) {
+            this.props.dispatch(clearSearchResults());
+            return;
+        }
+
+        if (text.length <= 2) {
+            return;
+        }
 
         if (!this.props.settings.hostAddress) {
             this.dropdown.alertWithType(
@@ -63,10 +72,7 @@ class SearchRenderer extends React.Component {
 
         const httpms = new HttpmsService(this.props.settings);
 
-        this.props.dispatch({
-            type: START_SEARCH,
-            query: text,
-        });
+        this.props.dispatch(startSearch(text));
 
         Promise.race([
             fetch(httpms.getSearchURL(text), {
@@ -89,15 +95,10 @@ class SearchRenderer extends React.Component {
         })
         .then((responseJson) => {
             // !TODO: some validation checking
-            this.props.dispatch({
-                type: RESULTS_FETCHED,
-                results: responseJson,
-            });
+            this.props.dispatch(resultsFetched(responseJson));
         })
         .catch((error) => {
-            this.props.dispatch({
-                type: HIDE_ACTIVITY_INDICATOR,
-            });
+            this.props.dispatch(hideActivityIndicator());
             this._onError(error);
         });
     }, 500)
@@ -131,6 +132,22 @@ class SearchRenderer extends React.Component {
     }
 
     getSearchHeader() {
+        let cancelButton = null;
+
+        if (this.props.search.query) {
+            cancelButton = (
+                <TouchableOpacity
+                    onPress={() =>{
+                        this.handleSearchChange("");
+                    }}
+                >
+                    <View style={styles.cancelButton}>
+                        <Text style={styles.cancelButtonText}>Cancel</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        }
+
         return (
             <Header style={styles.header}>
                 <View style={styles.searchContainer}>
@@ -145,9 +162,36 @@ class SearchRenderer extends React.Component {
                         onSubmitEditing={Keyboard.dismiss}
                         underlineColorAndroid="rgba(0,0,0,0)"
                         keyboardAppearance="dark"
+                        ref={(ref) => {
+                            this.searchInput = ref;
+                        }}
                     ></TextInput>
+                    {cancelButton}
                 </View>
             </Header>
+        );
+    }
+
+    getSearchBody() {
+        if (this.props.search.showResults && this.props.search.query) {
+            return (
+                <SearchResults
+                    onError={this._onError.bind(this)}
+                />
+            );
+        }
+
+        return (
+            <RecentSearches
+                searchClicked={(text) => {
+                    this.props.dispatch(showActivityIndicator());
+                    this.handleSearchChange(text);
+                    this.searchInput.focus();
+                }}
+                onClearSearchesPress={() => {
+                    this.props.dispatch(clearRecentSearches());
+                }}
+            />
         );
     }
 
@@ -160,9 +204,7 @@ class SearchRenderer extends React.Component {
                     header={this.getSearchHeader()}
                 >
                     <View style={styles.container}>
-                        <SearchResults
-                            onError={this._onError.bind(this)}
-                        />
+                        {this.getSearchBody()}
                     </View>
                 </Screen>
                 <DropdownAlert
@@ -183,15 +225,18 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         marginBottom: 8,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     search: {
         backgroundColor: 'white',
         borderRadius: 6,
-        width: '100%',
         paddingTop: 6,
         paddingBottom: 6,
         paddingLeft: 10,
         paddingRight: 10,
+        flex: 1,
     },
     header: {
         height: (Platform.OS == 'ios') ? 66 : 74,
@@ -200,6 +245,17 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         paddingTop: (Platform.OS == 'ios') ? 66 : 74,
+    },
+    cancelButtonText: {
+        color: 'white',
+        fontSize: 12,
+    },
+    cancelButton: {
+        height: 24,
+        paddingLeft: 10,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center',
     }
 });
 
