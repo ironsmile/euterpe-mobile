@@ -144,7 +144,7 @@ class SearchRenderer extends React.Component {
                         onChangeText={this.handleSearchChange}
                         onSubmitEditing={Keyboard.dismiss}
                         underlineColorAndroid="rgba(0,0,0,0)"
-                        ref="searchBox"
+                        keyboardAppearance="dark"
                     ></TextInput>
                 </View>
             </Header>
