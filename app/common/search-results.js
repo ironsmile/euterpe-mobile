@@ -90,41 +90,6 @@ class ResultSection extends React.Component {
 }
 
 export class SearchResultsRenderer extends React.Component {
-
-    getFewAlbums() {
-        // !TODO: move this to the getResults reducer
-        let albums = {};
-        let albumArray = [];
-        let albumsLen = 0;
-
-        this.props.search.results.forEach((song) => {
-            if (albumsLen >= 5) {
-                return;
-            }
-
-            if (albums[song.album_id]) {
-                return;
-            }
-
-            albums[song.album_id] = true;
-
-            albumArray.push({
-                album: song.album,
-                artist: song.artist,
-                albumID: song.album_id,
-            });
-
-            albumsLen += 1;
-        });
-
-        return albumArray;
-    }
-
-    getFewSongs() {
-        // !TODO: move this to the getResults reducer
-        return this.props.search.results.slice(0, 5);
-    }
-
     render() {
 
         if (this.props.search.isSearching) {
@@ -158,7 +123,7 @@ export class SearchResultsRenderer extends React.Component {
                         seeMoreText="See all albums"
                         onSeeMorePress={() => {}}
                     >
-                        {this.getFewAlbums().map((item, index) => (
+                        {this.props.search.topAlbums.map((item, index) => (
                             <AlbumResult
                                 key={index}
                                 album={item}
@@ -178,7 +143,7 @@ export class SearchResultsRenderer extends React.Component {
                         seeMoreText="See all songs"
                         onSeeMorePress={() => {}}
                     >
-                        {this.getFewSongs().map((item, index) => (
+                        {this.props.search.topSongs.map((item, index) => (
                             <SongSmall
                                 key={index}
                                 song={item}

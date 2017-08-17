@@ -5,14 +5,42 @@ const initialState = {
     isSearching: false,
     showResults: false,
     query: null,
+    topAlbums: [],
+    topSongs: [],
 };
 
 export const searchReducer = (state = initialState, action) => {
     switch (action.type) {
         case RESULTS_FETCHED:
+            const albums = {};
+            const albumArray = [];
+            let albumsLen = 0;
+
+            action.results.forEach((song) => {
+                if (albumsLen >= 5) {
+                    return;
+                }
+
+                if (albums[song.album_id]) {
+                    return;
+                }
+
+                albums[song.album_id] = true;
+
+                albumArray.push({
+                    album: song.album,
+                    artist: song.artist,
+                    albumID: song.album_id,
+                });
+
+                albumsLen += 1;
+            });
+
             return {
                 ...state,
                 results: action.results,
+                topSongs: action.results.slice(0, 5),
+                topAlbums: albumArray,
                 isSearching: false,
                 showResults: true,
             };
