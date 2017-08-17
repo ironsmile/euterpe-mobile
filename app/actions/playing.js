@@ -390,6 +390,16 @@ export const playAlbum = (album, errorCallback = null) => {
     };
 };
 
+export const seekToSeconds = (pos) => {
+    return (dispatch, getState) => {
+        if (player === null) {
+            return;
+        }
+
+        player.setCurrentTime(pos);
+    };
+};
+
 const setMuscControlNextPre = (playlist, index) => {
     if (playlist[index + 1]) {
         MusicControl.enableControl('nextTrack', true);

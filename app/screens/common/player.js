@@ -21,6 +21,7 @@ import {
     trackLoaded,
     previousSongInQueue,
     nextSongInQueue,
+    seekToSeconds,
 } from '../../actions/playing';
 import { togglePlayerViewState } from '../../actions/player';
 import D from './dimensions';
@@ -57,6 +58,10 @@ class PlaylerRenderer extends React.Component {
         this.props.dispatch(togglePlaying(state));
     }
 
+    onSeekTo(pos) {
+        this.props.dispatch(seekToSeconds(pos));
+    }
+
     componentWillMount() {
         MusicControl.on('play', () => {
             this.onTogglePlay(true);
@@ -81,6 +86,11 @@ class PlaylerRenderer extends React.Component {
         MusicControl.on('seekBackward', () => {
 
         });
+
+         MusicControl.on('seek', (pos) => {
+            // pos is in seconds
+            this.onSeekTo(pos);
+         });
     }
 
     toggleViewState() {
