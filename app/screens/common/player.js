@@ -242,7 +242,7 @@ class PlaylerRenderer extends React.Component {
                     { borderColor: disabledColor },
                 ]}>
                     <PlatformIcon
-                        name={paused ? 'play' : 'pause'}
+                        platform={paused ? 'play' : 'pause'}
                         style={styles.play}
                         color={disabledColor}
                     />
