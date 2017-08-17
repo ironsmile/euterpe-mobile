@@ -1,6 +1,7 @@
 import MusicControl from 'react-native-music-control';
 import CallDetectorManager from 'react-native-call-detection';
 import Wakeful from 'react-native-wakeful';
+import Images from '@assets/images';
 const Sound = require('react-native-sound');
 
 import {
@@ -262,6 +263,7 @@ export const setTrack = (index, errorHandler) => {
                   title: track.title,
                   artist: track.artist,
                   album: track.album,
+                  artwork: Images.unknownAlbum,
                   duration,
                 });
             });
@@ -316,6 +318,7 @@ export const restorePlayingState = (errorHandler) => {
                   title: track.title,
                   artist: track.artist,
                   album: track.album,
+                  artwork: Images.unknownAlbum,
                   duration,
                 });
                 MusicControl.updatePlayback({
