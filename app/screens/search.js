@@ -101,7 +101,7 @@ class SearchRenderer extends React.Component {
             this.props.dispatch(hideActivityIndicator());
             this._onError(error);
         });
-    }, 500)
+    }, 1000)
 
     _onError(error) {
         if (error.status === 401) {
