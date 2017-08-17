@@ -17,7 +17,7 @@ import Images from '@assets/images';
 import D from '../screens/common/dimensions';
 import { SongSmall } from './song-small';
 
-class AlbumResult extends React.Component {
+class AlbumResult extends React.PureComponent {
     render() {
         return (
             <TouchableOpacity
@@ -25,10 +25,10 @@ class AlbumResult extends React.Component {
                     this.props.onSelect();
                 }}
             >
-                <View style={styles.albumContainer}>
-                    <View style={styles.albumImageContainer}>
+                <View style={styles.resultRowOuterContainer}>
+                    <View style={styles.resultRowContainer}>
                         <Image
-                            style={styles.albumImage}
+                            style={styles.resultRow}
                             source={Images.unknownAlbum}
                         />
                     </View>
@@ -54,7 +54,39 @@ class AlbumResult extends React.Component {
     }
 }
 
-class SeeMore extends React.Component {
+class ArtistResult extends React.PureComponent {
+    render() {
+        return (
+            <TouchableOpacity
+                onPress={() => {
+                    this.props.onSelect();
+                }}
+            >
+                <View style={styles.resultRowOuterContainer}>
+                    <View style={styles.resultRowContainer}>
+                        <Image
+                            style={[
+                                styles.resultRow,
+                                styles.resultCircularImage,
+                            ]}
+                            source={Images.unknownArtist}
+                        />
+                    </View>
+                    <View style={styles.resultContainer}>
+                        <Text
+                            numberOfLines={1}
+                            style={styles.textTitle}
+                        >
+                            {this.props.artist}
+                        </Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+}
+
+class SeeMore extends React.PureComponent {
     render() {
         return (
             <View style={styles.seeMoreContainer}>
@@ -72,7 +104,7 @@ class SeeMore extends React.Component {
     }
 }
 
-class ResultSection extends React.Component {
+class ResultSection extends React.PureComponent {
     render() {
         return (
             <View style={styles.resultSection}>
@@ -119,6 +151,23 @@ export class SearchResultsRenderer extends React.Component {
                 >
                     <ResultSection
                         key={0}
+                        title="Artists"
+                        seeMoreText="See all artists"
+                        onSeeMorePress={() => {}}
+                    >
+                        {this.props.search.topArtists.map((item, index) => (
+                            <ArtistResult
+                                key={index}
+                                artist={item}
+                                onSelect={() => {
+                                    //!Todo
+                                }}
+                            />
+                        ))}
+                    </ResultSection>
+
+                    <ResultSection
+                        key={1}
                         title="Albums"
                         seeMoreText="See all albums"
                         onSeeMorePress={() => {}}
@@ -138,7 +187,7 @@ export class SearchResultsRenderer extends React.Component {
                     </ResultSection>
 
                     <ResultSection
-                        key={1}
+                        key={2}
                         title="Songs"
                         seeMoreText="See all songs"
                         onSeeMorePress={() => {}}
@@ -221,21 +270,24 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    albumContainer: {
+    resultRowOuterContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingTop: 2,
         paddingBottom: 2,
     },
-    albumImageContainer: {
+    resultRowContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
     },
-    albumImage: {
+    resultRow: {
         width: 40,
         height: 40,
         alignSelf: 'center',
+    },
+    resultCircularImage: {
+        borderRadius: 20,
     },
 });
 

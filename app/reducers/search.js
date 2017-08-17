@@ -5,6 +5,7 @@ const initialState = {
     isSearching: false,
     showResults: false,
     query: null,
+    topArtists: [],
     topAlbums: [],
     topSongs: [],
 };
@@ -12,11 +13,14 @@ const initialState = {
 export const searchReducer = (state = initialState, action) => {
     switch (action.type) {
         case RESULTS_FETCHED:
+            const artists = {};
+            const artistsArray = [];
             const albums = {};
             const albumArray = [];
+            let artistsLen = 0;
             let albumsLen = 0;
 
-            action.results.forEach((song) => {
+            const processAlbum = (song) => {
                 if (albumsLen >= 5) {
                     return;
                 }
@@ -34,6 +38,28 @@ export const searchReducer = (state = initialState, action) => {
                 });
 
                 albumsLen += 1;
+            };
+
+            const processArtist = (song) => {
+                if (artistsLen >= 5) {
+                    return;
+                }
+
+                if (artists[song.artist]) {
+                    return;
+                }
+
+                artists[song.artist] = true;
+
+                artistsArray.push(song.artist);
+
+                artistsLen += 1;
+            };
+
+            action.results.forEach((song) => {
+                // !DODO: show the albums and arists with the most songs. Not random 5.
+                processAlbum(song);
+                processArtist(song);
             });
 
             return {
@@ -41,6 +67,7 @@ export const searchReducer = (state = initialState, action) => {
                 results: action.results,
                 topSongs: action.results.slice(0, 5),
                 topAlbums: albumArray,
+                topArtists: artistsArray,
                 isSearching: false,
                 showResults: true,
             };

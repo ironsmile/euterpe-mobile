@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 
-export class SongSmall extends React.Component {
+export class SongSmall extends React.PureComponent {
     render() {
         return (
             <TouchableOpacity
