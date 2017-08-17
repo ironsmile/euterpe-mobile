@@ -115,21 +115,24 @@ export const toggleRepeat = () => ({
 // should be released no matter what. On the other hand, when `hardStop` is false then
 // new playback is expected immediately after this call so not all resources may be relesed.
 export const stopPlaying = (hardStop = true) => {
-    cleanupProgressTimer();
-    stopCallDetection();
+    return (dispatch) => {
+        cleanupProgressTimer();
+        stopCallDetection();
 
-    if (hardStop) {
-        releaseLocks();
-    }
+        if (hardStop) {
+            releaseLocks();
+        }
 
-    if (player !== null) {
-        player.stop();
-        player.release();
-        player = null;
-    }
+        if (player !== null) {
+            player.stop();
+            player.release();
+            player = null;
+        }
 
-    return {
-        type: STOP,
+        dispatch({
+            type: STOP,
+        });
+        dispatch(setProgress(0));
     };
 };
 

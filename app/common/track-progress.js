@@ -51,7 +51,7 @@ class TimedProgressRenderer extends React.Component {
                 <Text style={[styles.text, { width: this.textWidth - 5 }]}>
                     {elapsedTime(this.props.progress, this.props.duration)}
                 </Text>
-                <View style={{flex: 1, justifyContent: 'center'}}>
+                <View style={styles.timedProgressBarElement}>
                     <ProgressBar
                         {...this.renderProps}
                         progress={this.props.progress}
@@ -59,7 +59,13 @@ class TimedProgressRenderer extends React.Component {
                         animated={this.props.loading === true}
                     />
                 </View>
-                <Text style={[styles.text, { width: this.textWidth, textAlign: 'right' }]}>
+                <Text style={[
+                    styles.text,
+                    {
+                        width: this.textWidth,
+                        textAlign: 'right',
+                    }
+                ]}>
                     {remamingTime(this.props.progress, this.props.duration)}
                 </Text>
             </View>
@@ -77,7 +83,11 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 12,
-    }
+    },
+    timedProgressBarElement: {
+        flex: 1,
+        justifyContent: 'center',
+    },
 });
 
 const getTimesWidth = (duration) => {
@@ -110,8 +120,13 @@ const remamingTime = (progress, duration) => {
 
 const formatDuration = (duration, wholeDuration) => {
     const format = (wholeDuration >= 3600) ? 'h:mm:ss' : 'm:ss';
+    let renderDuration = duration;
 
-    return moment(duration * 1000).format(format);
+    if (renderDuration < 0) {
+        renderDuration = 0;
+    }
+
+    return moment(renderDuration * 1000).format(format);
 };
 
 const mapStateToProps = (state) => ({
