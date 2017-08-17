@@ -5,7 +5,6 @@ import {
     Image,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    ScrollView,
     StyleSheet,
     Share,
 } from 'react-native';
@@ -111,29 +110,14 @@ class PlaylerRenderer extends React.Component {
     renderCoverflow() {
         const height = D.width * 3.2 / 5;
         const width = D.width * 3.2 / 5;
-        const { playing } = this.props;
-        const covers = [];
-
-        if (playing) {
-            covers.push(Images.unknownAlbum);
-        }
 
         return (
-            <ScrollView
-                pagingEnabled={true}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-            >
-                {covers.map((coverImage, ind) => (
-                    <CoverFlowItem
-                        key={ind}
-                        page_width={D.width}
-                        width={width}
-                        height={height}
-                        source={coverImage}
-                    />
-                ))}
-            </ScrollView>
+            <CoverFlowItem
+                page_width={D.width}
+                width={width}
+                height={height}
+                source={Images.unknownAlbum}
+            />
         );
     }
 

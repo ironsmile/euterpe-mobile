@@ -42,10 +42,6 @@ class SearchRenderer extends React.Component {
         return this.props.navigation.state.key == "Search";
     }
 
-    componentDidMount() {
-        //
-    }
-
     handleSearchChange = (text) => {
         this.props.dispatch(setSearchQuery(text));
         this.searchForText(text);
