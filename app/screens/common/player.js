@@ -95,13 +95,13 @@ class PlaylerRenderer extends React.Component {
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => this.props.scrollDown()}>
                     <View style={styles.headerButton}>
-                        <Icon name="ios-arrow-down" color="white" size={24}/>
+                        <Icon name="ios-arrow-down" color="white" size={24} />
                     </View>
                 </TouchableOpacity>
                 <Text style={styles.playing}>NOW PLAYING</Text>
                 <TouchableOpacity onPress={this.toggleViewState.bind(this)}>
                     <View style={styles.headerButton}>
-                        <Icon name={stateIcon} color="white" size={26}/>
+                        <Icon name={stateIcon} color="white" size={26} />
                     </View>
                 </TouchableOpacity>
             </View>
@@ -143,7 +143,9 @@ class PlaylerRenderer extends React.Component {
         return (
             <View style={styles.infoContainer}>
                 <View style={styles.titleContainer}>
-                    <Icon name="ios-add" color="white" size={24}/>
+                    <View style={styles.smallButtonContainer}>
+                        <PlatformIcon platform="add" color="white" size={24} />
+                    </View>
                     <View style={styles.titleTextContainer}>
                         <Text
                             numberOfLines={1}
@@ -158,26 +160,28 @@ class PlaylerRenderer extends React.Component {
                             {playing.artist}
                         </Text>
                     </View>
-                    <TouchableOpacity
-                        onPress={() => {
-                            const httpms = new HttpmsService(this.props.settings);
+                    <View style={styles.smallButtonContainer}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                const httpms = new HttpmsService(this.props.settings);
 
-                            Share.share({
-                                message: httpms.getShareURL(playing),
-                                title: 'Share this song',
-                            }).catch((error) => {
-                                // ignored
-                                console.log(`Error happened while sharing: ${error}`);
-                            });
-                        }}
-                    >
-                        <PlatformIcon
-                            ios="ios-share-outline"
-                            md="md-share"
-                            color="white"
-                            size={24}
-                        />
-                    </TouchableOpacity>
+                                Share.share({
+                                    message: httpms.getShareURL(playing),
+                                    title: 'Share this song',
+                                }).catch((error) => {
+                                    // ignored
+                                    console.log(`Error happened while sharing: ${error}`);
+                                });
+                            }}
+                        >
+                            <PlatformIcon
+                                ios="ios-share-outline"
+                                md="md-share"
+                                color="white"
+                                size={24}
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <TimedProgress
                     style={styles.progress}
@@ -257,7 +261,7 @@ class PlaylerRenderer extends React.Component {
                         this.props.dispatch(toggleShuffle());
                     }}
                 >
-                    <View style={styles.repeatToggleContainer}>
+                    <View style={styles.smallButtonContainer}>
                         <PlatformIcon platform="shuffle" size={26}
                             color={this.props.shuffle ? iconColor : inactiveColor}
                             style={this.props.shuffle ? styles.repeatToggleActive : null}
@@ -272,7 +276,7 @@ class PlaylerRenderer extends React.Component {
                         this.props.dispatch(toggleRepeat());
                     }}
                 >
-                    <View style={styles.repeatToggleContainer}>
+                    <View style={styles.smallButtonContainer}>
                         <PlatformIcon platform="repeat" size={26}
                             color={this.props.repeat ? iconColor : inactiveColor}
                             style={this.props.repeat ? styles.repeatToggleActive : null}
@@ -301,7 +305,7 @@ class PlaylerRenderer extends React.Component {
     renderQueue() {
         return (
             <View style={styles.queueListsContainer}>
-                <View style={{width: '100%', paddingLeft: 10, paddingRight: 10}}>
+                <View style={styles.queueNowPlaying}>
                     <Text style={styles.queueHeader}>Now Playing</Text>
                     <NowPlaying
                         song={this.props.playing}
@@ -343,6 +347,8 @@ class PlaylerRenderer extends React.Component {
         return this.renderSongView();
     }
 }
+
+const playerButtonSize = 36;
 
 const styles = StyleSheet.create({
     container: {
@@ -386,7 +392,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 32
+        paddingTop: 32,
+        paddingBottom: 32,
+    },
+
+    titleTextContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+        width: D.width - (playerButtonSize * 2),
     },
 
     title: {
@@ -440,13 +455,6 @@ const styles = StyleSheet.create({
         fontWeight: '300'
     },
 
-    titleTextContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
-    },
-
     queueListsContainer: {
         width: '100%',
         height: D.height - 160,
@@ -459,17 +467,22 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
 
-    repeatToggleContainer: {
-        height: 36,
-        width: 36,
-        // backgroundColor: 'blue',
+    smallButtonContainer: {
+        height: playerButtonSize,
+        width: playerButtonSize,
         justifyContent: 'center',
         alignItems: 'center',
     },
 
     repeatToggleActive: {
         fontWeight: '900',
-    }
+    },
+
+    queueNowPlaying: {
+        width: '100%',
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
 });
 
 const mapStateToProps = (state) => ({
