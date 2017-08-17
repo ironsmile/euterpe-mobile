@@ -54,6 +54,14 @@ export const togglePlaying = (play, fromCallManager = false, errorHandler = unde
             statePlaying = state.playing.paused;
         }
 
+        if (player === null && statePlaying) {
+            dispatch(setTrack(state.playing.currentIndex, errorHandler, () => {
+                dispatch(togglePlaying(true, fromCallManager, errorHandler));
+            }));
+
+            return;
+        }
+
         if (player !== null && statePlaying) {
             const duration = player.getDuration();
             const progressUpdate = 1000;
@@ -209,7 +217,7 @@ export const selectTrack = (track, index) => ({
     index,
 });
 
-export const setTrack = (index, errorHandler) => {
+export const setTrack = (index, errorHandler, successHandler) => {
     return (dispatch, getState) => {
         dispatch(stopPlaying(false));
         const state = getState();
@@ -267,6 +275,11 @@ export const setTrack = (index, errorHandler) => {
                   duration,
                 });
             });
+        })
+        .then(() => {
+            if (successHandler) {
+                successHandler();
+            }
         })
         .catch((error) => {
             // console.log(`Error downloading song ${track.id}`, error);

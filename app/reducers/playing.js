@@ -64,8 +64,6 @@ export const playingReducer = (state = initialState, action) => {
             return {
                 ...state,
                 paused: true,
-                now: null,
-                currentIndex: null,
             };
 
         default:
