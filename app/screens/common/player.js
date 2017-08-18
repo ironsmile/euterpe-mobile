@@ -26,9 +26,9 @@ import {
 import { togglePlayerViewState } from '../../actions/player';
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
-import MusicControl from 'react-native-music-control';
 import { TimedProgress } from '../../common/track-progress';
 import Images from '@assets/images';
+import MediaControl from '../../common/media-control-shim';
 import { FOOTER_HEIGHT } from './footer';
 import { NowPlaying } from '../../common/now-playing-small';
 import { PlayQueue } from '../../common/play-queue';
@@ -63,31 +63,31 @@ class PlaylerRenderer extends React.Component {
     }
 
     componentWillMount() {
-        MusicControl.on('play', () => {
+        MediaControl.on('play', () => {
             this.onTogglePlay(true);
         });
 
-        MusicControl.on('pause', () => {
+        MediaControl.on('pause', () => {
             this.onTogglePlay(false);
         });
 
-        MusicControl.on('nextTrack', () => {
+        MediaControl.on('nextTrack', () => {
             this.onNextSong();
         });
 
-        MusicControl.on('previousTrack', () => {
+        MediaControl.on('previousTrack', () => {
             this.onPreviousSong();
         });
 
-        MusicControl.on('seekForward', () => {
+        MediaControl.on('seekForward', () => {
 
         });
 
-        MusicControl.on('seekBackward', () => {
+        MediaControl.on('seekBackward', () => {
 
         });
 
-         MusicControl.on('seek', (pos) => {
+         MediaControl.on('seek', (pos) => {
             // pos is in seconds
             this.onSeekTo(pos);
          });

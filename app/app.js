@@ -21,7 +21,7 @@ import { connect, Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
-import MusicControl from 'react-native-music-control';
+import MediaControl from './common/media-control-shim';
 import { restorePlayingState } from './actions/playing';
 import { restoreLibrary } from './actions/library';
 
@@ -141,15 +141,15 @@ class Root extends React.Component {
 
         Sound.setCategory('Playback');
 
-        MusicControl.enableBackgroundMode(true);
-        MusicControl.enableControl('play', true);
-        MusicControl.enableControl('pause', true);
-        MusicControl.enableControl('stop', false);
-        MusicControl.enableControl('nextTrack', false);
-        MusicControl.enableControl('previousTrack', false);
-        MusicControl.enableControl('seek', true);
-        MusicControl.enableControl('seekForward', true);
-        MusicControl.enableControl('seekBackward', true);
+        MediaControl.enableBackgroundMode(true);
+        MediaControl.enableControl('play', true);
+        MediaControl.enableControl('pause', true);
+        MediaControl.enableControl('stop', false);
+        MediaControl.enableControl('nextTrack', false);
+        MediaControl.enableControl('previousTrack', false);
+        MediaControl.enableControl('seek', true);
+        MediaControl.enableControl('seekForward', true);
+        MediaControl.enableControl('seekBackward', true);
     }
 
     componentWillMount() {

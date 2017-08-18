@@ -1,7 +1,7 @@
-import MusicControl from 'react-native-music-control';
 import CallDetectorManager from 'react-native-call-detection';
 import Wakeful from 'react-native-wakeful';
 import Images from '@assets/images';
+import MediaControl from '../common/media-control-shim';
 const Sound = require('react-native-sound');
 
 import {
@@ -88,8 +88,8 @@ export const togglePlaying = (play, fromCallManager = false, errorHandler = unde
 
         if (player !== null) {
             player.getCurrentTime((seconds, isPlaying) => {
-                MusicControl.updatePlayback({
-                  state: isPlaying ? MusicControl.STATE_PLAYING : MusicControl.STATE_PAUSED,
+                MediaControl.updatePlayback({
+                  state: isPlaying ? MediaControl.STATE_PLAYING : MediaControl.STATE_PAUSED,
                   elapsedTime: seconds,
                 });
                 dispatch(setProgress(seconds / player.getDuration()));
@@ -236,7 +236,7 @@ export const setTrack = (index, errorHandler, successHandler) => {
             return;
         }
 
-        MusicControl.resetNowPlaying();
+        MediaControl.resetNowPlaying();
         setMuscControlNextPre(state.playing.playlist, index);
 
         dispatch(selectTrack(track, index));
@@ -270,7 +270,7 @@ export const setTrack = (index, errorHandler, successHandler) => {
                 dispatch(togglePlaying(true, false, errorHandler));
                 dispatch(setDuration(duration));
 
-                MusicControl.setNowPlaying({
+                MediaControl.setNowPlaying({
                   title: track.title,
                   artist: track.artist,
                   album: track.album,
@@ -330,15 +330,15 @@ export const restorePlayingState = (errorHandler) => {
                 const duration = player.getDuration();
 
                 player.setCurrentTime(duration * progress.value);
-                MusicControl.setNowPlaying({
+                MediaControl.setNowPlaying({
                   title: track.title,
                   artist: track.artist,
                   album: track.album,
                   artwork: Images.unknownAlbum,
                   duration,
                 });
-                MusicControl.updatePlayback({
-                    state: MusicControl.STATE_PAUSED,
+                MediaControl.updatePlayback({
+                    state: MediaControl.STATE_PAUSED,
                     elapsedTime: duration * progress.value,
                 });
                 dispatch(trackLoaded());
@@ -402,15 +402,15 @@ export const seekToSeconds = (pos) => {
 
 const setMuscControlNextPre = (playlist, index) => {
     if (playlist[index + 1]) {
-        MusicControl.enableControl('nextTrack', true);
+        MediaControl.enableControl('nextTrack', true);
     } else {
-        MusicControl.enableControl('nextTrack', false);
+        MediaControl.enableControl('nextTrack', false);
     }
 
     if (index - 1 >= 0 && playlist[index - 1]) {
-        MusicControl.enableControl('previousTrack', true);
+        MediaControl.enableControl('previousTrack', true);
     } else {
-        MusicControl.enableControl('previousTrack', false);
+        MediaControl.enableControl('previousTrack', false);
     }
 };
 
@@ -437,7 +437,7 @@ const playCallback = (dispatch, errorHandler) => {
 
     return (success) => {
         // console.log('track playback ended');
-        MusicControl.resetNowPlaying();
+        MediaControl.resetNowPlaying();
         if (success) {
             dispatch(trackEnded(errorHandler));
         } else {
