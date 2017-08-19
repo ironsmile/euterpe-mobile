@@ -8,7 +8,7 @@ const DummyControl = {
     enableControl: () => {},
     enableBackgroundMode: () => {},
     on: () => {},
-}
+};
 
 let MediaControl = null;
 
