@@ -160,7 +160,7 @@ class PlaylerRenderer extends React.Component {
                                 const httpms = new HttpmsService(this.props.settings);
 
                                 Share.share({
-                                    message: httpms.getShareURL(playing),
+                                    message: `${playing.title} by ${playing.artist}\n${httpms.getShareURL(playing)}`,
                                     title: 'Share this song',
                                 }).catch((error) => {
                                     // ignored
