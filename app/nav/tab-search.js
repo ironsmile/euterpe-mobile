@@ -3,12 +3,14 @@ import { StackNavigator} from 'react-navigation';
 import { AlbumScreen } from '@screens/album';
 import { SearchScreen } from '@screens/search';
 import { SearchAlbums } from '@screens/search-albums';
+import { SearchSongs } from '@screens/search-songs';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 
 const SearchNavigatorConfig = StackNavigator({
     Results: { screen: SearchScreen },
     Album: { screen: AlbumScreen },
     AlbumsResults: { screen: SearchAlbums },
+    SongsResults: { screen: SearchSongs },
 }, {
     initialRouteName: 'Results',
     headerMode: 'none',

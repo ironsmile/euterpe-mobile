@@ -31,7 +31,7 @@ import Images from '@assets/images';
 import MediaControl from '../../common/media-control-shim';
 import { FOOTER_HEIGHT } from './footer';
 import { NowPlaying } from '../../common/now-playing-small';
-import { PlayQueue } from '../../common/play-queue';
+import { SongsList } from '../../common/songs-list';
 import { PlatformIcon } from '../../common/platform-icon';
 import { HttpmsService } from '../../common/httpms-service';
 
@@ -309,7 +309,7 @@ class PlaylerRenderer extends React.Component {
                     <Text style={styles.queueHeader}>Play Queue</Text>
                 </View>
 
-                <PlayQueue
+                <SongsList
                     data={this.props.playlist}
                     highlighted={this.props.currentIndex}
                     onPressItem={this.onPressQueueItem.bind(this)}

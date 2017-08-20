@@ -157,7 +157,9 @@ export class SearchResultsRenderer extends React.Component {
                         key={2}
                         title="Songs"
                         seeMoreText="See all songs"
-                        onSeeMorePress={() => {}}
+                        onSeeMorePress={() => {
+                            this.props.navigation.navigate('SongsResults');
+                        }}
                     >
                         {this.props.search.topSongs.map((item, index) => (
                             <SongSmall

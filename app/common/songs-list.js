@@ -1,17 +1,17 @@
 import React from 'react';
-import { FlatList, View, StyleSheet, Text } from 'react-native';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
 
-import { AlbumSmall } from '@components/album-small';
+import { SongSmall } from '@components/song-small';
 import { headerHeight } from '@screens/common/header';
 
-class AlbumItem extends React.PureComponent {
+class QueueItem extends React.PureComponent {
     _onPress = () => {
-        this.props.onPressItem(this.props.album);
+        this.props.onPressItem(this.props.index);
     };
 
     render() {
         return (
-            <AlbumSmall
+            <SongSmall
                 {...this.props}
                 onSelect={this._onPress}
             />
@@ -19,22 +19,21 @@ class AlbumItem extends React.PureComponent {
     }
 }
 
-export class AlbumsList extends React.PureComponent {
+export class SongsList extends React.PureComponent {
 
-    _keyExtractor = (item, index) => item.albumID;
+    _keyExtractor = (item, index) => item.id;
 
-    _onPressItem = (album) => {
-        if (this.props.onAlbumPress) {
-            this.props.onAlbumPress(album);
-        }
+    _onPressItem = (index: number) => {
+        this.props.onPressItem(index);
     };
 
     _renderItem = ({item, index}) => (
-        <AlbumItem
+        <QueueItem
             id={item.id}
             index={index}
             onPressItem={this._onPressItem}
-            album={item}
+            song={item}
+            highlighted={index === this.props.highlighted}
         />
     );
 
@@ -64,8 +63,8 @@ export class AlbumsList extends React.PureComponent {
     render() {
         return (
             <FlatList
-                style={this.props.style}
-                data={this.props.albums}
+                data={this.props.data}
+                highlighted={this.props.highlighted}
                 keyExtractor={this._keyExtractor}
                 renderItem={this._renderItem}
                 ListHeaderComponent={this._renderHeader()}
