@@ -69,7 +69,7 @@ class SearchAlbumsRenderer extends React.PureComponent {
                         headerText="Albums"
                         avoidHeader={true}
                         albums={this.state.albums}
-                        onAlbumPress={(album) => {
+                        onPressItem={(album) => {
                             this.props.dispatch(playAlbum(album));
                         }}
                     />
