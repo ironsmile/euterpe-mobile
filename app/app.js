@@ -139,16 +139,6 @@ const mapStateToPropsRoot = (state) => ({
 });
 
 class App extends React.Component {
-
-    componentWillMount() {
-        // Fix hidden nav bug with otuside of redux changes
-        for (let ind = 0; ind < this.props.nav.routes.length; ind += 1) {
-            if (this.props.nav.routes[ind].params) {
-                this.props.nav.routes[ind].params.translateY = 0;
-            }
-        }
-    }
-
     render() {
         return (
             <HttpmsApp

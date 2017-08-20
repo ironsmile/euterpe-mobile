@@ -3,6 +3,7 @@
 import React, { PureComponent } from 'react';
 import { Animated, TouchableOpacity, StyleSheet } from 'react-native';
 import TabBarIcon from 'react-navigation/src/views/TabView/TabBarIcon';
+import Footer, { TABBAR_HEIGHT } from './footer';
 
 import type {
   NavigationAction,
@@ -94,6 +95,17 @@ export default class TabBarBottom
     return label;
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentWillMount() {
+    this.setState({
+      translateY: 0,
+    })
+  }
+
   _renderIcon = (scene: TabScene) => {
     const {
       position,
@@ -119,6 +131,52 @@ export default class TabBarBottom
     );
   };
 
+  _renderFooter = () => {
+    return (
+      <Footer ref="footer"
+          hide={() => {
+            this.setFooterTransition();
+            Animated.timing(
+              this.state.translateY,
+              { toValue: TABBAR_HEIGHT }
+            ).start();
+          }}
+          show={() => {
+            this.setFooterTransition();
+            Animated.timing(
+              this.state.translateY,
+              { toValue: 0 }
+            ).start();
+          }}
+          hideTabBarNavigation={
+            (val) => {
+              this.setFooterTransition();
+              if (!val) {
+                return;
+              }
+              const yVal = Math.abs((val / 10) - TABBAR_HEIGHT);
+
+              if (this.state && this.state.translateY) {
+                this.state.translateY.setValue(yVal);
+              }
+            }
+          }
+      />
+    );
+  }
+
+  componentWillMount = () => {
+    this.setFooterTransition();
+  }
+
+  setFooterTransition = () => {
+    if (!this.state || !this.state.translateY) {
+      this.setState({
+        translateY: new Animated.Value(0),
+      });
+    }
+  }
+
   render() {
     const {
       position,
@@ -131,43 +189,44 @@ export default class TabBarBottom
     const { routes, index } = navigation.state;
 
     let transform = {};
-    if (routes && routes[index] && routes[index].params &&
-        routes[index].params.translateY != undefined)
-    {
-      transform = {transform: [{translateY: routes[index].params.translateY}]};
+    if (this.state && this.state.translateY !== undefined) {
+      transform = {transform: [{translateY: this.state.translateY}]};
     }
     // Prepend '-1', so there are always at least 2 items in inputRange
     const inputRange = [-1, ...routes.map((x: *, i: number) => i)];
     return (
-      <Animated.View style={[styles.tabBar, style, transform]}>
-        {routes.map((route: NavigationRoute, index: number) => {
-          const focused = index === navigation.state.index;
-          const scene = { route, index, focused };
-          const outputRange = inputRange.map(
-            (inputIndex: number) =>
-              inputIndex === index
-                ? activeBackgroundColor
-                : inactiveBackgroundColor
-          );
-          const backgroundColor = position.interpolate({
-            inputRange,
-            outputRange,
-          });
-          const justifyContent = this.props.showIcon ? 'flex-end' : 'center';
-          return (
-            <TouchableOpacity
-              key={route.key}
-              onPress={() => jumpToIndex(index)}
-            >
-              <Animated.View
-                style={[styles.tab, { backgroundColor, justifyContent }]}
+      <Animated.View>
+        {this._renderFooter()}
+        <Animated.View style={[styles.tabBar, style, transform]}>
+          {routes.map((route: NavigationRoute, index: number) => {
+            const focused = index === navigation.state.index;
+            const scene = { route, index, focused };
+            const outputRange = inputRange.map(
+              (inputIndex: number) =>
+                inputIndex === index
+                  ? activeBackgroundColor
+                  : inactiveBackgroundColor
+            );
+            const backgroundColor = position.interpolate({
+              inputRange,
+              outputRange,
+            });
+            const justifyContent = this.props.showIcon ? 'flex-end' : 'center';
+            return (
+              <TouchableOpacity
+                key={route.key}
+                onPress={() => jumpToIndex(index)}
               >
-                {this._renderIcon(scene)}
-                {this._renderLabel(scene)}
-              </Animated.View>
-            </TouchableOpacity>
-          );
-        })}
+                <Animated.View
+                  style={[styles.tab, { backgroundColor, justifyContent }]}
+                >
+                  {this._renderIcon(scene)}
+                  {this._renderLabel(scene)}
+                </Animated.View>
+              </TouchableOpacity>
+            );
+          })}
+        </Animated.View>
       </Animated.View>
     );
   }
