@@ -7,7 +7,11 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#0000</item>
+
+        <!-- For android 19: -->
+        <!-- <item name="android:windowTranslucentStatus">true</item> -->
     </style>
 
 </resources>
