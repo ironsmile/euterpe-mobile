@@ -5,8 +5,11 @@ import React from 'react';
 import {
     View,
     Text,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity,
 } from 'react-native';
+import D from './dimensions';
+import { PlatformIcon } from '../../common/platform-icon';
 
 export default (props) => {
 
@@ -18,9 +21,38 @@ export default (props) => {
         );
     }
 
+    if (!props.onBackButton) {
+        return (
+            <View style={[styles.container, props.style]}>
+                <Text
+                    style={[styles.text, styles.bottomMargin, props.textStyle]}
+                    numberOfLines={1}
+                >
+                    {props.title}
+                </Text>
+            </View>
+        );
+    }
+
     return (
         <View style={[styles.container, props.style]}>
-            <Text style={[styles.text, props.textStyle]}>{props.title}</Text>
+            <View style={styles.withBackButton}>
+                <TouchableOpacity
+                    onPress={props.onBackButton}
+                >
+                    <View style={styles.backButtonContainer}>
+                        <PlatformIcon platform="arrow-back" color="white" size={22} />
+                    </View>
+                </TouchableOpacity>
+                <View style={styles.backButtonTitleContainer}>
+                    <Text
+                        style={[styles.text, props.textStyle]}
+                        numberOfLines={1}
+                    >
+                        {props.title}
+                    </Text>
+                </View>
+            </View>
         </View>
     );
 };
@@ -32,6 +64,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: 'rgba(27,27,27,.9)',
+        // backgroundColor: 'green',
         height: 44,
         justifyContent: 'flex-end',
         alignItems: 'center',
@@ -40,6 +73,32 @@ const styles = StyleSheet.create({
     text: {
         fontWeight: '500',
         color: 'white',
+    },
+
+    bottomMargin: {
         marginBottom: 5,
-    }
+    },
+
+    withBackButton: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        // backgroundColor: 'yellow',
+    },
+
+    backButtonContainer: {
+        width: 28,
+        height: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        // backgroundColor: 'red',
+    },
+
+    backButtonTitleContainer: {
+        width: D.width - 56,
+        alignItems: 'center',
+        justifyContent: 'center',
+        // backgroundColor: 'blue',
+    },
 });

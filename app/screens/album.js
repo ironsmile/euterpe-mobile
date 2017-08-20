@@ -1,32 +1,33 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from './screen';
-import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
+import Header from './common/header';
 
-export class BrowseScreen extends React.Component {
-
-    static navigationOptions = ({ navigation }) => ({
-        tabBarLabel: CreateTabLabel('Browse'),
-        tabBarIcon: CreateTabIcon('ios-albums'),
-    });
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.navigation.state.key == "Browse";
+export class AlbumScreen extends React.Component {
+    getHeader() {
+        return (
+            <Header
+                title="ALBUM"
+                onBackButton={() => {
+                    this.props.navigation.goBack();
+                }}
+            />
+        );
     }
 
     render() {
         return (
             <Screen
-                title='BROWSE'
                 navigation={this.props.navigation}
+                header={this.getHeader()}
             >
                 <View style={styles.container}>
-                    <Text style={styles.text}>
-                        There is nothing to browse.
+                    <Text style={styles.explainText}>
+                        Album screen nananana.
                     </Text>
                 </View>
             </Screen>
-        )
+        );
     }
 }
 
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'stretch',
   },
-  text: {
+  explainText: {
     color: 'white',
     marginTop: 50,
     textAlign: 'center',

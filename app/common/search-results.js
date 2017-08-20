@@ -170,7 +170,9 @@ export class SearchResultsRenderer extends React.Component {
                         key={1}
                         title="Albums"
                         seeMoreText="See all albums"
-                        onSeeMorePress={() => {}}
+                        onSeeMorePress={() => {
+                            this.props.navigation.navigate('Album');
+                        }}
                     >
                         {this.props.search.topAlbums.map((item, index) => (
                             <AlbumResult

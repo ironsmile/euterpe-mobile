@@ -1,10 +1,11 @@
 import React from 'react';
 import { AppRegistry, AsyncStorage, Platform } from 'react-native';
-import { TabNavigator, addNavigationHelpers } from 'react-navigation';
+import { TabNavigator, StackNavigator, addNavigationHelpers } from 'react-navigation';
 import { HomeScreen } from './screens/home';
 import { BrowseScreen } from './screens/browse';
 import { SearchScreen } from './screens/search';
 import { LibraryScreen } from './screens/lib';
+import { AlbumScreen } from './screens/album';
 import { AboutScreen } from './screens/about';
 import TabBarBottom from './screens/common/TabBarBottom';
 import { TABBAR_HEIGHT } from './screens/common/footer';
@@ -15,7 +16,6 @@ import { progressReducer } from './reducers/progress';
 import { searchReducer } from './reducers/search';
 import { settingsReducer } from './reducers/settings';
 import { libraryReducer } from './reducers/library';
-
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { connect, Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
@@ -24,6 +24,8 @@ import { REHYDRATE } from 'redux-persist/constants';
 import MediaControl from './common/media-control-shim';
 import { restorePlayingState } from './actions/playing';
 import { restoreLibrary } from './actions/library';
+
+import { CreateTabIcon, CreateTabLabel } from './screens/common/tab-bar';
 
 const Sound = require('react-native-sound');
 
@@ -48,26 +50,66 @@ const navOptions = {
     },
 };
 
+const SearchNavigatorConfig = StackNavigator({
+    Results: { screen: SearchScreen },
+    Album: { screen: AlbumScreen },
+}, {
+    initialRouteName: 'Results',
+    headerMode: 'none',
+});
+
+// const mapStateToPropsSearch = (state) => ({
+//     nav: state.navSearch
+// });
+
+// const SearchNavigatorConnected = connect(mapStateToPropsSearch)(SearchNavigatorConfig);
+
+class SearchNavigator extends React.Component {
+
+    static navigationOptions = ({ navigation }) => ({
+        tabBarLabel: CreateTabLabel('Search'),
+        tabBarIcon: CreateTabIcon('ios-search'),
+    });
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.navigation.state.key == "Search";
+    }
+
+  render() {
+    return (
+        <SearchNavigatorConfig />
+    );
+  }
+}
+
+// const searchHomeParams = SearchNavigatorConfig.router.getActionForPathAndParams('Results');
+// const initialSearchState = SearchNavigatorConfig.router.getStateForAction(searchHomeParams);
+// const navSearchReducer = (state = initialSearchState, action) => {
+//     return SearchNavigatorConfig.router.getStateForAction(action, state);
+//     const nextState = SearchNavigatorConfig.router.getStateForAction(action, state);
+
+//     return nextState || state;
+// };
+
 const HttpmsApp = TabNavigator({
     Home: { screen: HomeScreen, },
     Browse: { screen: BrowseScreen },
-    Search: { screen: SearchScreen },
+    Search: { screen: SearchNavigator },
     Library: { screen: LibraryScreen },
     About: { screen: AboutScreen },
 }, navOptions);
 
 const homeParams = HttpmsApp.router.getActionForPathAndParams('Home');
-const initialState = HttpmsApp.router.getStateForAction(homeParams);
-
-const navReducer = (state = initialState, action) => {
+const initialRootState = HttpmsApp.router.getStateForAction(homeParams);
+const navRootReducer = (state = initialRootState, action) => {
     const nextState = HttpmsApp.router.getStateForAction(action, state);
 
-    // Simply return the original `state` if `nextState` is null or undefined.
     return nextState || state;
 };
 
 const appReducer = combineReducers({
-    nav: navReducer,
+    navRoot: navRootReducer,
+    // navSearch: navSearchReducer,
     playing: playingReducer,
     player: playerReducer,
     search: searchReducer,
@@ -92,8 +134,8 @@ const rehydratedReducer = (state = {}, action) => {
     }
 };
 
-const mapStateToProps = (state) => ({
-    nav: state.nav
+const mapStateToPropsRoot = (state) => ({
+    nav: state.navRoot
 });
 
 class App extends React.Component {
@@ -119,7 +161,7 @@ class App extends React.Component {
     }
 }
 
-const AppWithNavigationState = connect(mapStateToProps)(App);
+const AppWithNavigationState = connect(mapStateToPropsRoot)(App);
 
 const store = createStore(
     rehydratedReducer,

@@ -12,7 +12,6 @@ import {
     Keyboard
 } from 'react-native';
 import { Screen } from './screen';
-import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import Header from './common/header';
 import { connect } from 'react-redux';
 import { SearchResults } from '../common/search-results';
@@ -32,15 +31,6 @@ import {
 } from '../actions/search';
 
 class SearchRenderer extends React.Component {
-
-    static navigationOptions = ({ navigation }) => ({
-        tabBarLabel: CreateTabLabel('Search'),
-        tabBarIcon: CreateTabIcon('ios-search'),
-    });
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.navigation.state.key == "Search";
-    }
 
     handleSearchChange = (text) => {
         this.props.dispatch(setSearchQuery(text));
@@ -173,6 +163,7 @@ class SearchRenderer extends React.Component {
             return (
                 <SearchResults
                     onError={this._onError.bind(this)}
+                    navigation={this.props.navigation}
                 />
             );
         }
