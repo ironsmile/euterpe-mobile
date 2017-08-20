@@ -1,6 +1,3 @@
-/**
- * Created by ggoma on 12/23/16.
- */
 import React from 'react';
 import {
     Text,
@@ -28,7 +25,8 @@ import {
     showActivityIndicator,
     clearRecentSearches,
     clearSearchResults,
-} from '../actions/search';
+} from '@actions/search';
+import { gs } from '@styles/global';
 
 class SearchRenderer extends React.Component {
 
@@ -184,7 +182,7 @@ class SearchRenderer extends React.Component {
 
     render() {
         return (
-            <View style={{height: '100%', width: '100%'}}>
+            <View style={[{height: '100%', width: '100%'}, gs.bg]}>
                 <Screen
                     title='SEARCH'
                     navigation={this.props.navigation}
