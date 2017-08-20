@@ -94,7 +94,7 @@ export class SearchResultsRenderer extends React.Component {
                                 key={index}
                                 artist={item}
                                 onSelect={() => {
-                                    //!Todo
+                                    this.props.navigation.navigate('SearchArtist');
                                 }}
                             />
                         ))}

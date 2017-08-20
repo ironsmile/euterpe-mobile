@@ -62,7 +62,7 @@ class SearchArtistsRenderer extends React.PureComponent {
                         avoidHeader={true}
                         data={this.state.artists}
                         onPressItem={(artist) => {
-                            // do nothing
+                            this.props.navigation.navigate('SearchArtist');
                         }}
                     />
                 </View>
