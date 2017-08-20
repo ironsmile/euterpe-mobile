@@ -11,6 +11,8 @@ import {
 import D from './dimensions';
 import { PlatformIcon } from '../../common/platform-icon';
 
+export const headerHeight = 44;
+
 export default (props) => {
 
     if (props.children) {
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: 'rgba(27,27,27,.9)',
         // backgroundColor: 'green',
-        height: 44,
+        height: headerHeight,
         justifyContent: 'flex-end',
         alignItems: 'center',
     },

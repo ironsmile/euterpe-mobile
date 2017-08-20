@@ -7,10 +7,11 @@ import {
 } from 'react-native';
 
 import Landing from './Landing';
-import { TABBAR_HEIGHT } from './common/footer';
+import { TOGETHER, TABBAR_HEIGHT } from './common/footer';
 import Header from './common/header';
 import { gs } from '../styles/global';
 import { connect } from 'react-redux';
+import D from '@screens/common/dimensions';
 
 class ScreenRenderer extends Component {
     render() {
@@ -21,10 +22,14 @@ class ScreenRenderer extends Component {
             header = <Header title={this.props.title} />;
         }
 
-        const footerHeight = nowPlaying.now ? TABBAR_HEIGHT : 0;
+        const footerHeight = nowPlaying.now ? TOGETHER : TABBAR_HEIGHT;
 
         return (
-            <View style={[gs.bg, styles.container]}>
+            <View style={[
+                gs.bg,
+                styles.container,
+                { height: D.height - footerHeight }
+            ]}>
                 <StatusBar
                     ref="status"
                     translucent
@@ -32,7 +37,7 @@ class ScreenRenderer extends Component {
                     barStyle={'light-content'}
                     backgroundColor="transparent"
                 />
-                <View style={[styles.children, { marginBottom: footerHeight }]}>
+                <View style={[styles.children]}>
                     {this.props.children}
                 </View>
                 {header}
@@ -43,10 +48,9 @@ class ScreenRenderer extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexDirection: 'column',
     },
     children: {
-        marginBottom: TABBAR_HEIGHT,
         flex: 1,
     }
 });

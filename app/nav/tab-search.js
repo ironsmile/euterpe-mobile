@@ -2,11 +2,13 @@ import React from 'react';
 import { StackNavigator} from 'react-navigation';
 import { AlbumScreen } from '@screens/album';
 import { SearchScreen } from '@screens/search';
+import { SearchAlbums } from '@screens/search-albums';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 
 const SearchNavigatorConfig = StackNavigator({
     Results: { screen: SearchScreen },
     Album: { screen: AlbumScreen },
+    AlbumsResults: { screen: SearchAlbums },
 }, {
     initialRouteName: 'Results',
     headerMode: 'none',

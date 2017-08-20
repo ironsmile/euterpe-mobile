@@ -21,7 +21,7 @@ import { togglePlaying } from '../../actions/playing';
 import { TrackProgress } from '../../common/track-progress';
 import { PlatformIcon } from '../../common/platform-icon';
 
-export const FOOTER_HEIGHT = 48;
+export const FOOTER_HEIGHT = 38;
 export const TABBAR_HEIGHT = 56;
 export const TOGETHER = FOOTER_HEIGHT + TABBAR_HEIGHT;
 
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     firstView: {
         position: 'absolute',
         top: 0,
-        height: FOOTER_HEIGHT + 10,
+        height: FOOTER_HEIGHT,
         width: D.width,
         backgroundColor: '#222327',
         // borderTopColor: '#3c3d41',

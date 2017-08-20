@@ -10,49 +10,14 @@ import {
     Image,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { setPlaylist, setTrack, playAlbum } from '../actions/playing';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { FOOTER_HEIGHT } from '../screens/common/footer';
-import Images from '@assets/images';
-import D from '../screens/common/dimensions';
-import { SongSmall } from './song-small';
 
-class AlbumResult extends React.PureComponent {
-    render() {
-        return (
-            <TouchableOpacity
-                onPress={() => {
-                    this.props.onSelect();
-                }}
-            >
-                <View style={styles.resultRowOuterContainer}>
-                    <View style={styles.resultRowContainer}>
-                        <Image
-                            style={styles.resultRow}
-                            source={Images.unknownAlbum}
-                        />
-                    </View>
-                    <View style={styles.resultContainer}>
-                        <Text
-                            numberOfLines={1}
-                            style={styles.textTitle}
-                        >
-                            {this.props.album.album}
-                        </Text>
-                        <View style={styles.additional}>
-                            <Text
-                                numberOfLines={1}
-                                style={styles.text}
-                            >
-                                {this.props.album.artist}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-}
+import { FOOTER_HEIGHT } from '@screens/common/footer';
+import Images from '@assets/images';
+import D from '@screens/common/dimensions';
+import { setPlaylist, setTrack, playAlbum } from '@actions/playing';
+import { SongSmall } from '@components/song-small';
+import { AlbumSmall } from '@components/album-small';
 
 class ArtistResult extends React.PureComponent {
     render() {
@@ -171,11 +136,11 @@ export class SearchResultsRenderer extends React.Component {
                         title="Albums"
                         seeMoreText="See all albums"
                         onSeeMorePress={() => {
-                            this.props.navigation.navigate('Album');
+                            this.props.navigation.navigate('AlbumsResults');
                         }}
                     >
                         {this.props.search.topAlbums.map((item, index) => (
-                            <AlbumResult
+                            <AlbumSmall
                                 key={index}
                                 album={item}
                                 onSelect={() => {
@@ -207,7 +172,6 @@ export class SearchResultsRenderer extends React.Component {
                         ))}
                     </ResultSection>
                 </ScrollView>
-                <View style={{ height: FOOTER_HEIGHT }} />
             </View>
         );
     }
@@ -241,10 +205,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '900',
         textAlign: 'center',
-    },
-    additional: {
-        flex: 1,
-        flexDirection: 'row',
     },
     centered: {
         flex: 1,
