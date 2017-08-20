@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import Images from '@assets/images';
 import D from '@screens/common/dimensions';
@@ -35,6 +36,7 @@ export class ArtistSmall extends React.PureComponent {
                         >
                             {this.props.artist}
                         </Text>
+                        <Icon name="ios-arrow-forward" color="#aeafb3" size={16} />
                     </View>
                 </View>
             </TouchableOpacity>
@@ -45,9 +47,10 @@ export class ArtistSmall extends React.PureComponent {
 const styles = StyleSheet.create({
     resultContainer: {
         paddingTop: 3,
-        justifyContent: 'center',
-        paddingLeft: 10,
-        width: D.width - 50,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: D.width - 60,
+        paddingLeft: 5,
     },
     text: {
         fontSize: 12,

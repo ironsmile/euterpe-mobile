@@ -21,17 +21,16 @@ import { ArtistSmall } from '@components/artist-small';
 class SeeMore extends React.PureComponent {
     render() {
         return (
-            <View style={styles.seeMoreContainer}>
-                <TouchableOpacity
-                    onPress={() => {
-                        this.props.onPress();
-                    }}
-                    style={styles.seeMoreComponents}
-                >
+            <TouchableOpacity
+                onPress={() => {
+                    this.props.onPress();
+                }}
+            >
+                <View style={[styles.seeMoreContainer, styles.seeMoreComponents]}>
                     <Text style={styles.seeMoreText}>{this.props.text}</Text>
-                    <Icon name="ios-arrow-forward" color="white" size={16} />
-                </TouchableOpacity>
-            </View>
+                    <Icon name="ios-arrow-forward" color="#aeafb3" size={16} />
+                </View>
+            </TouchableOpacity>
         );
     }
 }
