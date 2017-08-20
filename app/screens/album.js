@@ -1,7 +1,8 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { Screen } from './screen';
-import Header from './common/header';
+
+import { Screen } from '@screens/screen';
+import Header from '@screens/common/header';
 
 export class AlbumScreen extends React.Component {
     getHeader() {
