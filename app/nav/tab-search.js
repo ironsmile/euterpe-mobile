@@ -2,6 +2,7 @@ import React from 'react';
 import { StackNavigator} from 'react-navigation';
 import { AlbumScreen } from '@screens/album';
 import { SearchScreen } from '@screens/search';
+import { SearchArtists } from '@screens/search-artists';
 import { SearchAlbums } from '@screens/search-albums';
 import { SearchSongs } from '@screens/search-songs';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
@@ -9,6 +10,7 @@ import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 const SearchNavigatorConfig = StackNavigator({
     Results: { screen: SearchScreen },
     Album: { screen: AlbumScreen },
+    ArtistsResults: { screen: SearchArtists },
     AlbumsResults: { screen: SearchAlbums },
     SongsResults: { screen: SearchSongs },
 }, {

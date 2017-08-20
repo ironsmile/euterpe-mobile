@@ -13,43 +13,10 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { FOOTER_HEIGHT } from '@screens/common/footer';
-import Images from '@assets/images';
-import D from '@screens/common/dimensions';
 import { setPlaylist, setTrack, playAlbum } from '@actions/playing';
 import { SongSmall } from '@components/song-small';
 import { AlbumSmall } from '@components/album-small';
-
-class ArtistResult extends React.PureComponent {
-    render() {
-        return (
-            <TouchableOpacity
-                onPress={() => {
-                    this.props.onSelect();
-                }}
-            >
-                <View style={styles.resultRowOuterContainer}>
-                    <View style={styles.resultRowContainer}>
-                        <Image
-                            style={[
-                                styles.resultRow,
-                                styles.resultCircularImage,
-                            ]}
-                            source={Images.unknownArtist}
-                        />
-                    </View>
-                    <View style={styles.resultContainer}>
-                        <Text
-                            numberOfLines={1}
-                            style={styles.textTitle}
-                        >
-                            {this.props.artist}
-                        </Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-}
+import { ArtistSmall } from '@components/artist-small';
 
 class SeeMore extends React.PureComponent {
     render() {
@@ -118,10 +85,12 @@ export class SearchResultsRenderer extends React.Component {
                         key={0}
                         title="Artists"
                         seeMoreText="See all artists"
-                        onSeeMorePress={() => {}}
+                        onSeeMorePress={() => {
+                            this.props.navigation.navigate('ArtistsResults');
+                        }}
                     >
                         {this.props.search.topArtists.map((item, index) => (
-                            <ArtistResult
+                            <ArtistSmall
                                 key={index}
                                 artist={item}
                                 onSelect={() => {
@@ -187,12 +156,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-start',
     },
-    resultContainer: {
-        paddingTop: 3,
-        justifyContent: 'center',
-        paddingLeft: 10,
-        width: D.width - 50,
-    },
     text: {
         fontSize: 12,
         color: '#aeafb3',
@@ -233,25 +196,6 @@ const styles = StyleSheet.create({
     resultSection: {
         marginTop: 10,
         marginBottom: 10,
-    },
-    resultRowOuterContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        paddingTop: 2,
-        paddingBottom: 2,
-    },
-    resultRowContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    resultRow: {
-        width: 40,
-        height: 40,
-        alignSelf: 'center',
-    },
-    resultCircularImage: {
-        borderRadius: 20,
     },
 });
 
