@@ -1,7 +1,6 @@
 import CallDetectorManager from 'react-native-call-detection';
 import Wakeful from 'react-native-wakeful';
 import Images from '@assets/images';
-import MediaControl from '../common/media-control-shim';
 const Sound = require('react-native-sound');
 
 import {
@@ -13,11 +12,12 @@ import {
     SET_IS_LOADING_STATUS,
     TRACK_ENDED,
     SELECT_TRACK,
-} from '../reducers/playing';
+} from '@reducers/playing';
 
-import { setProgress, setDuration } from '../actions/progress';
-import { downloadSong } from '../actions/library';
-import { HttpmsService } from '../common/httpms-service';
+import MediaControl from '@components/media-control-shim';
+import { setProgress, setDuration } from '@actions/progress';
+import { downloadSong } from '@actions/library';
+import { HttpmsService } from '@components/httpms-service';
 
 // The player instance which would be used in these action creators
 let player = null;
@@ -34,10 +34,18 @@ let _cdm = null;
 // Instance of the Wakeful class for keeping the CPU and WiFi awake during playback
 const _wakeful = new Wakeful();
 
-export const setPlaylist = (tracks) => ({
-    type: SET_PLAYLIST,
-    playlist: tracks,
-});
+export const setPlaylist = (tracks, startPlaying = false) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_PLAYLIST,
+            playlist: tracks,
+        });
+
+        if (startPlaying) {
+            dispatch(setTrack(0));
+        }
+    };
+};
 
 export const togglePlaying = (play, fromCallManager = false, errorHandler = undefined) => {
 
@@ -349,42 +357,6 @@ export const restorePlayingState = (errorHandler) => {
             dispatch(stopPlaying());
             if (errorHandler) {
                 errorHandler(error);
-            }
-        });
-    };
-};
-
-export const playAlbum = (album, errorCallback = null) => {
-    return (dispatch, getState) => {
-        const httpms = getHttpmsService(getState);
-
-        fetch(httpms.getSearchURL(album.album), {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            ...httpms.getAuthCredsHeader()
-          },
-        })
-        .then((response) => {
-            if (response.status !== 200) {
-                throw response;
-            }
-
-            return response.json();
-        })
-        .then((responseJson) => {
-            // !TODO: some validation checking
-            const albumSongs = responseJson.filter((item) => {
-                return item.album_id === album.albumID;
-            });
-
-            dispatch(setPlaylist(albumSongs));
-            dispatch(setTrack(0, errorCallback));
-        })
-        .catch((error) => {
-            if (errorCallback !== null) {
-                errorCallback(error);
             }
         });
     };

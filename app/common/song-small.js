@@ -8,6 +8,15 @@ import {
 
 
 export class SongSmall extends React.PureComponent {
+
+    getAdditionalText() {
+        if (this.props.withAlbum !== undefined && this.props.withAlbum === false) {
+            return this.props.song.artist;
+        }
+
+        return `${this.props.song.artist}, ${this.props.song.album}`;
+    }
+
     render() {
         return (
             <TouchableOpacity
@@ -41,17 +50,7 @@ export class SongSmall extends React.PureComponent {
                         ]}
                         numberOfLines={1}
                     >
-                        {this.props.song.artist},
-                    </Text>
-                    <Text> </Text>
-                    <Text
-                        style={[
-                            styles.text,
-                            this.props.highlighted ? styles.highlighted : null,
-                        ]}
-                        numberOfLines={1}
-                    >
-                        {this.props.song.album}
+                        {this.getAdditionalText()}
                     </Text>
                 </View>
             </TouchableOpacity>

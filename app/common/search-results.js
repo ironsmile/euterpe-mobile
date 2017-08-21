@@ -112,10 +112,10 @@ export class SearchResultsRenderer extends React.Component {
                                 key={index}
                                 album={item}
                                 onSelect={() => {
-                                    this.props.dispatch(playAlbum(
-                                        item,
-                                        this.props.onError
-                                    ));
+                                    this.props.navigation.navigate(
+                                        'SearchAlbum',
+                                        { album: item }
+                                    );
                                 }}
                             />
                         ))}
@@ -134,8 +134,7 @@ export class SearchResultsRenderer extends React.Component {
                                 key={index}
                                 song={item}
                                 onSelect={() => {
-                                    this.props.dispatch(setPlaylist([item]));
-                                    this.props.dispatch(setTrack(0, this.props.onError));
+                                    this.props.dispatch(setPlaylist([item], true));
                                 }}
                                 noLeftRightPadding={true}
                             />
