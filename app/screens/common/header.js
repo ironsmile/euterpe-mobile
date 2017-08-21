@@ -11,7 +11,7 @@ import {
 import D from './dimensions';
 import { PlatformIcon } from '../../common/platform-icon';
 
-export const headerHeight = 44;
+export const headerHeight = 54;
 
 export default (props) => {
 
@@ -43,7 +43,7 @@ export default (props) => {
                     onPress={props.onBackButton}
                 >
                     <View style={styles.backButtonContainer}>
-                        <PlatformIcon platform="arrow-back" color="white" size={22} />
+                        <PlatformIcon platform="arrow-back" color="white" size={28} />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.backButtonTitleContainer}>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     },
 
     backButtonContainer: {
-        width: 28,
+        width: 32,
         height: 28,
         justifyContent: 'center',
         alignItems: 'center',
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     },
 
     backButtonTitleContainer: {
-        width: D.width - 56,
+        width: D.width - 64,
         alignItems: 'center',
         justifyContent: 'center',
         // backgroundColor: 'blue',
