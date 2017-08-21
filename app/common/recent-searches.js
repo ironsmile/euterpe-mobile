@@ -9,9 +9,11 @@ import {
     Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { PlatformIcon } from './platform-icon';
-import { gs } from '../styles/global';
-import { FOOTER_HEIGHT } from '../screens/common/footer';
+
+import { gs } from '@styles/global';
+import { FOOTER_HEIGHT } from '@screens/common/footer';
+import { PlatformIcon } from '@components/platform-icon';
+import { Helpful } from '@components/helpful';
 
 class ClearSearches extends React.PureComponent {
     render() {
@@ -76,24 +78,17 @@ class RecentSearchesRenderer extends React.PureComponent {
     renderHelpfulScreen() {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.helpfulContainer}>
-                    <PlatformIcon
+                <Helpful
+                    title="Search Your Music"
+                    firstLine="Listen to your own songs, artists,"
+                    secondLine="albums. Wherever you go they would follow."
+                    icon={(<PlatformIcon
                         ios="ios-search-outline"
                         md="md-search"
                         color="#aeafb3"
                         size={128}
-                    />
-                    <Text style={styles.helpfulHeader} numberOfLines={1}>
-                        Search Your Music
-                    </Text>
-                    <Text style={styles.helpfulText}>
-                        Listen to your own songs, artists,
-                    </Text>
-                    <Text style={styles.helpfulText}>
-                        albums. Wherever you go they would follow.
-                    </Text>
-                    <View style={{ height: FOOTER_HEIGHT }} />
-                </View>
+                    />)}
+                />
             </TouchableWithoutFeedback>
         );
     }
@@ -124,22 +119,6 @@ const styles = StyleSheet.create({
     },
     rotatedIcon: {
         transform: [{ rotate: '-45deg' }],
-    },
-    helpfulContainer: {
-        height: '100%',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-    },
-    helpfulHeader: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 18,
-        marginBottom: 16,
-    },
-    helpfulText: {
-        color: '#aeafb3',
     },
 });
 
