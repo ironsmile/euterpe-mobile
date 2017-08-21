@@ -12,6 +12,7 @@ import {
     SET_IS_LOADING_STATUS,
     TRACK_ENDED,
     SELECT_TRACK,
+    APPEND_IN_PLAYLIST,
 } from '@reducers/playing';
 
 import MediaControl from '@components/media-control-shim';
@@ -46,6 +47,11 @@ export const setPlaylist = (tracks, startPlaying = false) => {
         }
     };
 };
+
+export const appendToPlaylist = (songs) => ({
+    type: APPEND_IN_PLAYLIST,
+    songs,
+});
 
 export const togglePlaying = (play, fromCallManager = false, errorHandler = undefined) => {
 

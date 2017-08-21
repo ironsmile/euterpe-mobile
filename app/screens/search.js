@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { SearchResults } from '../common/search-results';
 import { RecentSearches } from '../common/recent-searches';
 import _ from 'lodash';
-import DropdownAlert from 'react-native-dropdownalert'
+import DropdownAlert from 'react-native-dropdownalert';
 
 import { HttpmsService } from '../common/httpms-service';
 import {

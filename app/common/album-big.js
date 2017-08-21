@@ -5,6 +5,7 @@ import { SongSmall } from '@components/song-small';
 import { headerHeight } from '@screens/common/header';
 import Images from '@assets/images';
 import D from '@screens/common/dimensions';
+import { PlatformIcon } from '@components/platform-icon';
 
 class QueueItem extends React.PureComponent {
     _onPress = () => {
@@ -77,6 +78,22 @@ export class AlbumBig extends React.PureComponent {
                         </View>
                     </TouchableOpacity>
 
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this.props.onAddToQueue) {
+                                this.props.onAddToQueue();
+                            }
+                        }}
+                    >
+                        <View style={styles.addToQueueButton}>
+                            <PlatformIcon platform="list" size={22}
+                                style={styles.addToQueueButtonIcon} />
+                            <Text style={styles.addToQueueButtonText}>
+                                Append In Play Queue
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+
                     <Text style={styles.includes}>
                         Includes
                     </Text>
@@ -119,7 +136,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-        marginTop: 15,
+        marginTop: 30,
     },
     albumImage: {
         width: D.width * (2/5),
@@ -159,5 +176,21 @@ const styles = StyleSheet.create({
     footer: {
         width: 100,
         height: 40,
-    }
+    },
+    addToQueueButton: {
+        marginTop: 10,
+        height: 30,
+        paddingLeft: 10,
+        paddingRight: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    addToQueueButtonText: {
+        color: '#aeafb3',
+    },
+    addToQueueButtonIcon: {
+        color: '#aeafb3',
+        marginRight: 10,
+    },
 });

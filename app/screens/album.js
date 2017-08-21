@@ -8,13 +8,15 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import DropdownAlert from 'react-native-dropdownalert';
 
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { Helpful } from '@components/helpful';
 import { HttpmsService } from '@components/httpms-service';
 import { AlbumBig } from '@components/album-big';
-import { setPlaylist } from '@actions/playing';
+import { setPlaylist, appendToPlaylist } from '@actions/playing';
+import { gs } from '@styles/global';
 
 class AlbumScreenRenderer extends React.Component {
     constructor(props) {
@@ -146,20 +148,35 @@ class AlbumScreenRenderer extends React.Component {
                 onPressSong={(song) => {
                     this.props.dispatch(setPlaylist([song], true));
                 }}
+                onAddToQueue={() => {
+                    this.props.dispatch(appendToPlaylist(this.state.songs, true));
+                    this.dropdown.alertWithType(
+                        'success',
+                        'Queue updated',
+                        `${this.state.songs.length} songs added to queue.`
+                    );
+                }}
             />
         );
     }
 
     render() {
         return (
-            <Screen
-                navigation={this.props.navigation}
-                header={this.getHeader()}
-            >
-                <View style={styles.container}>
-                    {this.renderBody()}
-                </View>
-            </Screen>
+            <View style={[{height: '100%', width: '100%'}, gs.bg]}>
+                <Screen
+                    navigation={this.props.navigation}
+                    header={this.getHeader()}
+                >
+                    <View style={styles.container}>
+                        {this.renderBody()}
+                    </View>
+                </Screen>
+                <DropdownAlert
+                    ref={(ref) => this.dropdown = ref}
+                    updateStatusBar={false}
+                    closeInterval={2000}
+                />
+            </View>
         );
     }
 }

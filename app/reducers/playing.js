@@ -44,6 +44,15 @@ export const playingReducer = (state = initialState, action) => {
                 now: null,
             };
 
+        case APPEND_IN_PLAYLIST:
+            return {
+                ...state,
+                playlist: [
+                    ...state.playlist,
+                    ...action.songs,
+                ],
+            };
+
         case SELECT_TRACK:
             return {
                 ...state,
@@ -79,5 +88,6 @@ export const NEXT = 'Playing/Next';
 export const PREVIOUS = 'Playing/Previous';
 export const SELECT_TRACK = 'Playing/SelectTrack';
 export const SET_PLAYLIST = 'Playing/SetPlaylist';
+export const APPEND_IN_PLAYLIST = 'Playing/AppendInPlaylist';
 export const SET_IS_LOADING_STATUS = 'Playing/SetLoadigStatus';
 export const TRACK_ENDED = 'Playing/TrackEnded';
