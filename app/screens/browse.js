@@ -1,7 +1,9 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { Screen } from './screen';
+
 import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
+import { Screen } from '@screens/screen';
+import { Helpful } from '@components/helpful';
 
 export class BrowseScreen extends React.Component {
 
@@ -20,26 +22,13 @@ export class BrowseScreen extends React.Component {
                 title='BROWSE'
                 navigation={this.props.navigation}
             >
-                <View style={styles.container}>
-                    <Text style={styles.text}>
-                        There is nothing to browse.
-                    </Text>
-                </View>
+                <Helpful
+                    iconName="alert"
+                    title="Unsupported"
+                    firstLine="The HTTPMS server doesn't support browsing."
+                    secondLine="Upgrade it to the latest version."
+                />
             </Screen>
         )
     }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'stretch',
-  },
-  text: {
-    color: 'white',
-    marginTop: 50,
-    textAlign: 'center',
-  },
-});
