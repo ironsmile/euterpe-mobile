@@ -20,6 +20,7 @@ import { connect } from 'react-redux';
 import { togglePlaying } from '../../actions/playing';
 import { TrackProgress } from '../../common/track-progress';
 import { PlatformIcon } from '../../common/platform-icon';
+import { gs } from '@styles/global';
 
 export const FOOTER_HEIGHT = 38;
 export const TABBAR_HEIGHT = 56;
@@ -264,14 +265,14 @@ class FooterRenderer extends Component {
                         <TouchableWithoutFeedback onPress={() => this.scrollUp()}>
                             <View style={styles.nowPlayingContainer}>
                                 <Text
-                                    style={styles.title}
+                                    style={[gs.bolder, styles.title]}
                                     numberOfLines={1}
                                 >
                                     {nowPlaying.title}
                                 </Text>
                                 <Text style={styles.albumDivider}>·</Text>
                                 <Text
-                                    style={styles.author}
+                                    style={[gs.bolder, styles.author]}
                                     numberOfLines={1}
                                 >
                                     {nowPlaying.artist}
@@ -382,13 +383,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 12,
         color: 'white',
-        fontWeight: '600',
     },
 
     author: {
         fontSize: 12,
         color: '#aeafb3',
-        fontWeight: '600',
     },
 
     music: {
