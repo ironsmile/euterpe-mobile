@@ -37,6 +37,8 @@ export class SettingsRenderer extends React.Component {
                         }}
                         underlineColorAndroid="rgba(0,0,0,0)"
                         keyboardAppearance="dark"
+                        maxLength={256}
+                        selectTextOnFocus={true}
                     />
 
                     <TextInput
@@ -59,6 +61,8 @@ export class SettingsRenderer extends React.Component {
                         }}
                         underlineColorAndroid="rgba(0,0,0,0)"
                         keyboardAppearance="dark"
+                        maxLength={256}
+                        selectTextOnFocus={true}
                     />
 
                     <TextInput
@@ -80,6 +84,8 @@ export class SettingsRenderer extends React.Component {
                         onSubmitEditing={Keyboard.dismiss}
                         underlineColorAndroid="rgba(0,0,0,0)"
                         keyboardAppearance="dark"
+                        maxLength={256}
+                        selectTextOnFocus={true}
                     />
                 </View>
             </TouchableWithoutFeedback>

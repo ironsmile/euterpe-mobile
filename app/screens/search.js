@@ -149,6 +149,8 @@ class SearchRenderer extends React.Component {
                         ref={(ref) => {
                             this.searchInput = ref;
                         }}
+                        maxLength={256}
+                        selectTextOnFocus={true}
                     ></TextInput>
                     {cancelButton}
                 </View>
