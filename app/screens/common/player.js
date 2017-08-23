@@ -26,7 +26,7 @@ import {
 import { togglePlayerViewState } from '../../actions/player';
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
-import { TimedProgress } from '../../common/track-progress';
+import { TimedProgress, TrackProgress } from '../../common/track-progress';
 import Images from '@assets/images';
 import MediaControl from '../../common/media-control-shim';
 import { FOOTER_HEIGHT } from './footer';
@@ -305,9 +305,10 @@ class PlaylerRenderer extends React.Component {
                     <Text style={styles.queueHeader}>Now Playing</Text>
                     <NowPlaying
                         song={this.props.playing}
-                        style={{ marginBottom: 20 }}
+                        style={{ marginBottom: 5 }}
                         loading={this.props.trackLoading}
                     />
+                    <TrackProgress style={{ marginBottom: 13 }} />
                     <Text style={styles.queueHeader}>Play Queue</Text>
                 </View>
 
