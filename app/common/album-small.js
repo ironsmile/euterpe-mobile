@@ -12,6 +12,26 @@ import Images from '@assets/images';
 import D from '@screens/common/dimensions';
 
 export class AlbumSmall extends React.PureComponent {
+
+    getAdditionalText() {
+        let text = this.props.album.artist;
+
+        if (this.props.withSongsCount === true) {
+            text = `${this.props.album.songsCount} songs`;
+        }
+
+        return (
+            <View style={styles.additional}>
+                <Text
+                    numberOfLines={1}
+                    style={styles.text}
+                >
+                    {text}
+                </Text>
+            </View>
+        );
+    }
+
     render() {
         return (
             <TouchableOpacity
@@ -33,14 +53,7 @@ export class AlbumSmall extends React.PureComponent {
                         >
                             {this.props.album.album}
                         </Text>
-                        <View style={styles.additional}>
-                            <Text
-                                numberOfLines={1}
-                                style={styles.text}
-                            >
-                                {this.props.album.artist}
-                            </Text>
-                        </View>
+                        {this.getAdditionalText()}
                     </View>
                     <Icon name="ios-arrow-forward" color="#aeafb3" size={16} />
                 </View>

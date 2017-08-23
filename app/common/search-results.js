@@ -93,7 +93,10 @@ export class SearchResultsRenderer extends React.Component {
                                 key={index}
                                 artist={item}
                                 onSelect={() => {
-                                    this.props.navigation.navigate('SearchArtist');
+                                    this.props.navigation.navigate(
+                                        'SearchArtist',
+                                        { artist: item }
+                                    );
                                 }}
                             />
                         ))}
