@@ -162,7 +162,7 @@ class AlbumScreenRenderer extends React.Component {
 
     render() {
         return (
-            <View style={[{height: '100%', width: '100%'}, gs.bg]}>
+            <View style={styles.wrapperView}>
                 <Screen
                     navigation={this.props.navigation}
                     header={this.getHeader()}
@@ -193,6 +193,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column'
+    },
+    wrapperView: {
+        width: '100%',
+        height: '100%',
     },
 });
 

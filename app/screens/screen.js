@@ -25,34 +25,38 @@ class ScreenRenderer extends Component {
         const footerHeight = nowPlaying.now ? TOGETHER : TABBAR_HEIGHT;
 
         return (
-            <View style={[
-                gs.bg,
-                styles.container,
-                { height: D.height - footerHeight }
-            ]}>
-                <StatusBar
-                    ref="status"
-                    translucent
-                    animated={true}
-                    barStyle={'light-content'}
-                    backgroundColor="transparent"
-                />
-                <View style={[styles.children]}>
-                    {this.props.children}
+            <View style={[gs.bg, styles.backgroundView]}>
+                <View style={[
+                    styles.container,
+                    { height: D.height - footerHeight }
+                ]}>
+                    <StatusBar
+                        ref="status"
+                        translucent
+                        animated={true}
+                        barStyle={'light-content'}
+                        backgroundColor="transparent"
+                    />
+                    <View style={[styles.children]}>
+                        {this.props.children}
+                    </View>
+                    {header}
                 </View>
-                {header}
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    backgroundView: {
+        height: '100%',
+    },
     container: {
         flexDirection: 'column',
     },
     children: {
         flex: 1,
-    }
+    },
 });
 
 const mapStateToProps = (state) => ({
