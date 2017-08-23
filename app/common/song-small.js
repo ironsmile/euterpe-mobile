@@ -10,7 +10,7 @@ import {
 export class SongSmall extends React.PureComponent {
 
     getAdditionalText() {
-        if (this.props.withAlbum !== undefined && this.props.withAlbum === false) {
+        if (this.props.withAlbum === false) {
             return this.props.song.artist;
         }
 
