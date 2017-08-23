@@ -268,6 +268,14 @@ export const setTrack = (index, errorHandler, successHandler) => {
         dispatch(trackIsLoading());
 
         dispatch(downloadSong(track, errorHandler)).then((songPath) => {
+
+            if (player !== null) {
+                console.error('Finished downloading song but an other one is currenlty playing');
+                player.pause();
+                player.release();
+                player = null;
+            }
+
             // console.log(`Track ${track.id} downloaded, creating player instance`);
 
             player = new Sound(songPath, undefined, (error) => {
@@ -336,6 +344,13 @@ export const restorePlayingState = (errorHandler) => {
         dispatch(trackIsLoading());
 
         dispatch(downloadSong(track, errorHandler)).then((songPath) => {
+
+            if (player !== null) {
+                console.error('Finished downloading song but an other one is currenlty playing');
+                player.pause();
+                player.release();
+                player = null;
+            }
 
             player = new Sound(songPath, undefined, (error) => {
                 if (error) {
