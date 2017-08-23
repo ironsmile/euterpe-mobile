@@ -6,6 +6,7 @@ const initialState = {
     curretIndex: null,
     shuffle: false,
     repeat: false,
+    repeatSong: false,
 };
 
 export const playingReducer = (state = initialState, action) => {
@@ -30,9 +31,17 @@ export const playingReducer = (state = initialState, action) => {
             };
 
         case TOGGLE_REPEAT:
+            if (state.repeat && !state.repeatSong) {
+                return {
+                    ...state,
+                    repeatSong: true,
+                };
+            }
+
             return {
                 ...state,
                 repeat: !state.repeat,
+                repeatSong: false,
             };
 
         case SET_PLAYLIST:

@@ -248,6 +248,8 @@ class PlaylerRenderer extends React.Component {
             );
         }
 
+        const repeatIconName = this.props.repeatSong ? 'sync' : 'repeat';
+
         return (
             <View style={styles.buttonContainer}>
                 <TouchableWithoutFeedback
@@ -271,7 +273,7 @@ class PlaylerRenderer extends React.Component {
                     }}
                 >
                     <View style={styles.smallButtonContainer}>
-                        <PlatformIcon platform="repeat" size={26}
+                        <PlatformIcon platform={repeatIconName} size={26}
                             color={this.props.repeat ? iconColor : inactiveColor}
                             style={this.props.repeat ? styles.repeatToggleActive : null}
                         />
@@ -487,6 +489,7 @@ const mapStateToProps = (state) => ({
     playlist: state.playing.playlist,
     shuffle: state.playing.shuffle,
     repeat: state.playing.repeat,
+    repeatSong: state.playing.repeatSong,
     player: state.player,
     settings: state.settings,
 });

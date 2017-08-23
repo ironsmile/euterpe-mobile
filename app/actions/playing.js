@@ -170,12 +170,18 @@ export const trackEnded = (errorHandler) => {
 
     return (dispatch, getState) => {
         const state = getState();
-        const { currentIndex } = state.playing;
+        const { currentIndex, repeatSong } = state.playing;
 
         // console.log(`Executing trackEnded for track with index ${currentIndex}`);
 
         cleanupProgressTimer();
         dispatch(stopPlaying(false));
+
+        if (repeatSong) {
+            dispatch(setTrack(currentIndex, errorHandler));
+
+            return;
+        }
 
         const playlistLen = state.playing.playlist.length;
 
