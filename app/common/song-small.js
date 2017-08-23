@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     },
     textTitle: {
         color: 'white',
+        fontWeight: '500',
     },
     additional: {
         flex: 1,
