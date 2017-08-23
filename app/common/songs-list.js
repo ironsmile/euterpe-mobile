@@ -37,6 +37,12 @@ export class SongsList extends React.PureComponent {
         />
     );
 
+    _renderFooter = () => {
+        return (
+            <View style={styles.footer}></View>
+        );
+    }
+
     _renderHeader = () => {
         let headerAvoider = null;
 
@@ -68,6 +74,7 @@ export class SongsList extends React.PureComponent {
                 keyExtractor={this._keyExtractor}
                 renderItem={this._renderItem}
                 ListHeaderComponent={this._renderHeader()}
+                ListFooterComponent={this._renderFooter()}
             />
         );
     }
@@ -83,5 +90,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         color: 'white',
+    },
+    footer: {
+        width: 100,
+        height: 40,
     },
 });
