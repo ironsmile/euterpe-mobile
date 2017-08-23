@@ -6,6 +6,7 @@ import {
     StyleSheet,
 } from 'react-native';
 
+import { gs } from '@styles/global';
 
 export class SongSmall extends React.PureComponent {
 
@@ -35,6 +36,7 @@ export class SongSmall extends React.PureComponent {
             >
                 <Text
                     style={[
+                        gs.bolder,
                         styles.textTitle,
                         this.props.highlighted ? styles.highlighted : null,
                     ]}
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
     },
     textTitle: {
         color: 'white',
-        fontWeight: '500',
     },
     additional: {
         flex: 1,

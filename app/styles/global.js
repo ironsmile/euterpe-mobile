@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 const fontFamily = 'Verdana';
 
 export const gs = {
@@ -8,7 +10,10 @@ export const gs = {
 
   font: {
     color: 'white',
-    // fontFamily: fontFamily,
+  },
+
+  bolder: {
+    fontWeight: (Platform.OS === 'ios') ? '500' : 'normal',
   },
 
 };
@@ -27,7 +32,6 @@ export const hs = {
     shadowRadius: 0,
     shadowOffset: null,
     elevation: 0,
-    // backgroundColor: 'red',
   },
 
   font: {

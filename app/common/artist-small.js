@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import Images from '@assets/images';
 import D from '@screens/common/dimensions';
+import { gs } from '@styles/global';
 
 export class ArtistSmall extends React.PureComponent {
     render() {
@@ -32,7 +33,10 @@ export class ArtistSmall extends React.PureComponent {
                     <View style={styles.resultContainer}>
                         <Text
                             numberOfLines={1}
-                            style={styles.textTitle}
+                            style={[
+                                gs.bolder,
+                                styles.textTitle
+                            ]}
                         >
                             {this.props.artist}
                         </Text>
@@ -58,7 +62,6 @@ const styles = StyleSheet.create({
     },
     textTitle: {
         color: 'white',
-        fontWeight: '500',
     },
     resultRowOuterContainer: {
         flexDirection: 'row',
