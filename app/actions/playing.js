@@ -165,7 +165,7 @@ export const trackIsLoading = () => {
     };
 };
 
-export const trackEnded = (errorHandler) => {
+export const trackEnded = (errorHandler, nextSongPressed = false) => {
     // console.log('Creating trackEnded action');
 
     return (dispatch, getState) => {
@@ -177,7 +177,7 @@ export const trackEnded = (errorHandler) => {
         cleanupProgressTimer();
         dispatch(stopPlaying(false));
 
-        if (repeatSong) {
+        if (repeatSong && !nextSongPressed) {
             dispatch(setTrack(currentIndex, errorHandler));
 
             return;
@@ -230,7 +230,7 @@ export const previousSongInQueue = () => {
 
 export const nextSongInQueue = () => {
     return (dispatch) => {
-        dispatch(trackEnded());
+        dispatch(trackEnded(null, true));
     };
 };
 
