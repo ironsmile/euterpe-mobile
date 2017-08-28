@@ -10,6 +10,7 @@ import {
     StatusBar,
     Platform,
     ActivityIndicator,
+    BackHandler,
 } from 'react-native';
 
 import D from './dimensions';
@@ -36,6 +37,16 @@ class FooterRenderer extends Component {
     open = false;
     hiding = false;
     offY = D.height - TOGETHER;
+
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.open) {
+                this.scrollDown();
+                return true;
+            }
+            return false;
+        });
+    }
 
     hideTabBarNavigation(dy) {
         let value = (this.offY + dy) % (D.height - TOGETHER);
