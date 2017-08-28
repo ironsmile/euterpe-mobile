@@ -15,12 +15,12 @@ import {
 
 import D from './dimensions';
 
-import Player from './player';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
-import { togglePlaying } from '../../actions/playing';
-import { TrackProgress } from '../../common/track-progress';
-import { PlatformIcon } from '../../common/platform-icon';
+import { togglePlaying } from '@actions/playing';
+import { TrackProgress } from '@components/track-progress';
+import { PlatformIcon } from '@components/platform-icon';
+import Player from './player';
 import { gs } from '@styles/global';
 
 export const FOOTER_HEIGHT = 38;
