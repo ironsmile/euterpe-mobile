@@ -1,7 +1,7 @@
 import { TabNavigator, StackNavigator, addNavigationHelpers } from 'react-navigation';
 import { SearchNavigator } from '@nav/tab-search';
+import { BrowseNavigator } from '@nav/tab-browse';
 import { HomeScreen } from '@screens/home';
-import { BrowseScreen } from '@screens/browse';
 import { LibraryScreen } from '@screens/lib';
 import { AboutScreen } from '@screens/about';
 import { TABBAR_HEIGHT } from '@screens/common/footer';
@@ -30,7 +30,7 @@ const navOptions = {
 
 export const HttpmsApp = TabNavigator({
     Home: { screen: HomeScreen, },
-    Browse: { screen: BrowseScreen },
+    Browse: { screen: BrowseNavigator },
     Search: { screen: SearchNavigator },
     Library: { screen: LibraryScreen },
     About: { screen: AboutScreen },

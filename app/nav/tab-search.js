@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackNavigator} from 'react-navigation';
+import { StackNavigator } from 'react-navigation';
 import { AlbumScreen } from '@screens/album';
 import { ArtistScreen } from '@screens/artist';
 import { SearchScreen } from '@screens/search';

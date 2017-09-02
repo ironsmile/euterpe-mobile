@@ -1,20 +1,10 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 
-import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import { Screen } from '@screens/screen';
 import { Helpful } from '@components/helpful';
 
 export class BrowseScreen extends React.Component {
-
-    static navigationOptions = ({ navigation }) => ({
-        tabBarLabel: CreateTabLabel('Browse'),
-        tabBarIcon: CreateTabIcon('ios-albums'),
-    });
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.navigation.state.key == "Browse";
-    }
 
     render() {
         return (
@@ -29,6 +19,6 @@ export class BrowseScreen extends React.Component {
                     secondLine="Upgrade it to the latest version."
                 />
             </Screen>
-        )
+        );
     }
 }
