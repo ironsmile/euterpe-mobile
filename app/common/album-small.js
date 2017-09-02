@@ -1,16 +1,11 @@
 import React from 'react';
 import {
-    View,
-    Text,
     StyleSheet,
-    TouchableOpacity,
     Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import Images from '@assets/images';
-import D from '@screens/common/dimensions';
-import { gs } from '@styles/global';
+import { SmallClickable } from '@components/small-clickable';
 
 export class AlbumSmall extends React.PureComponent {
 
@@ -21,81 +16,32 @@ export class AlbumSmall extends React.PureComponent {
             text = `${this.props.album.songsCount} songs`;
         }
 
+        return text;
+    }
+
+    getAlbumImage() {
         return (
-            <View style={styles.additional}>
-                <Text
-                    numberOfLines={1}
-                    style={styles.text}
-                >
-                    {text}
-                </Text>
-            </View>
+            <Image
+                style={styles.resultRowImage}
+                source={Images.unknownAlbum}
+            />
         );
     }
 
     render() {
         return (
-            <TouchableOpacity
-                onPress={() => {
-                    this.props.onSelect();
-                }}
-            >
-                <View style={styles.resultRowOuterContainer}>
-                    <View style={styles.resultRowContainer}>
-                        <Image
-                            style={styles.resultRowImage}
-                            source={Images.unknownAlbum}
-                        />
-                    </View>
-                    <View style={styles.resultContainer}>
-                        <Text
-                            numberOfLines={1}
-                            style={[
-                                gs.bolder,
-                                styles.textTitle,
-                            ]}
-                        >
-                            {this.props.album.album}
-                        </Text>
-                        {this.getAdditionalText()}
-                    </View>
-                    <Icon name="ios-arrow-forward" color="#aeafb3" size={16} />
-                </View>
-            </TouchableOpacity>
+            <SmallClickable
+                onSelect={this.props.onSelect}
+                mainText={this.props.album.album}
+                additionalText={this.getAdditionalText()}
+                leftRectangle={this.getAlbumImage()}
+                rightIcon="ios-arrow-forward"
+            />
         );
     }
 }
 
 const styles = StyleSheet.create({
-    resultContainer: {
-        paddingTop: 3,
-        justifyContent: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
-        width: D.width - 65,
-    },
-    text: {
-        fontSize: 12,
-        color: '#aeafb3',
-    },
-    textTitle: {
-        color: 'white',
-    },
-    additional: {
-        flex: 1,
-        flexDirection: 'row',
-    },
-    resultRowOuterContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        paddingTop: 2,
-        paddingBottom: 2,
-    },
-    resultRowContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
     resultRowImage: {
         width: 40,
         height: 40,
