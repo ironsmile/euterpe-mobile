@@ -1,3 +1,4 @@
+import React from 'react';
 import { TabNavigator, StackNavigator, addNavigationHelpers } from 'react-navigation';
 import { SearchNavigator } from '@nav/tab-search';
 import { BrowseNavigator } from '@nav/tab-browse';

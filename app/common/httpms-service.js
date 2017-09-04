@@ -31,4 +31,18 @@ export class HttpmsService {
 
         return `${this.settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(song.album_id)}&at=${e(song.artist)}`;
     }
+
+    getBrowseArtistsURL() {
+        return `${this.settings.hostAddress}/browse/?by=artist&per-page=20`;
+    }
+
+    getBrowseAlbumsURL() {
+        return `${this.settings.hostAddress}/browse/?by=album&per-page=20`;
+    }
+
+    addressFromURI(uri) {
+        const noSlashes = uri.replace(/^\/+/, '');
+
+        return `${this.settings.hostAddress}/${noSlashes}`;
+    }
 }

@@ -21,7 +21,7 @@ class ArtistItem extends React.PureComponent {
 
 export class ArtistsList extends React.PureComponent {
 
-    _keyExtractor = (item, index) => item.artist;
+    _keyExtractor = (item, index) => index;
 
     _onPressItem = (artist) => {
         if (this.props.onPressItem) {
@@ -36,6 +36,12 @@ export class ArtistsList extends React.PureComponent {
             artist={item.artist}
         />
     );
+
+    _renderFooter = () => {
+        return (
+            <View style={styles.footer}></View>
+        );
+    }
 
     _renderHeader = () => {
         let headerAvoider = null;
@@ -68,6 +74,9 @@ export class ArtistsList extends React.PureComponent {
                 keyExtractor={this._keyExtractor}
                 renderItem={this._renderItem}
                 ListHeaderComponent={this._renderHeader()}
+                ListFooterComponent={this._renderFooter()}
+                onEndReachedThreshold={this.props.onEndReachedThreshold}
+                onEndReached={this.props.onEndReached}
             />
         );
     }
@@ -83,5 +92,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         color: 'white',
+    },
+    footer: {
+        width: 100,
+        height: 40,
     },
 });

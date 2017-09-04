@@ -7,7 +7,7 @@ import { SmallClickable } from '@components/small-clickable';
 import { PlatformIcon } from '@components/platform-icon';
 import { headerHeight } from '@screens/common/header';
 
-export class BrowseScreen extends React.Component {
+export class BrowseScreen extends React.PureComponent {
 
     getArtistsIcon() {
         return (
@@ -24,7 +24,7 @@ export class BrowseScreen extends React.Component {
         return (
             <PlatformIcon
                 style={styles.sectionIcon}
-                platform="musical-notes"
+                platform="disc"
                 color="#aeafb3"
                 size={30}
             />
@@ -37,6 +37,17 @@ export class BrowseScreen extends React.Component {
                 style={styles.sectionIcon}
                 ios="ios-book"
                 md="ios-book"
+                color="#aeafb3"
+                size={30}
+            />
+        );
+    }
+
+    getSongsIcon() {
+        return (
+            <PlatformIcon
+                style={styles.sectionIcon}
+                platform="musical-notes"
                 color="#aeafb3"
                 size={30}
             />
@@ -63,7 +74,9 @@ export class BrowseScreen extends React.Component {
                     </View>
 
                     <SmallClickable
-                        onSelect={() => {}}
+                        onSelect={() => {
+                            this.props.navigation.navigate('BrowseArtists');
+                        }}
                         mainText="Browse Artists"
                         leftRectangle={this.getArtistsIcon()}
                         rightIcon="ios-arrow-forward"
@@ -77,8 +90,15 @@ export class BrowseScreen extends React.Component {
                     />
 
                     <SmallClickable
+                        onSelect={() => {}}
+                        mainText="Browse Songs"
+                        leftRectangle={this.getSongsIcon()}
+                        rightIcon="ios-arrow-forward"
+                    />
+
+                    <SmallClickable
                         onSelect={() => {
-                            this.props.navigation.navigate('Library');
+                            this.props.screenProps.rootNavigation.navigate('Library');
                         }}
                         mainText="Offline Library"
                         leftRectangle={this.getLibraryIcon()}
@@ -95,7 +115,7 @@ export class BrowseScreen extends React.Component {
                     <View style={[styles.encouragmentContainer, styles.noMargins]}>
                         <TouchableOpacity
                             onPress={() => {
-                                this.props.navigation.navigate('Search');
+                                this.props.screenProps.rootNavigation.navigate('Search');
                             }}
                         >
                             <View style={styles.searchButton}>
