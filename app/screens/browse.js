@@ -83,7 +83,9 @@ export class BrowseScreen extends React.PureComponent {
                     />
 
                     <SmallClickable
-                        onSelect={() => {}}
+                        onSelect={() => {
+                            this.props.navigation.navigate('BrowseAlbums');
+                        }}
                         mainText="Browse Albums"
                         leftRectangle={this.getAlbumsIcon()}
                         rightIcon="ios-arrow-forward"

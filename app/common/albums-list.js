@@ -76,6 +76,8 @@ export class AlbumsList extends React.PureComponent {
                 renderItem={this._renderItem}
                 ListHeaderComponent={this._renderHeader()}
                 ListFooterComponent={this._renderFooter()}
+                onEndReachedThreshold={this.props.onEndReachedThreshold}
+                onEndReached={this.props.onEndReached}
             />
         );
     }

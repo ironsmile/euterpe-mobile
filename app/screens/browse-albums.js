@@ -13,9 +13,9 @@ import { HttpmsService } from '@components/httpms-service';
 import { Helpful } from '@components/helpful';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
-import { ArtistsList } from '@components/artists-list';
+import { AlbumsList } from '@components/albums-list';
 
-class BrowseArtistsScreenRenderer extends React.Component {
+class BrowseAlbumsScreenRenderer extends React.Component {
     constructor(props) {
         super(props);
 
@@ -23,22 +23,27 @@ class BrowseArtistsScreenRenderer extends React.Component {
 
         this.state = {
             isLoading: true,
+            loadingMoreResults: false,
             errorLoading: false,
             errorObj: null,
-            artists: [],
-            nextPage: httpms.getBrowseArtistsURL(),
+            albums: [],
+            nextPage: httpms.getBrowseAlbumsURL(),
             httpms,
         };
     }
 
     componentWillMount() {
-        this.getNextArtistsPage();
+        this.getNextAlbumsPage();
     }
 
-    getNextArtistsPage() {
+    getNextAlbumsPage() {
         if (!this.state.nextPage) {
             return;
         }
+
+        this.setState({
+            loadingMoreResults: true,
+        });
 
         fetch(this.state.nextPage, {
           method: 'GET',
@@ -56,8 +61,9 @@ class BrowseArtistsScreenRenderer extends React.Component {
         })
         .then((responseJson) => {
             this.setState({
-                artists: this.state.artists.concat(responseJson.data),
+                albums: this.state.albums.concat(responseJson.data),
                 isLoading: false,
+                loadingMoreResults: false,
                 nextPage: this.state.httpms.addressFromURI(responseJson.next),
                 errorLoading: false,
             });
@@ -66,6 +72,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
             this.setState({
                 errorLoading: true,
                 isLoading: false,
+                loadingMoreResults: false,
                 errorObj: error,
             });
 
@@ -76,7 +83,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
     getHeader() {
         return (
             <Header
-                title="BROWSE ARTISTS"
+                title="BROWSE ALBUMS"
                 onBackButton={() => {
                     this.props.navigation.goBack();
                 }}
@@ -88,7 +95,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
         if (!this.state.nextPage) {
             return;
         }
-        this.getNextArtistsPage();
+        this.getNextAlbumsPage();
     }
 
     renderBody() {
@@ -106,13 +113,13 @@ class BrowseArtistsScreenRenderer extends React.Component {
 
         return (
             <View style={styles.container}>
-                <ArtistsList
+                <AlbumsList
                     avoidHeader={true}
-                    data={this.state.artists}
-                    onPressItem={(artist) => {
+                    albums={this.state.albums}
+                    onPressItem={(album) => {
                         this.props.navigation.navigate(
-                            'SearchArtist',
-                            { artist }
+                            'SearchAlbum',
+                            { album }
                         );
                     }}
                     onEndReachedThreshold={0.5}
@@ -126,8 +133,8 @@ class BrowseArtistsScreenRenderer extends React.Component {
         return (
             <Helpful
                 iconName="warning"
-                title="Error Loading Artists"
-                firstLine="Getting artists failed due to network error."
+                title="Error Loading Albums"
+                firstLine="Getting albums failed due to network error."
                 secondLine={this.state.errorObj}
             />
         );
@@ -164,4 +171,4 @@ const mapStateToProps = (state) => ({
     settings: state.settings,
 });
 
-export const BrowseArtistsScreen = connect(mapStateToProps)(BrowseArtistsScreenRenderer);
+export const BrowseAlbumsScreen = connect(mapStateToProps)(BrowseAlbumsScreenRenderer);
