@@ -19,4 +19,6 @@ footer menu color: #222326
   "забил" по някаква причина и след това от play queue-то избереш предната и после пак тази.
 * status bar-а на 4.4.2 андроид не е съвсем прозрачен
 * navigation state-a след първото ниво не се запазва в redux
-* track progress в playlist view-то
+* theme support
+* "Various artists" in search album results
+* crash с "json syntax error" в browse albums
