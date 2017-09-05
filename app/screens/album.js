@@ -120,7 +120,7 @@ class AlbumScreenRenderer extends React.Component {
                 iconName="warning"
                 title="Error Loading Album"
                 firstLine="Getting info for this album failed."
-                secondLine={this.state.errorObj}
+                secondLine={this.state.errorObj.toString()}
             />
         );
     }

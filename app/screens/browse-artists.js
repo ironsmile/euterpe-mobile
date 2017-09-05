@@ -128,7 +128,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
                 iconName="warning"
                 title="Error Loading Artists"
                 firstLine="Getting artists failed due to network error."
-                secondLine={this.state.errorObj}
+                secondLine={this.state.errorObj.toString()}
             />
         );
     }

@@ -140,7 +140,7 @@ class ArtistScreenRenderer extends React.Component {
                 iconName="warning"
                 title="Error Loading Artist"
                 firstLine="Getting info for this artist failed."
-                secondLine={this.state.errorObj}
+                secondLine={this.state.errorObj.toString()}
             />
         );
     }

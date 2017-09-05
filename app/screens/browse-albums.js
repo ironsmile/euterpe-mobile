@@ -135,7 +135,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
                 iconName="warning"
                 title="Error Loading Albums"
                 firstLine="Getting albums failed due to network error."
-                secondLine={this.state.errorObj}
+                secondLine={this.state.errorObj.toString()}
             />
         );
     }
