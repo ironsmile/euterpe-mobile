@@ -4,6 +4,7 @@ import { AlbumScreen } from '@screens/album';
 import { ArtistScreen } from '@screens/artist';
 import { BrowseScreen } from '@screens/browse';
 import { BrowseArtistsScreen } from '@screens/browse-artists';
+import { BrowseSongsScreen } from '@screens/browse-songs';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 
 const BrowseNavigatorConfig = StackNavigator({
@@ -11,6 +12,7 @@ const BrowseNavigatorConfig = StackNavigator({
     SearchArtist: { screen: ArtistScreen },
     BrowseMain: { screen: BrowseScreen },
     BrowseArtists: { screen: BrowseArtistsScreen },
+    BrowseSongs: { screen: BrowseSongsScreen },
 }, {
     initialRouteName: 'BrowseMain',
     headerMode: 'none',
