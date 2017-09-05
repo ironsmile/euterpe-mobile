@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, StyleSheet, Text } from 'react-native';
+import { FlatList, View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 
 import { AlbumSmall } from '@components/album-small';
 import { headerHeight } from '@screens/common/header';
@@ -39,8 +39,16 @@ export class AlbumsList extends React.PureComponent {
     );
 
     _renderFooter = () => {
+        if (!this.props.showLoadingIndicator) {
+            return (
+                <View style={styles.footer}></View>
+            );
+        }
+
         return (
-            <View style={styles.footer}></View>
+            <View style={styles.footerWithLoading}>
+                <ActivityIndicator />
+            </View>
         );
     }
 
@@ -97,5 +105,9 @@ const styles = StyleSheet.create({
     footer: {
         width: 100,
         height: 40,
+    },
+    footerWithLoading: {
+        paddingTop: 10,
+        paddingBottom: 20,
     },
 });

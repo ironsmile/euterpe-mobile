@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, StyleSheet, Text } from 'react-native';
+import { FlatList, View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 
 import { ArtistSmall } from '@components/artist-small';
 import { headerHeight } from '@screens/common/header';
@@ -38,8 +38,16 @@ export class ArtistsList extends React.PureComponent {
     );
 
     _renderFooter = () => {
+        if (!this.props.showLoadingIndicator) {
+            return (
+                <View style={styles.footer}></View>
+            );
+        }
+
         return (
-            <View style={styles.footer}></View>
+            <View style={styles.footerWithLoading}>
+                <ActivityIndicator />
+            </View>
         );
     }
 
@@ -96,5 +104,9 @@ const styles = StyleSheet.create({
     footer: {
         width: 100,
         height: 40,
+    },
+    footerWithLoading: {
+        paddingTop: 10,
+        paddingBottom: 20,
     },
 });

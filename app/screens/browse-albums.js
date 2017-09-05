@@ -30,10 +30,20 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             nextPage: httpms.getBrowseAlbumsURL(),
             httpms,
         };
+
+        this._mounted = false;
     }
 
     componentWillMount() {
         this.getNextAlbumsPage();
+    }
+
+    componentDidMount() {
+        this._mounted = true;
+    }
+
+    componentWillUnmount() {
+        this._mounted = false;
     }
 
     getNextAlbumsPage() {
@@ -41,11 +51,15 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             return;
         }
 
+        if (this.state.loadingMoreResults) {
+            return;
+        }
+
         this.setState({
             loadingMoreResults: true,
         });
 
-        fetch(this.state.nextPage, {
+        this.fetchJob = fetch(this.state.nextPage, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -60,6 +74,10 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             return response.json();
         })
         .then((responseJson) => {
+            if (!this._mounted) {
+                return;
+            }
+
             this.setState({
                 albums: this.state.albums.concat(responseJson.data),
                 isLoading: false,
@@ -69,6 +87,10 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             });
         })
         .catch((error) => {
+            if (!this._mounted) {
+                return;
+            }
+
             this.setState({
                 errorLoading: true,
                 isLoading: false,
@@ -122,8 +144,9 @@ class BrowseAlbumsScreenRenderer extends React.Component {
                             { album }
                         );
                     }}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={0.2}
                     onEndReached={this.endReached.bind(this)}
+                    showLoadingIndicator={this.state.loadingMoreResults}
                 />
             </View>
         );

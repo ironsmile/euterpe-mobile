@@ -23,6 +23,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
 
         this.state = {
             isLoading: true,
+            loadingMoreResults: false,
             errorLoading: false,
             errorObj: null,
             artists: [],
@@ -35,10 +36,26 @@ class BrowseArtistsScreenRenderer extends React.Component {
         this.getNextArtistsPage();
     }
 
+    componentDidMount() {
+        this._mounted = true;
+    }
+
+    componentWillUnmount() {
+        this._mounted = false;
+    }
+
     getNextArtistsPage() {
         if (!this.state.nextPage) {
             return;
         }
+
+        if (this.state.loadingMoreResults) {
+            return;
+        }
+
+        this.setState({
+            loadingMoreResults: true,
+        });
 
         fetch(this.state.nextPage, {
           method: 'GET',
@@ -55,17 +72,27 @@ class BrowseArtistsScreenRenderer extends React.Component {
             return response.json();
         })
         .then((responseJson) => {
+            if (!this._mounted) {
+                return;
+            }
+
             this.setState({
                 artists: this.state.artists.concat(responseJson.data),
                 isLoading: false,
+                loadingMoreResults: false,
                 nextPage: this.state.httpms.addressFromURI(responseJson.next),
                 errorLoading: false,
             });
         })
         .catch((error) => {
+            if (!this._mounted) {
+                return;
+            }
+
             this.setState({
                 errorLoading: true,
                 isLoading: false,
+                loadingMoreResults: false,
                 errorObj: error,
             });
 
@@ -115,8 +142,9 @@ class BrowseArtistsScreenRenderer extends React.Component {
                             { artist }
                         );
                     }}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={0.2}
                     onEndReached={this.endReached.bind(this)}
+                    showLoadingIndicator={this.state.loadingMoreResults}
                 />
             </View>
         );
