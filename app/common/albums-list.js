@@ -21,7 +21,7 @@ class AlbumItem extends React.PureComponent {
 
 export class AlbumsList extends React.PureComponent {
 
-    _keyExtractor = (item, index) => item.albumID;
+    _keyExtractor = (item, index) => item.album_id;
 
     _onPressItem = (album) => {
         if (this.props.onPressItem) {

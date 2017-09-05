@@ -34,7 +34,7 @@ class AlbumScreenRenderer extends React.Component {
         const { params } = this.props.navigation.state;
         const { album } = this.state;
 
-        if (!album || album.albumID !== params.album.albumID) {
+        if (!album || album.album_id !== params.album.album_id) {
             this.setState({
                 isLoading: true,
                 errorLoading: false,
@@ -79,7 +79,7 @@ class AlbumScreenRenderer extends React.Component {
         .then((responseJson) => {
             // !TODO: some validation checking
             const albumSongs = responseJson.filter((item) => {
-                return item.album_id === album.albumID;
+                return item.album_id === album.album_id;
             });
 
             this.setState({

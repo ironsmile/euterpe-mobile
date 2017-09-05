@@ -92,7 +92,7 @@ class ArtistScreenRenderer extends React.Component {
                     albumsWithCounts[song.album_id] = {
                         artist: song.artist,
                         album: song.album,
-                        albumID: song.album_id,
+                        album_id: song.album_id,
                         songsCount: 0,
                     };
                 }

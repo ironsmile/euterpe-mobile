@@ -25,7 +25,7 @@ class QueueItem extends React.PureComponent {
 
 export class ArtistBig extends React.PureComponent {
 
-    _keyExtractor = (item, index) => item.albumID;
+    _keyExtractor = (item, index) => item.album_id;
 
     _onPressAlbum = (album) => {
         if (this.props.onPressAlbum) {

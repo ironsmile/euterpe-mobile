@@ -31,7 +31,7 @@ class SearchAlbumsRenderer extends React.PureComponent {
             albumsArray.push({
                 album: song.album,
                 artist: song.artist,
-                albumID: song.album_id,
+                album_id: song.album_id,
             });
         });
 

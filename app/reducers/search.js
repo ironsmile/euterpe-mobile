@@ -34,7 +34,7 @@ export const searchReducer = (state = initialState, action) => {
                 albumArray.push({
                     album: song.album,
                     artist: song.artist,
-                    albumID: song.album_id,
+                    album_id: song.album_id,
                 });
 
                 albumsLen += 1;
