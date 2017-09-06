@@ -103,7 +103,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
     getHeader() {
         return (
             <Header
-                title="BROWSE ARTISTS"
+                title="ALL ARTISTS"
                 onBackButton={() => {
                     this.props.navigation.goBack();
                 }}

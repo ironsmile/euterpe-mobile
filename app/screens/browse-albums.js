@@ -105,7 +105,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
     getHeader() {
         return (
             <Header
-                title="BROWSE ALBUMS"
+                title="ALL ALBUMS"
                 onBackButton={() => {
                     this.props.navigation.goBack();
                 }}
