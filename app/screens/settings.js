@@ -8,8 +8,7 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
-import { SETTINGS_CHANGED } from '../reducers/settings';
-
+import { SETTINGS_CHANGED } from '@reducers/settings';
 
 export class SettingsRenderer extends React.Component {
     render() {
