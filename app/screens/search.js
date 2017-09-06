@@ -27,21 +27,52 @@ import {
     clearSearchResults,
 } from '@actions/search';
 import { gs } from '@styles/global';
+import { PlatformIcon } from '@components/platform-icon';
 
 class SearchRenderer extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            showCancel: false,
+            searchValue: this.props.search.query,
+        };
+    }
+
+    componentWillMount() {
+        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardDidShow.bind(this));
+        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardDidHide.bind(this));
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    }
+
+    componentWillUnmount() {
+        this.keyboardWillShowListener.remove();
+        this.keyboardWillHideListener.remove();
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+
+    _keyboardDidShow () {
+        this.setState({
+            showCancel: true,
+        })
+    }
+
+    _keyboardDidHide () {
+        this.setState({
+            showCancel: false,
+        })
+    }
 
     handleSearchChange = (text) => {
         this.props.dispatch(setSearchQuery(text));
         this.searchForText(text);
     }
 
-    searchForText = _.debounce((text) => {
+    searchForText = (text) => {
         if (text.length === 0) {
             this.props.dispatch(clearSearchResults());
-            return;
-        }
-
-        if (text.length <= 2) {
             return;
         }
 
@@ -85,7 +116,7 @@ class SearchRenderer extends React.Component {
             this.props.dispatch(hideActivityIndicator());
             this._onError(error);
         });
-    }, 1000)
+    }
 
     _onError(error) {
         if (error.status === 401) {
@@ -115,14 +146,21 @@ class SearchRenderer extends React.Component {
         }
     }
 
+    backToRecentSearches() {
+        this.setState({
+            searchValue: "",
+        });
+        this.handleSearchChange("");
+    }
+
     getSearchHeader() {
         let cancelButton = null;
 
-        if (this.props.search.query) {
+        if (this.state.showCancel) {
             cancelButton = (
                 <TouchableOpacity
-                    onPress={() =>{
-                        this.handleSearchChange("");
+                    onPress={() => {
+                        Keyboard.dismiss();
                     }}
                 >
                     <View style={styles.cancelButton}>
@@ -132,26 +170,50 @@ class SearchRenderer extends React.Component {
             );
         }
 
+        let eraseButton = null;
+
+        if (this.state.searchValue && this.state.searchValue.length > 0) {
+            eraseButton = (
+                <TouchableOpacity
+                    onPress={this.backToRecentSearches.bind(this)}
+                >
+                    <PlatformIcon platform="close-circle" size={16} color="white" />
+                </TouchableOpacity>
+            )
+        }
+
         return (
             <Header style={styles.header}>
                 <View style={styles.searchContainer}>
-                    <TextInput
-                        placeholder="Search"
-                        style={styles.search}
-                        returnKeyType="done"
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        value={this.props.search.query}
-                        onChangeText={this.handleSearchChange}
-                        onSubmitEditing={Keyboard.dismiss}
-                        underlineColorAndroid="rgba(0,0,0,0)"
-                        keyboardAppearance="dark"
-                        ref={(ref) => {
-                            this.searchInput = ref;
-                        }}
-                        maxLength={256}
-                        selectTextOnFocus={true}
-                    ></TextInput>
+                    <View style={styles.searchInputContainer}>
+                        <TextInput
+                            placeholder="Search"
+                            style={styles.search}
+                            returnKeyType="search"
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            defaultValue={this.state.searchValue}
+                            onSubmitEditing={() => {
+                                this.handleSearchChange(this.state.searchValue);
+                                Keyboard.dismiss();
+                            }}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    searchValue: text,
+                                });
+                            }}
+                            underlineColorAndroid="rgba(0,0,0,0)"
+                            keyboardAppearance="dark"
+                            ref={(ref) => {
+                                this.searchInput = ref;
+                            }}
+                            maxLength={256}
+                            selectTextOnFocus={true}
+                            placeholderTextColor="#aeafb3"
+                            selectionColor="#7e97fc"
+                        ></TextInput>
+                        {eraseButton}
+                    </View>
                     {cancelButton}
                 </View>
             </Header>
@@ -171,6 +233,9 @@ class SearchRenderer extends React.Component {
         return (
             <RecentSearches
                 searchClicked={(text) => {
+                    this.setState({
+                        searchValue: text,
+                    });
                     this.props.dispatch(showActivityIndicator());
                     this.handleSearchChange(text);
                     this.searchInput.focus();
@@ -216,9 +281,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    search: {
-        backgroundColor: 'white',
+    searchInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#46474A',
         borderRadius: 6,
+        paddingLeft: 6,
+        paddingRight: 6,
+        flex: 1,
+    },
+    search: {
+        color: 'white',
+        backgroundColor: '#46474A',
+        borderRadius: 0,
         paddingTop: 6,
         paddingBottom: 6,
         paddingLeft: 10,

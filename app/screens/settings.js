@@ -39,6 +39,8 @@ export class SettingsRenderer extends React.Component {
                         keyboardAppearance="dark"
                         maxLength={256}
                         selectTextOnFocus={true}
+                        placeholderTextColor="#aeafb3"
+                        selectionColor="#7e97fc"
                     />
 
                     <TextInput
@@ -63,6 +65,8 @@ export class SettingsRenderer extends React.Component {
                         keyboardAppearance="dark"
                         maxLength={256}
                         selectTextOnFocus={true}
+                        placeholderTextColor="#aeafb3"
+                        selectionColor="#7e97fc"
                     />
 
                     <TextInput
@@ -86,6 +90,8 @@ export class SettingsRenderer extends React.Component {
                         keyboardAppearance="dark"
                         maxLength={256}
                         selectTextOnFocus={true}
+                        placeholderTextColor="#aeafb3"
+                        selectionColor="#7e97fc"
                     />
                 </View>
             </TouchableWithoutFeedback>
@@ -102,7 +108,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     input: {
-        backgroundColor: 'white',
+        color: 'white',
+        backgroundColor: '#46474A',
         borderRadius: 6,
         width: '85%',
         paddingTop: 6,
