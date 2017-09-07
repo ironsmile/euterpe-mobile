@@ -9,7 +9,7 @@ import {
     StyleSheet
 } from 'react-native';
 
-import D from './dimensions';
+import D from '@screens/common/dimensions';
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

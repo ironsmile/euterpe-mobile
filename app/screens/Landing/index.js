@@ -8,10 +8,10 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
-import Header from '../common/header';
-import PlayList from '../common/playlist';
-import img from '../common/imgs';
-import { gs } from '../../styles/global';
+import Header from '@screens/common/header';
+import img from '@screens/common/imgs';
+import PlayList from '@components/playlist';
+import { gs } from '@styles/global';
 
 export default class Landing extends Component {
 

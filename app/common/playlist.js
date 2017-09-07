@@ -1,6 +1,3 @@
-/**
- * Created by ggoma on 12/22/16.
- */
 import React, { Component } from 'react';
 import {
     View,
@@ -9,7 +6,7 @@ import {
     StyleSheet
 } from 'react-native';
 
-import PlaylistItem from './playlist-item';
+import PlaylistItem from '@components/playlist-item';
 
 export default class PlayList extends Component {
 

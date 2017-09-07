@@ -1,8 +1,3 @@
-// /**
-//  * Created by ggoma on 12/23/16.
-//  */
-
-
 export default [
     {
         source: require('../../assets/images/1.jpg'),
