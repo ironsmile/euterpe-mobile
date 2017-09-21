@@ -8,15 +8,15 @@ import {
     Platform,
     Keyboard
 } from 'react-native';
-import { Screen } from './screen';
-import Header from './common/header';
+import { Screen } from '@screens/screen';
+import Header from '@screens/common/header';
 import { connect } from 'react-redux';
-import { SearchResults } from '../common/search-results';
-import { RecentSearches } from '../common/recent-searches';
+import { SearchResults } from '@components/search-results';
+import { RecentSearches } from '@components/recent-searches';
 import _ from 'lodash';
 import DropdownAlert from 'react-native-dropdownalert';
 
-import { HttpmsService } from '../common/httpms-service';
+import { HttpmsService } from '@components/httpms-service';
 import {
     setSearchQuery,
     resultsFetched,
