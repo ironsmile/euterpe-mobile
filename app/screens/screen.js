@@ -6,7 +6,6 @@ import {
     StatusBar
 } from 'react-native';
 
-import Landing from './Landing';
 import { TOGETHER, TABBAR_HEIGHT } from './common/footer';
 import Header from './common/header';
 import { gs } from '../styles/global';

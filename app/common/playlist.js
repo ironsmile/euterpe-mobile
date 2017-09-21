@@ -3,26 +3,46 @@ import {
     View,
     Text,
     ScrollView,
-    StyleSheet
+    StyleSheet,
+    ActivityIndicator,
+    TouchableOpacity,
 } from 'react-native';
 
 import PlaylistItem from '@components/playlist-item';
+import D from '@screens/common/dimensions';
 
-export default class PlayList extends Component {
-
+export class PlayList extends Component {
 
     renderItems() {
-        const { circle } = this.props;
+        const { circle, isLoading } = this.props;
 
-        return this.props.items.map((a, i) => {
+        if (isLoading) {
             return (
-                <PlaylistItem
-                    circle={circle}
-                    source={a.source}
-                    followers={a.followers}
-                    title={a.name}
-                    key={i}
-                />
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator />
+                </View>
+            );
+        }
+
+        return this.props.items.map((item, ind) => {
+            return (
+                <TouchableOpacity
+                    onPress={() => {
+                        if (!this.props.onItemPress) {
+                            return;
+                        }
+                        this.props.onItemPress(item);
+                    }}
+                    key={ind}
+                >
+                    <PlaylistItem
+                        getItemTitle={this.props.getItemTitle}
+                        getItemSubTitle={this.props.getItemSubTitle}
+                        circle={circle}
+                        source={this.props.getItemArtwork(item)}
+                        item={item}
+                    />
+                </TouchableOpacity>
             );
         });
 
@@ -59,5 +79,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '700',
         marginBottom: 8,
-    }
+    },
+
+    loadingContainer: {
+        width: D.width,
+        height: ((D.width * 4.2) / 10) + 20,
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
 });

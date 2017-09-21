@@ -8,21 +8,17 @@ import {
 
 import D from '@screens/common/dimensions';
 
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
 export default (props) => {
     return (
         <View style={styles.container}>
-            <Image source={props.source} style={[styles.album, props.circle ? {borderRadius: (D.width * 4.2/10)/2} : {}]} />
+            <Image source={props.source} style={[styles.album, props.circle ? styles.circled : {}]} />
 
-            <Text style={styles.text}>{props.title}</Text>
-            <Text style={styles.followers}>{numberWithCommas(props.followers)} FOLLOWERS</Text>
+            <Text style={styles.text}>{props.getItemTitle(props.item)}</Text>
+            <Text style={styles.subTitle}>{props.getItemSubTitle(props.item)}</Text>
 
         </View>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -31,8 +27,8 @@ const styles = StyleSheet.create({
     },
 
     album: {
-        width: D.width * 4.2/10,
-        height: D.width * 4.2/10,
+        width: (D.width * 4.2) / 10,
+        height: (D.width * 4.2) / 10,
         backgroundColor: 'transparent'
     },
 
@@ -50,11 +46,15 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
 
-    followers: {
+    subTitle: {
         fontSize: 8,
         color: 'gray',
         alignSelf: 'center',
         fontWeight: '600',
         marginTop: 4
-    }
+    },
+
+    circled: {
+        borderRadius: ((D.width * 4.2) / 10) / 2,
+    },
 });

@@ -40,6 +40,14 @@ export class HttpmsService {
         return `${this.settings.hostAddress}/browse/?by=album&per-page=20`;
     }
 
+    getRecentArtistsURL() {
+        return `${this.settings.hostAddress}/browse/?by=artist&per-page=5&order=desc&order-by=id`;
+    }
+
+    getRecentAlbumsURL() {
+        return `${this.settings.hostAddress}/browse/?by=album&per-page=5&order=desc&order-by=id`;
+    }
+
     addressFromURI(uri) {
         const noSlashes = uri.replace(/^\/+/, '');
 

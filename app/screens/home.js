@@ -1,6 +1,12 @@
 import React from 'react';
-import Landing from './Landing';
-import { Screen } from './screen';
+import {
+    View,
+    ScrollView,
+    StyleSheet,
+} from 'react-native';
+import { Screen } from '@screens/screen';
+import { RecentArtists } from '@components/recent-artists';
+import { RecentAlbums } from '@components/recent-albums';
 
 export class HomeScreen extends React.Component {
     render() {
@@ -9,8 +15,37 @@ export class HomeScreen extends React.Component {
                 title="HOME"
                 navigation={this.props.navigation}
             >
-                <Landing />
+                <View style={styles.container}>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <RecentArtists
+                            key={0}
+                            onArtistPress={(item) => {
+                                this.props.navigation.navigate(
+                                    'SearchArtist',
+                                    { artist: item.artist }
+                                );
+                            }}
+                        />
+                        <RecentAlbums
+                            key={1}
+                            onAlbumPress={(item) => {
+                                this.props.navigation.navigate(
+                                    'SearchAlbum',
+                                    { album: item }
+                                );
+                            }}
+                        />
+                    </ScrollView>
+                </View>
             </Screen>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+});

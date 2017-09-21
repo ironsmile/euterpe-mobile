@@ -15,6 +15,8 @@ import { progressReducer } from './reducers/progress';
 import { searchReducer } from './reducers/search';
 import { settingsReducer } from './reducers/settings';
 import { libraryReducer } from './reducers/library';
+import { recentArtistsReducer } from './reducers/recent-artists';
+import { recentAlbumsReducer } from './reducers/recent-albums';
 import { connect, Provider } from 'react-redux';
 import { restorePlayingState } from './actions/playing';
 import { restoreLibrary } from './actions/library';
@@ -29,6 +31,8 @@ const appReducer = combineReducers({
     settings: settingsReducer,
     progress: progressReducer,
     library: libraryReducer,
+    recentArtists: recentArtistsReducer,
+    recentAlbums: recentAlbumsReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {
