@@ -17,6 +17,7 @@ import { settingsReducer } from './reducers/settings';
 import { libraryReducer } from './reducers/library';
 import { recentArtistsReducer } from './reducers/recent-artists';
 import { recentAlbumsReducer } from './reducers/recent-albums';
+import { recentlyPlayedReducer } from './reducers/recently-played';
 import { connect, Provider } from 'react-redux';
 import { restorePlayingState } from './actions/playing';
 import { restoreLibrary } from './actions/library';
@@ -33,6 +34,7 @@ const appReducer = combineReducers({
     library: libraryReducer,
     recentArtists: recentArtistsReducer,
     recentAlbums: recentAlbumsReducer,
+    recentlyPlayed: recentlyPlayedReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {

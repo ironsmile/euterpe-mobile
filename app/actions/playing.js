@@ -19,6 +19,7 @@ import MediaControl from '@components/media-control-shim';
 import { setProgress, setDuration } from '@actions/progress';
 import { downloadSong } from '@actions/library';
 import { HttpmsService } from '@components/httpms-service';
+import { addToRecentlyPlayed } from '@actions/recently-played';
 
 // The player instance which would be used in these action creators
 let player = null;
@@ -305,6 +306,8 @@ export const setTrack = (index, errorHandler, successHandler) => {
                   artwork: Images.unknownAlbum,
                   duration,
                 });
+
+                dispatch(addToRecentlyPlayed(track));
             });
         })
         .then(() => {

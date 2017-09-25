@@ -7,6 +7,8 @@ import {
 import { Screen } from '@screens/screen';
 import { RecentArtists } from '@components/recent-artists';
 import { RecentAlbums } from '@components/recent-albums';
+import { RecentlyPlayedArtists } from '@components/recently-played-artists';
+import { RecentlyPlayedAlbums } from '@components/recently-played-albums';
 
 export class HomeScreen extends React.Component {
     render() {
@@ -30,6 +32,24 @@ export class HomeScreen extends React.Component {
                         />
                         <RecentAlbums
                             key={1}
+                            onAlbumPress={(item) => {
+                                this.props.navigation.navigate(
+                                    'SearchAlbum',
+                                    { album: item }
+                                );
+                            }}
+                        />
+                        <RecentlyPlayedArtists
+                            key={3}
+                            onArtistPress={(item) => {
+                                this.props.navigation.navigate(
+                                    'SearchArtist',
+                                    { artist: item.artist }
+                                );
+                            }}
+                        />
+                        <RecentlyPlayedAlbums
+                            key={2}
                             onAlbumPress={(item) => {
                                 this.props.navigation.navigate(
                                     'SearchAlbum',

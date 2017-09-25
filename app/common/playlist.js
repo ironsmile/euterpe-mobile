@@ -57,6 +57,7 @@ export class PlayList extends Component {
                     <ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
+                        style={styles.horizontalScrollView}
                     >
                         {this.renderItems()}
                     </ScrollView>
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         paddingTop: 74,
-        paddingBottom: 6
+        paddingBottom: 6,
     },
 
     title: {
@@ -86,5 +87,9 @@ const styles = StyleSheet.create({
         height: ((D.width * 4.2) / 10) + 20,
         flexDirection: 'column',
         justifyContent: 'center',
+    },
+
+    horizontalScrollView: {
+        width: D.width,
     },
 });
