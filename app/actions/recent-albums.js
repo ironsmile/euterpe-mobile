@@ -55,7 +55,7 @@ export const refreshRecentAlbums = () => {
                 type: STOPPED_REFRESHING_ALBUMS,
             });
 
-            console.error(error);
+            console.error('Error while refreshing recently added albums', error);
         });
     };
 };

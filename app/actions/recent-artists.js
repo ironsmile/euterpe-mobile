@@ -55,7 +55,7 @@ export const refreshRecentArtists = () => {
                 type: STOPPED_REFRESHING_ARTISTS,
             });
 
-            console.error(error);
+            console.error('Error while refreshing recently added artists', error);
         });
     };
 };
