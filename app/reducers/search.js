@@ -1,4 +1,6 @@
 
+import { constrainedRecencyBuffer } from '@components/domash';
+
 const initialState = {
     results: [],
     recentSearches: [],
@@ -73,25 +75,7 @@ export const searchReducer = (state = initialState, action) => {
             };
 
         case START_SEARCH:
-            let recentSearches = [];
-            const index = state.recentSearches.indexOf(action.query);
-
-            if (index === -1) {
-                recentSearches = [
-                    action.query,
-                    ...state.recentSearches,
-                ];
-            } else {
-                recentSearches = [
-                    action.query,
-                    ...state.recentSearches.slice(0, index),
-                    ...state.recentSearches.slice(index+1),
-                ];
-            }
-
-            if (recentSearches.length > 10) {
-                recentSearches = recentSearches.slice(0, 10);
-            }
+            const recentSearches = constrainedRecencyBuffer(state.recentSearches, action.query, 10);
 
             return {
                 ...state,
