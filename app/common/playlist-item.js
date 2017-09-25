@@ -13,8 +13,14 @@ export default (props) => {
         <View style={styles.container}>
             <Image source={props.source} style={[styles.album, props.circle ? styles.circled : {}]} />
 
-            <Text style={styles.text}>{props.getItemTitle(props.item)}</Text>
-            <Text style={styles.subTitle}>{props.getItemSubTitle(props.item)}</Text>
+            <Text
+                style={styles.text}
+                numberOfLines={1}
+            >{props.getItemTitle(props.item)}</Text>
+            <Text
+                style={styles.subTitle}
+                numberOfLines={1}
+            >{props.getItemSubTitle(props.item)}</Text>
 
         </View>
     );
@@ -39,7 +45,7 @@ const styles = StyleSheet.create({
     },
 
     text: {
-        fontSize: 10,
+        fontSize: 12,
         color: 'white',
         fontWeight: '600',
         alignSelf: 'center',
@@ -47,7 +53,7 @@ const styles = StyleSheet.create({
     },
 
     subTitle: {
-        fontSize: 8,
+        fontSize: 10,
         color: 'gray',
         alignSelf: 'center',
         fontWeight: '600',
