@@ -35,6 +35,7 @@ export class Helpful extends React.PureComponent {
                 <Text style={styles.helpfulText}>
                     {this.props.secondLine}
                 </Text>
+                {this.props.children}
             </View>
         );
     }

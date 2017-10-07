@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Screen } from '@screens/screen';
 import { SmallClickable } from '@components/small-clickable';
 import { PlatformIcon } from '@components/platform-icon';
+import { IconButton } from '@components/icon-button';
 import { headerHeight } from '@screens/common/header';
 
 export class BrowseScreen extends React.PureComponent {
@@ -117,16 +118,13 @@ export class BrowseScreen extends React.PureComponent {
                     </View>
 
                     <View style={[styles.encouragmentContainer, styles.noMargins]}>
-                        <TouchableOpacity
+                        <IconButton
                             onPress={() => {
                                 this.props.screenProps.rootNavigation.navigate('Search');
                             }}
-                        >
-                            <View style={styles.searchButton}>
-                                <PlatformIcon platform="search" color="white" size={16} />
-                                <Text style={styles.searchText}>SEARCH</Text>
-                            </View>
-                        </TouchableOpacity>
+                            text="SEARCH"
+                            iconName="search"
+                        />
                     </View>
                 </ScrollView>
             </Screen>
@@ -157,21 +155,5 @@ const styles = StyleSheet.create({
     noMargins: {
         marginTop: 0,
         marginBottom: 0,
-    },
-    searchButton: {
-        backgroundColor: '#222327',
-        borderRadius: 10,
-        paddingTop: 10,
-        paddingBottom: 10,
-        paddingLeft: 10,
-        paddingRight: 20,
-        borderWidth: 2,
-        borderColor: '#3c3d41',
-        flexDirection: 'row',
-    },
-    searchText: {
-        paddingLeft: 10,
-        fontWeight: 'bold',
-        color: 'white',
     },
 });

@@ -17,17 +17,22 @@ class ScreenRenderer extends Component {
         const { nowPlaying } = this.props;
         let { header } = this.props;
 
-        if (!header) {
+        if (!header && !this.props.noHeader) {
             header = <Header title={this.props.title} />;
         }
 
         const footerHeight = nowPlaying.now ? TOGETHER : TABBAR_HEIGHT;
+        let screenHeight = { height: D.height - footerHeight };
+
+        if (this.props.noTabBar) {
+            screenHeight = { height: D.height };
+        }
 
         return (
             <View style={[gs.bg, styles.backgroundView]}>
                 <View style={[
                     styles.container,
-                    { height: D.height - footerHeight }
+                    screenHeight,
                 ]}>
                     <StatusBar
                         ref="status"

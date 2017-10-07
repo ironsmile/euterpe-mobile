@@ -1,10 +1,7 @@
-/**
- * Created by ggoma on 12/23/16.
- */
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { Screen } from './screen';
-import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
+import { Screen } from '@screens/screen';
+import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 
 export class AboutScreen extends React.Component {
 

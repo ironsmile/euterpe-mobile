@@ -1,5 +1,4 @@
-import React from 'react';
-import { TabNavigator, StackNavigator, addNavigationHelpers } from 'react-navigation';
+import { TabNavigator } from 'react-navigation';
 import { SearchNavigator } from '@nav/tab-search';
 import { BrowseNavigator } from '@nav/tab-browse';
 import { HomeNavigator } from '@nav/tab-home';
@@ -29,7 +28,7 @@ const navOptions = {
     },
 };
 
-export const HttpmsApp = TabNavigator({
+export const HttpmsNavigator = TabNavigator({
     Home: { screen: HomeNavigator, },
     Browse: { screen: BrowseNavigator },
     Search: { screen: SearchNavigator },
@@ -37,11 +36,11 @@ export const HttpmsApp = TabNavigator({
     About: { screen: AboutScreen },
 }, navOptions);
 
-const homeParams = HttpmsApp.router.getActionForPathAndParams('Home');
-const initialRootState = HttpmsApp.router.getStateForAction(homeParams);
+const homeParams = HttpmsNavigator.router.getActionForPathAndParams('Home');
+const initialRootState = HttpmsNavigator.router.getStateForAction(homeParams);
 
 export const navRootReducer = (state = initialRootState, action) => {
-    const nextState = HttpmsApp.router.getStateForAction(action, state);
+    const nextState = HttpmsNavigator.router.getStateForAction(action, state);
 
     return nextState || state;
 };

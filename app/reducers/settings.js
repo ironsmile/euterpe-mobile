@@ -3,6 +3,7 @@ const initialState = {
     hostAddress: null,
     username: null,
     password: null,
+    loggedIn: false,
 };
 
 export const settingsReducer = (state = initialState, action) => {
