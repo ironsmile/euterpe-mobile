@@ -6,7 +6,7 @@ import {
     SET_SEARCH_QUERY,
     CLEAR_RECENT_SEARCHES,
     CLEAR_SEARCH_RESULTS,
-} from '../reducers/search';
+} from '@reducers/search';
 
 export const setSearchQuery = (query) => ({
     type: SET_SEARCH_QUERY,

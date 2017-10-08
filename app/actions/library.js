@@ -3,9 +3,9 @@ import {
     CLEANUP_LIBRARY,
     RESET_LIBRARY,
     SONG_USED,
-} from '../reducers/library';
+} from '@reducers/library';
 
-import { HttpmsService } from '../common/httpms-service';
+import { HttpmsService } from '@components/httpms-service';
 
 let _httpms = null;
 let _downloading = null;
@@ -103,7 +103,7 @@ unlinkSong = (songID) => {
 
     RNFetchBlob.fs.unlink(filePath)
     .catch((error) => {
-        console.log(`Error unlinking song ${songID}`, error);
+        console.error(`Error unlinking song ${songID}`, error);
     });
 }
 
@@ -118,7 +118,7 @@ export const restoreLibrary = () => {
                 console.log(getState().library, files);
             })
             .catch((error) => {
-                console.log("Error restoring library", error);
+                console.error("Error restoring library", error);
             });
     }
 }

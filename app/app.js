@@ -4,6 +4,7 @@ import { addNavigationHelpers } from 'react-navigation';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
+import { connect, Provider } from 'react-redux';
 import MediaControl from './common/media-control-shim';
 import thunkMiddleware from 'redux-thunk';
 const Sound = require('react-native-sound');
@@ -18,7 +19,6 @@ import { libraryReducer } from './reducers/library';
 import { recentArtistsReducer } from './reducers/recent-artists';
 import { recentAlbumsReducer } from './reducers/recent-albums';
 import { recentlyPlayedReducer } from './reducers/recently-played';
-import { connect, Provider } from 'react-redux';
 import { restorePlayingState } from './actions/playing';
 import { restoreLibrary } from './actions/library';
 import { HttpmsNavigator, navRootReducer } from '@nav';
@@ -50,6 +50,7 @@ const rehydratedReducer = (state = {}, action) => {
                     ...incoming,
                 };
             }
+
         default:
             return appReducer(state, action);
     }
