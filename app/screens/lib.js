@@ -25,7 +25,9 @@ export class LibraryScreen extends React.Component {
                 navigation={this.props.navigation}
             >
                 <View style={styles.container}>
-                    <Settings />
+                    <Settings
+                        navigation={this.props.navigation}
+                    />
                 </View>
             </Screen>
         )

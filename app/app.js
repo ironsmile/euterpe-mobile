@@ -22,12 +22,10 @@ import { recentlyPlayedReducer } from './reducers/recently-played';
 import { restorePlayingState } from './actions/playing';
 import { restoreLibrary } from './actions/library';
 import { HttpmsNavigator, navRootReducer } from '@nav';
-import { LoginNavigator, navLoginReducer } from '@nav/login';
 
 
 const appReducer = combineReducers({
     navRoot: navRootReducer,
-    navLogin: navLoginReducer,
     playing: playingReducer,
     player: playerReducer,
     search: searchReducer,
@@ -50,7 +48,6 @@ const rehydratedReducer = (state = {}, action) => {
                     ...incoming,
                 };
             }
-
         default:
             return appReducer(state, action);
     }
@@ -75,26 +72,6 @@ class App extends React.Component {
 }
 
 const AppWithNavigationState = connect(mapStateToPropsRoot)(App);
-
-const loginMapStateToPropsRoot = (state) => ({
-    nav: state.navLogin,
-    settings: state.settings,
-});
-
-class LoginApp extends React.Component {
-    render() {
-        return (
-            <LoginNavigator
-                navigation={addNavigationHelpers({
-                    dispatch: this.props.dispatch,
-                    state: this.props.nav,
-                })}
-            />
-        );
-    }
-}
-
-const LoginAppWithNavigationState = connect(loginMapStateToPropsRoot)(LoginApp);
 
 const store = createStore(
     rehydratedReducer,
@@ -149,14 +126,6 @@ class Root extends React.Component {
             }
 
             return (<Loader />);
-        }
-
-        if (!this.state.store.getState().settings.loggedIn) {
-            return (
-                <Provider store={this.state.store}>
-                    <LoginAppWithNavigationState />
-                </Provider>
-            );
         }
 
         return (

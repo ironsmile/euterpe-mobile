@@ -19,3 +19,6 @@ footer menu color: #222326
 * theme support
 * "Various artists" in search album results
 * crash с "json syntax error" в browse albums
+* login трябва да рапознае, че това наистина е HTTPMS, а не случаен HTTP адрес. Може би със
+  специален /status API call?
+* logout трябва да изчиства всички ресурси

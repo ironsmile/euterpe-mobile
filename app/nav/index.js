@@ -1,9 +1,15 @@
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator, StackNavigator } from 'react-navigation';
+
 import { SearchNavigator } from '@nav/tab-search';
 import { BrowseNavigator } from '@nav/tab-browse';
 import { HomeNavigator } from '@nav/tab-home';
 import { LibraryScreen } from '@screens/lib';
 import { AboutScreen } from '@screens/about';
+import { LoginMainScreen } from '@screens/login-main';
+import { LoginAddressScreen } from '@screens/login-address';
+import { LoginCredentialsScreen } from '@screens/login-credentials';
+import { LoginSuccessScreen } from '@screens/login-success';
+import { LoginBarcodeScreen } from '@screens/login-barcode';
 import { TABBAR_HEIGHT } from '@screens/common/footer';
 import TabBarBottom from '@screens/common/TabBarBottom';
 
@@ -28,7 +34,7 @@ const navOptions = {
     },
 };
 
-export const HttpmsNavigator = TabNavigator({
+export const LoggedUserNavigator = TabNavigator({
     Home: { screen: HomeNavigator, },
     Browse: { screen: BrowseNavigator },
     Search: { screen: SearchNavigator },
@@ -36,8 +42,20 @@ export const HttpmsNavigator = TabNavigator({
     About: { screen: AboutScreen },
 }, navOptions);
 
-const homeParams = HttpmsNavigator.router.getActionForPathAndParams('Home');
-const initialRootState = HttpmsNavigator.router.getStateForAction(homeParams);
+export const HttpmsNavigator = StackNavigator({
+    LoginMain: { screen: LoginMainScreen },
+    LoginAddress: { screen: LoginAddressScreen },
+    LoginCredentials: { screen: LoginCredentialsScreen },
+    LoginBarcode: { screen: LoginBarcodeScreen },
+    LoginSuccess: { screen: LoginSuccessScreen },
+    LoggedUser: { screen: LoggedUserNavigator },
+}, {
+    initialRouteName: 'LoginMain',
+    headerMode: 'none',
+});
+
+const mainParams = HttpmsNavigator.router.getActionForPathAndParams('LoginMain');
+const initialRootState = HttpmsNavigator.router.getStateForAction(mainParams);
 
 export const navRootReducer = (state = initialRootState, action) => {
     const nextState = HttpmsNavigator.router.getStateForAction(action, state);

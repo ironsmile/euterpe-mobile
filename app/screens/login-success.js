@@ -11,7 +11,7 @@ import { finishLoginSuccess } from '@actions/settings';
 const resetAction = NavigationActions.reset({
     index: 0,
     actions: [
-        NavigationActions.navigate({ routeName: 'LoginMain' }),
+        NavigationActions.navigate({ routeName: 'LoggedUser' }),
     ],
 });
 
@@ -19,7 +19,6 @@ export class LoginSuccessScreenRenderer extends React.Component {
 
     componentDidMount() {
         setTimeout(() => {
-            this.props.dispatch(finishLoginSuccess());
             this.props.navigation.dispatch(resetAction);
         }, 1000);
     }

@@ -7,11 +7,20 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
 
 import { SETTINGS_CHANGED } from '@reducers/settings';
 import { TextInput } from '@components/text-input';
 import { IconButton } from '@components/icon-button';
 import { finishLogOut } from '@actions/settings';
+import { stopPlaying } from '@actions/playing';
+
+const resetAction = NavigationActions.reset({
+    index: 0,
+    actions: [
+        NavigationActions.navigate({ routeName: 'LoginMain' }),
+    ],
+});
 
 export class SettingsRenderer extends React.Component {
     render() {
@@ -75,6 +84,8 @@ export class SettingsRenderer extends React.Component {
                         onPress={() => {
                             Keyboard.dismiss();
                             this.props.dispatch(finishLogOut());
+                            this.props.dispatch(stopPlaying(true));
+                            this.props.navigation.dispatch(resetAction);
                         }}
                     />
 
