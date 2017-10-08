@@ -1,14 +1,17 @@
 import React from 'react';
 import {
     Text,
-    TextInput,
     StyleSheet,
     View,
     Keyboard,
     TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
+
 import { SETTINGS_CHANGED } from '@reducers/settings';
+import { TextInput } from '@components/text-input';
+import { IconButton } from '@components/icon-button';
+import { finishLogOut } from '@actions/settings';
 
 export class SettingsRenderer extends React.Component {
     render() {
@@ -19,10 +22,7 @@ export class SettingsRenderer extends React.Component {
 
                     <TextInput
                         placeholder="Host Address"
-                        style={styles.input}
                         returnKeyType="next"
-                        autoCorrect={false}
-                        autoCapitalize="none"
                         value={this.props.settings.hostAddress}
                         onChangeText={(text) => {
                             this.props.dispatch({
@@ -32,23 +32,14 @@ export class SettingsRenderer extends React.Component {
                             });
                         }}
                         onSubmitEditing={() => {
-                          this.refs.UsernameInput.focus();
+                            this.refs.UsernameInput.focus();
                         }}
-                        underlineColorAndroid="rgba(0,0,0,0)"
-                        keyboardAppearance="dark"
-                        maxLength={256}
-                        selectTextOnFocus={true}
-                        placeholderTextColor="#aeafb3"
-                        selectionColor="#7e97fc"
                     />
 
                     <TextInput
                         ref="UsernameInput"
                         placeholder="Username"
-                        style={styles.input}
                         returnKeyType="next"
-                        autoCorrect={false}
-                        autoCapitalize="none"
                         value={this.props.settings.username}
                         onChangeText={(text) => {
                             this.props.dispatch({
@@ -58,23 +49,14 @@ export class SettingsRenderer extends React.Component {
                             });
                         }}
                         onSubmitEditing={() => {
-                          this.refs.PasswordInput.focus();
+                            this.refs.PasswordInput.focus();
                         }}
-                        underlineColorAndroid="rgba(0,0,0,0)"
-                        keyboardAppearance="dark"
-                        maxLength={256}
-                        selectTextOnFocus={true}
-                        placeholderTextColor="#aeafb3"
-                        selectionColor="#7e97fc"
                     />
 
                     <TextInput
                         ref="PasswordInput"
                         placeholder="Password"
-                        style={styles.input}
                         returnKeyType="done"
-                        autoCorrect={false}
-                        autoCapitalize="none"
                         value={this.props.settings.password}
                         onChangeText={(text) => {
                             this.props.dispatch({
@@ -85,13 +67,17 @@ export class SettingsRenderer extends React.Component {
                         }}
                         secureTextEntry={true}
                         onSubmitEditing={Keyboard.dismiss}
-                        underlineColorAndroid="rgba(0,0,0,0)"
-                        keyboardAppearance="dark"
-                        maxLength={256}
-                        selectTextOnFocus={true}
-                        placeholderTextColor="#aeafb3"
-                        selectionColor="#7e97fc"
                     />
+
+                    <IconButton
+                        text="Log Out"
+                        iconName="log-out"
+                        onPress={() => {
+                            Keyboard.dismiss();
+                            this.props.dispatch(finishLogOut());
+                        }}
+                    />
+
                 </View>
             </TouchableWithoutFeedback>
         );
@@ -105,17 +91,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-    },
-    input: {
-        color: 'white',
-        backgroundColor: '#46474A',
-        borderRadius: 6,
-        width: '85%',
-        paddingTop: 6,
-        paddingBottom: 6,
-        paddingLeft: 10,
-        paddingRight: 10,
-        marginBottom: 20,
     },
     header: {
         fontWeight: 'bold',

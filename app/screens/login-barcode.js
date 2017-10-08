@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, View, Platform } from 'react-native';
+import { Text, StyleSheet, View, Platform, TouchableOpacity } from 'react-native';
 
 import Camera from 'react-native-camera';
 
@@ -7,6 +7,7 @@ import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { Helpful } from '@components/helpful';
+import { PlatformIcon } from '@components/platform-icon';
 
 export class LoginBarcodeScreen extends React.Component {
 
@@ -15,6 +16,7 @@ export class LoginBarcodeScreen extends React.Component {
         this.state = {
             waitForAuthInfo: true,
             authorized: false,
+            camera: Camera.constants.Type.back,
         };
     }
 
@@ -73,6 +75,7 @@ export class LoginBarcodeScreen extends React.Component {
                 ref={(cam) => {
                     this.camera = cam;
                 }}
+                type={this.state.camera}
                 style={styles.preview}
                 aspect={Camera.constants.Aspect.fill}
                 barCodeTypes={['qr']}
@@ -84,6 +87,25 @@ export class LoginBarcodeScreen extends React.Component {
                     <Text style={styles.hintText}>
                         Point to a HTTPMS QR Code
                     </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            let newCamera = Camera.constants.Type.back;
+
+                            if (this.state.camera === Camera.constants.Type.back) {
+                                newCamera = Camera.constants.Type.front;
+                            }
+
+                            this.setState({
+                                camera: newCamera,
+                            });
+                        }}
+                    >
+                        <PlatformIcon
+                            color="white"
+                            platform="reverse-camera"
+                            size={34}
+                        />
+                    </TouchableOpacity>
                 </View>
             </Camera>
         );
@@ -123,10 +145,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(1,1,1,0.7)',
         padding: 10,
         marginBottom: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     hintText: {
         backgroundColor: 'transparent',
         color: 'white',
+        marginRight: 10,
     },
     header: {
         fontWeight: 'bold',
@@ -142,6 +168,6 @@ const styles = StyleSheet.create({
     preview: {
         flex: 1,
         justifyContent: 'flex-end',
-        alignItems: 'center'
+        alignItems: 'center',
     },
 });

@@ -1,10 +1,17 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Keyboard } from 'react-native';
+import { connect } from 'react-redux';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
+import { TextInput } from '@components/text-input';
+import { login } from '@styles/global';
+import { IconButton } from '@components/icon-button';
+import { changeSettings, checkSettings, checkSuccess, checkError } from '@actions/settings';
 
-export class LoginAddressScreen extends React.Component {
+export class LoginAddressScreenRenderer extends React.Component {
 
     getHeader() {
         return (
@@ -18,14 +25,75 @@ export class LoginAddressScreen extends React.Component {
     }
 
     render() {
+
+        let errorMessage = null;
+
+        if (this.props.settings.checkError) {
+            errorMessage = (
+                <View style={login.errorContaier}>
+                    <Text style={login.errorMessage}>
+                        {this.props.settings.checkErrorMessage}
+                    </Text>
+                </View>
+            );
+        }
+
         return (
             <Screen
                 noTabBar={true}
                 header={this.getHeader()}
                 navigation={this.props.navigation}
             >
-                <View style={styles.container}>
-                    <Text style={styles.text}>Login Address Screen</Text>
+                <View style={login.container}>
+                    <View style={login.buttonWrapper}>
+                        <Text style={login.headerText}>HTTPMS Address</Text>
+                        <Text style={login.subduedText}>
+                            This is the address of your HTTPMS installation. It is the one you
+                            use with your browser.
+                        </Text>
+                    </View>
+
+                    <TextInput
+                        placeholder="HTTP Address - https://..."
+                        returnKeyType="done"
+                        value={this.props.settings.hostAddress}
+                        onChangeText={(text) => {
+                            this.props.dispatch(changeSettings({
+                                hostAddress: text,
+                            }));
+                        }}
+                        onSubmitEditing={Keyboard.dismiss}
+                    />
+
+                    <IconButton
+                        text="Continue"
+                        iconName="checkmark-circle"
+                        onPress={() => {
+                            Keyboard.dismiss();
+                            this.props.dispatch(checkSettings(
+                                (responseJson) => {
+                                    this.props.navigation.navigate('LoginSuccess');
+                                },
+                                (error) => {
+                                    if (error.status === 401) {
+                                        this.props.navigation.navigate('LoginCredentials');
+
+                                        return;
+                                    }
+
+                                    this.props.dispatch(checkError(
+                                        'Error contacting the HTTPMS server'
+                                    ));
+                                }
+                            ));
+                        }}
+                        disabled={this.props.settings.checking}
+                        disabledText="Trying..."
+                    />
+
+                    {errorMessage}
+
+                <KeyboardSpacer />
                 </View>
             </Screen>
         );
@@ -33,27 +101,8 @@ export class LoginAddressScreen extends React.Component {
 
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 100,
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  text: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  header: {
-    fontWeight: 'bold',
-    marginBottom: 15,
-    marginTop: 15,
-  },
-  thankyou: {
-    fontStyle: 'italic',
-    paddingLeft: 30,
-    paddingRight: 30,
-    marginTop: 15,
-  }
+const mapStateToProps = (state) => ({
+    settings: state.settings,
 });
+
+export const LoginAddressScreen = connect(mapStateToProps)(LoginAddressScreenRenderer);

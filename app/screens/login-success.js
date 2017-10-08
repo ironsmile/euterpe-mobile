@@ -1,19 +1,43 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
+import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
+
 import { Screen } from '@screens/screen';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
+import { Helpful } from '@components/helpful';
+import { finishLoginSuccess } from '@actions/settings';
 
-export class LoginSuccessScreen extends React.Component {
+const resetAction = NavigationActions.reset({
+    index: 0,
+    actions: [
+        NavigationActions.navigate({ routeName: 'LoginMain' }),
+    ],
+});
+
+export class LoginSuccessScreenRenderer extends React.Component {
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.props.dispatch(finishLoginSuccess());
+            this.props.navigation.dispatch(resetAction);
+        }, 1000);
+    }
 
     render() {
         return (
             <Screen
+                noHeader={true}
                 noTabBar={true}
-                header={null}
                 navigation={this.props.navigation}
             >
                 <View style={styles.container}>
-                    <Text style={styles.text}>Login Success Screen</Text>
+
+                    <Helpful
+                        title="Login Successful"
+                        iconName="checkmark-circle"
+                    />
+
                 </View>
             </Screen>
         );
@@ -21,12 +45,17 @@ export class LoginSuccessScreen extends React.Component {
 
 }
 
+const mapStateToProps = (state) => ({
+    settings: state.settings,
+});
+
+export const LoginSuccessScreen = connect(mapStateToProps)(LoginSuccessScreenRenderer);
+
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 100,
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'stretch',
   },
   text: {
