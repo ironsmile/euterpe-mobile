@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, View, Platform, TouchableOpacity } from 'react-native';
-
+import { connect } from 'react-redux';
 import Camera from 'react-native-camera';
 
 import { Screen } from '@screens/screen';
@@ -8,8 +8,9 @@ import Header from '@screens/common/header';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { Helpful } from '@components/helpful';
 import { PlatformIcon } from '@components/platform-icon';
+import { changeSettings, checkSettings, checkSuccess, checkError } from '@actions/settings';
 
-export class LoginBarcodeScreen extends React.Component {
+export class LoginBarcodeScreenRenderer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,6 +18,8 @@ export class LoginBarcodeScreen extends React.Component {
             waitForAuthInfo: true,
             authorized: false,
             camera: Camera.constants.Type.back,
+            evaluatingBarCode: false,
+            errorMessage: null,
         };
     }
 
@@ -70,6 +73,33 @@ export class LoginBarcodeScreen extends React.Component {
             );
         }
 
+        let qrMessage = null;
+
+        if (this.state.evaluatingBarCode) {
+            qrMessage = (
+                <View style={styles.verticallyAligned}>
+                    <PlatformIcon
+                        color="green"
+                        platform="qr-scanner"
+                        size={18}
+                    />
+                    <Text style={styles.barcodeFound}>QR Code Found. Checking...</Text>
+                </View>
+            );
+        }
+
+        let errorMessage = null;
+
+        if (this.state.errorMessage !== null) {
+            errorMessage = (
+                <View style={styles.verticallyAligned}>
+                    <Text style={styles.errorMessage}>
+                        {this.state.errorMessage}
+                    </Text>
+                </View>
+            );
+        }
+
         return (
             <Camera
                 ref={(cam) => {
@@ -80,10 +110,81 @@ export class LoginBarcodeScreen extends React.Component {
                 aspect={Camera.constants.Aspect.fill}
                 barCodeTypes={['qr']}
                 onBarCodeRead={(event) => {
-                    console.log(event);
+                    if (this.state.evaluatingBarCode) {
+                        return;
+                    }
+
+                    this.setState({
+                        evaluatingBarCode: true,
+                    });
+
+                    let parsedData = null;
+
+                    try {
+                        parsedData = JSON.parse(event.data);
+
+                        if (typeof parsedData.httpms !== Object) {
+                            throw parsedData;
+                        }
+                    } catch (error) {
+                        this.setState({
+                            errorMessage: 'Not a valid HTTPMS QR code',
+                        });
+                    } finally {
+                        if (this.state.errorMessage !== null) {
+                            if (this._tm) {
+                                clearTimeout(this._tm);
+                            }
+
+                            this._tm = setTimeout(() => {
+                                this.setState({
+                                    errorMessage: null,
+                                    evaluatingBarCode: false,
+                                });
+                            }, 5000);
+                        }
+                    }
+
+                    if (parsedData === null) {
+                        return;
+                    }
+
+                    this.props.dispatch(changeSettings({
+                        hostAddress: parsedData.httpms.address,
+                        username: parsedData.httpms.username,
+                        password: parsedData.httpms.password,
+                    }));
+
+                    this.props.dispatch(checkSettings(
+                        (responseJson) => {
+                            if (this._tm) {
+                                clearTimeout(this._tm);
+                            }
+                            this.props.navigation.navigate('LoginSuccess');
+                        },
+                        (error) => {
+                            this.setState({
+                                errorMessage: 'The QR code is not for this HTTPMS installation',
+                            });
+
+                            if (this._tm) {
+                                clearTimeout(this._tm);
+                            }
+
+                            this._tm = setTimeout(() => {
+                                this.setState({
+                                    errorMessage: null,
+                                    evaluatingBarCode: false,
+                                });
+                            }, 5000);
+                        }
+                    ));
                 }}
             >
-                <View style={styles.hintBackground}>
+                {errorMessage}
+                {qrMessage}
+
+                <View style={[styles.verticallyAligned, styles.hintBackground]}>
                     <Text style={styles.hintText}>
                         Point to a HTTPMS QR Code
                     </Text>
@@ -127,6 +228,12 @@ export class LoginBarcodeScreen extends React.Component {
 
 }
 
+const mapStateToProps = (state) => ({
+    settings: state.settings,
+});
+
+export const LoginBarcodeScreen = connect(mapStateToProps)(LoginBarcodeScreenRenderer);
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -145,6 +252,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(1,1,1,0.7)',
         padding: 10,
         marginBottom: 10,
+        marginTop: 10,
+    },
+    verticallyAligned: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -154,20 +264,15 @@ const styles = StyleSheet.create({
         color: 'white',
         marginRight: 10,
     },
-    header: {
-        fontWeight: 'bold',
-        marginBottom: 15,
-        marginTop: 15,
-    },
-    thankyou: {
-        fontStyle: 'italic',
-        paddingLeft: 30,
-        paddingRight: 30,
-        marginTop: 15,
-    },
     preview: {
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
+    },
+    barcodeFound: {
+        marginLeft: 10,
+        color: 'green',
+        fontWeight: 'bold',
+        fontSize: 18,
     },
 });
