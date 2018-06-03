@@ -76,11 +76,17 @@ class BrowseArtistsScreenRenderer extends React.Component {
                 return;
             }
 
+            let nextPage = null;
+
+            if (responseJson.next) {
+                nextPage = this.state.httpms.addressFromURI(responseJson.next);
+            }
+
             this.setState({
                 artists: this.state.artists.concat(responseJson.data),
                 isLoading: false,
                 loadingMoreResults: false,
-                nextPage: this.state.httpms.addressFromURI(responseJson.next),
+                nextPage: nextPage,
                 errorLoading: false,
             });
         })
