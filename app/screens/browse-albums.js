@@ -78,11 +78,17 @@ class BrowseAlbumsScreenRenderer extends React.Component {
                 return;
             }
 
+            let nextPage = null;
+
+            if (responseJson.next) {
+                nextPage = this.state.httpms.addressFromURI(responseJson.next);
+            }
+
             this.setState({
                 albums: this.state.albums.concat(responseJson.data),
                 isLoading: false,
                 loadingMoreResults: false,
-                nextPage: this.state.httpms.addressFromURI(responseJson.next),
+                nextPage: nextPage,
                 errorLoading: false,
             });
         })
