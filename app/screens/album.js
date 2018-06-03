@@ -21,12 +21,15 @@ import { gs } from '@styles/global';
 class AlbumScreenRenderer extends React.Component {
     constructor(props) {
         super(props);
+        const httpms = new HttpmsService(this.props.settings);
         this.state = {
             isLoading: true,
             errorLoading: false,
             errorObj: null,
             album: null,
+            artwork: null,
             songs: [],
+            httpms,
         };
     }
 
@@ -39,14 +42,13 @@ class AlbumScreenRenderer extends React.Component {
                 isLoading: true,
                 errorLoading: false,
                 album: params.album,
+                artwork: this.state.httpms.getAlbumArtworkURL(params.album.album_id),
             });
             this.getAlbumData(params.album);
         }
     }
 
     getAlbumData(album) {
-        const httpms = new HttpmsService(this.props.settings);
-
         if (!album) {
             this.setState({
                 isLoading: false,
@@ -61,12 +63,12 @@ class AlbumScreenRenderer extends React.Component {
             isLoading: true,
         });
 
-        fetch(httpms.getSearchURL(album.album), {
+        fetch(this.state.httpms.getSearchURL(album.album), {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            ...httpms.getAuthCredsHeader()
+            ...this.state.httpms.getAuthCredsHeader()
           },
         })
         .then((response) => {
@@ -140,6 +142,7 @@ class AlbumScreenRenderer extends React.Component {
 
         return (
             <AlbumBig
+                artwork={this.state.artwork}
                 album={this.state.album}
                 songs={this.state.songs}
                 onPlayButton={() => {

@@ -37,6 +37,14 @@ import { HttpmsService } from '../../common/httpms-service';
 
 class PlaylerRenderer extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            httpms: new HttpmsService(this.props.settings),
+        };
+    }
+
     onPreviousSong() {
         if (this.props.trackLoading) {
             return;
@@ -120,13 +128,15 @@ class PlaylerRenderer extends React.Component {
     renderCoverflow() {
         const height = D.width * 3.2 / 5;
         const width = D.width * 3.2 / 5;
+        const { playing } = this.props;
 
         return (
             <CoverFlowItem
                 page_width={D.width}
                 width={width}
                 height={height}
-                source={Images.unknownAlbum}
+                defaultSource={Images.unknownAlbum}
+                source={{uri: this.state.httpms.getAlbumArtworkURL(playing.album_id)}}
             />
         );
     }
@@ -157,10 +167,8 @@ class PlaylerRenderer extends React.Component {
                     <View style={styles.smallButtonContainer}>
                         <TouchableOpacity
                             onPress={() => {
-                                const httpms = new HttpmsService(this.props.settings);
-
                                 Share.share({
-                                    message: `${playing.title} by ${playing.artist}\n${httpms.getShareURL(playing)}`,
+                                    message: `${playing.title} by ${playing.artist}\n${this.state.httpms.getShareURL(playing)}`,
                                     title: 'Share this song',
                                 }).catch((error) => {
                                     // ignored

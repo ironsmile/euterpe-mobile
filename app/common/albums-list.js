@@ -29,14 +29,21 @@ export class AlbumsList extends React.PureComponent {
         }
     };
 
-    _renderItem = ({item, index}) => (
-        <AlbumItem
-            id={item.id}
-            index={index}
-            onPressItem={this._onPressItem}
-            album={item}
-        />
-    );
+    _renderItem = ({item, index}) => {
+        let artworkURL = null;
+        if (this.props.httpms) {
+            artworkURL = this.props.httpms.getAlbumArtworkURL(item.album_id);
+        }
+        return (
+            <AlbumItem
+                id={item.id}
+                index={index}
+                onPressItem={this._onPressItem}
+                album={item}
+                artwork={artworkURL}
+            />
+        );
+    };
 
     _renderFooter = () => {
         if (!this.props.showLoadingIndicator) {

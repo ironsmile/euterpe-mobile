@@ -32,6 +32,7 @@ class RecentlyPlayedArtistsRenderer extends React.Component {
                 getItemTitle={(item) => item.artist}
                 getItemSubTitle={(item) => null}
                 getItemArtwork={(item) => Images.unknownArtist}
+                defaultItemSource={Images.unknownArtist}
                 circle
             />
         );

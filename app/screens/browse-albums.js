@@ -153,6 +153,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
                     onEndReachedThreshold={0.2}
                     onEndReached={this.endReached.bind(this)}
                     showLoadingIndicator={this.state.loadingMoreResults}
+                    httpms={this.state.httpms}
                 />
             </View>
         );

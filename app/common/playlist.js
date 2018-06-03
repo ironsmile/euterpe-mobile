@@ -25,6 +25,11 @@ export class PlayList extends Component {
         }
 
         return this.props.items.map((item, ind) => {
+            let artwork = this.props.getItemArtwork(item);
+            if (typeof artwork == 'string') {
+                artwork = {uri: artwork};
+            }
+
             return (
                 <TouchableOpacity
                     onPress={() => {
@@ -39,7 +44,8 @@ export class PlayList extends Component {
                         getItemTitle={this.props.getItemTitle}
                         getItemSubTitle={this.props.getItemSubTitle}
                         circle={circle}
-                        source={this.props.getItemArtwork(item)}
+                        defaultSource={this.props.defaultItemSource}
+                        source={artwork}
                         item={item}
                     />
                 </TouchableOpacity>

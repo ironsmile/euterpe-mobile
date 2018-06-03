@@ -12,6 +12,7 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { HttpmsService } from '@components/httpms-service';
 import { FOOTER_HEIGHT } from '@screens/common/footer';
 import { setPlaylist, setTrack, playAlbum } from '@actions/playing';
 import { SongSmall } from '@components/song-small';
@@ -53,8 +54,15 @@ class ResultSection extends React.PureComponent {
 }
 
 export class SearchResultsRenderer extends React.Component {
-    render() {
+    constructor(props) {
+        super(props);
 
+        this.state = {
+            httpms: new HttpmsService(this.props.settings),
+        };
+    }
+
+    render() {
         if (this.props.search.isSearching) {
             return (
                 <View style={styles.centered}>
@@ -120,6 +128,7 @@ export class SearchResultsRenderer extends React.Component {
                                         { album: item }
                                     );
                                 }}
+                                artwork={this.state.httpms.getAlbumArtworkURL(item.album_id)}
                             />
                         ))}
                     </ResultSection>
@@ -202,6 +211,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
     search: state.search,
+    settings: state.settings,
 });
 
 export const SearchResults = connect(mapStateToProps)(SearchResultsRenderer);

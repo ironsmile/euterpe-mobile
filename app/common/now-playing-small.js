@@ -7,11 +7,21 @@ import {
     Image,
     ActivityIndicator,
 } from 'react-native';
+import { connect } from 'react-redux';
+
+import { HttpmsService } from '@components/httpms-service';
 import Images from '@assets/images';
 import D from '../screens/common/dimensions';
 
 
-export class NowPlaying extends React.Component {
+class NowPlayingRenderer extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            httpms: new HttpmsService(this.props.settings),
+        };
+    }
 
     renderImageArea() {
         if (this.props.loading) {
@@ -21,7 +31,8 @@ export class NowPlaying extends React.Component {
         return (
             <Image
                 style={styles.image}
-                source={Images.unknownAlbum}
+                defaultSource={Images.unknownAlbum}
+                source={{uri: this.state.httpms.getAlbumArtworkURL(this.props.song.album_id)}}
             />
         );
     }
@@ -95,3 +106,9 @@ const styles = StyleSheet.create({
         width: D.width - 50,
     },
 });
+
+const mapStateToProps = (state) => ({
+    settings: state.settings,
+});
+
+export const NowPlaying = connect(mapStateToProps)(NowPlayingRenderer);

@@ -21,12 +21,14 @@ import { gs } from '@styles/global';
 class ArtistScreenRenderer extends React.Component {
     constructor(props) {
         super(props);
+        const httpms = new HttpmsService(this.props.settings);
         this.state = {
             isLoading: true,
             errorLoading: false,
             errorObj: null,
             artist: null,
             albums: [],
+            httpms,
         };
     }
 
@@ -45,8 +47,6 @@ class ArtistScreenRenderer extends React.Component {
     }
 
     getArtistData(artist) {
-        const httpms = new HttpmsService(this.props.settings);
-
         if (!artist) {
             this.setState({
                 isLoading: false,
@@ -63,12 +63,12 @@ class ArtistScreenRenderer extends React.Component {
             isLoading: true,
         });
 
-        fetch(httpms.getSearchURL(artist), {
+        fetch(this.state.httpms.getSearchURL(artist), {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            ...httpms.getAuthCredsHeader()
+            ...this.state.httpms.getAuthCredsHeader()
           },
         })
         .then((response) => {
@@ -162,6 +162,7 @@ class ArtistScreenRenderer extends React.Component {
             <ArtistBig
                 artist={this.state.artist}
                 albums={this.state.albums}
+                httpms={this.state.httpms}
                 onPressAlbum={(album) => {
                     this.props.navigation.navigate(
                         'SearchAlbum',

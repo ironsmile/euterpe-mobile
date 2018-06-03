@@ -57,7 +57,8 @@ export class AlbumBig extends React.PureComponent {
                     <View style={styles.withShadow}>
                         <Image
                             style={styles.albumImage}
-                            source={Images.unknownAlbum}
+                            defaultSource={Images.unknownAlbum}
+                            source={{uri: this.props.artwork}}
                         />
                     </View>
                     <Text style={styles.header}>

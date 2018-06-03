@@ -33,13 +33,22 @@ export class ArtistBig extends React.PureComponent {
         }
     };
 
-    _renderItem = ({item, index}) => (
-        <QueueItem
-            onPressAlbum={this._onPressAlbum}
-            index={index}
-            album={item}
-        />
-    );
+    _renderItem = ({item, index}) => {
+        let artwork = undefined;
+
+        if (this.props.httpms) {
+            artwork = this.props.httpms.getAlbumArtworkURL(item.album_id);
+        }
+
+        return (
+            <QueueItem
+                onPressAlbum={this._onPressAlbum}
+                index={index}
+                album={item}
+                artwork={artwork}
+            />
+        );
+    };
 
     _renderFooter = () => {
         return (

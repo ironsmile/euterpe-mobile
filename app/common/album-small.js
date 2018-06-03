@@ -23,7 +23,8 @@ export class AlbumSmall extends React.PureComponent {
         return (
             <Image
                 style={styles.resultRowImage}
-                source={Images.unknownAlbum}
+                defaultSource={Images.unknownAlbum}
+                source={{uri: this.props.artwork}}
             />
         );
     }

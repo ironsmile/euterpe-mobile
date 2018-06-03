@@ -48,6 +48,11 @@ export class HttpmsService {
         return `${this.settings.hostAddress}/browse/?by=album&per-page=5&order=desc&order-by=id`;
     }
 
+    getAlbumArtworkURL(albumID) {
+        const e = encodeURIComponent;
+        return `${this.settings.hostAddress}/album/${e(albumID)}/artwork`;
+    }
+
     addressFromURI(uri) {
         const noSlashes = uri.replace(/^\/+/, '');
 

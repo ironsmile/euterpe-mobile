@@ -5,10 +5,20 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
+
+import { HttpmsService } from '@components/httpms-service';
 import { PlayList } from '@components/playlist';
 import Images from '@assets/images';
 
 class RecentlyPlayedAlbumsRenderer extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            httpms: new HttpmsService(this.props.settings),
+        };
+    }
 
     render() {
         const { albums, albumsObjects } = this.props.recentlyPlayed;
@@ -31,7 +41,10 @@ class RecentlyPlayedAlbumsRenderer extends React.Component {
                 }}
                 getItemTitle={(item) => item.album}
                 getItemSubTitle={(item) => item.artist}
-                getItemArtwork={(item) => Images.unknownAlbum}
+                getItemArtwork={(item) => {
+                    return this.state.httpms.getAlbumArtworkURL(item.album_id);
+                }}
+                defaultItemSource={Images.unknownAlbum}
             />
         );
     }
@@ -40,6 +53,7 @@ class RecentlyPlayedAlbumsRenderer extends React.Component {
 
 const mapStateToProps = (state) => ({
     recentlyPlayed: state.recentlyPlayed,
+    settings: state.settings,
 });
 
 export const RecentlyPlayedAlbums = connect(mapStateToProps)(RecentlyPlayedAlbumsRenderer);
