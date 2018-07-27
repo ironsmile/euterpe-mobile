@@ -89,14 +89,12 @@ class SearchRenderer extends React.Component {
 
         this.props.dispatch(startSearch(text));
 
+        const req = httpms.getSearchRequest(text)
+
         Promise.race([
-            fetch(httpms.getSearchURL(text), {
-              method: 'GET',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                ...httpms.getAuthCredsHeader()
-              },
+            fetch(req.url, {
+              method: req.method,
+              headers: req.headers,
             }),
             new Promise(function (resolve, reject) {
                 setTimeout(() => reject(new Error('Request timed out')), 15000)

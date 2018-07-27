@@ -35,14 +35,16 @@ export const downloadSong = (song, errorHandler) => {
             _downloading.cancel();
         }
 
+        const req = httpms.getSongRequest(song.id)
+
         // console.log(`Starging song ${song.id} downloading with RNFetchBlob.`);
         _downloading = RNFetchBlob.config({
             path: filePath,
         }).fetch(
-            'GET',
-            httpms.getSongURL(song.id),
+            req.method,
+            req.url,
             {
-                ...httpms.getAuthCredsHeader(),
+                ...req.headers,
             }
         );
 

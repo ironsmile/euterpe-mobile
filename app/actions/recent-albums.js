@@ -23,14 +23,12 @@ export const refreshRecentAlbums = () => {
             type: START_REFRESHING_ALBUMS,
         });
 
+        const req = httpms.getRecentAlbumsRequest()
+
         Promise.race([
-            fetch(httpms.getRecentAlbumsURL(), {
-              method: 'GET',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                ...httpms.getAuthCredsHeader()
-              },
+            fetch(req.url, {
+              method: req.method,
+              headers: req.headers,
             }),
             new Promise((resolve, reject) => {
                 setTimeout(() => reject(new Error('Request timed out')), 15000);

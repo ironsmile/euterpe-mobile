@@ -63,13 +63,11 @@ class AlbumScreenRenderer extends React.Component {
             isLoading: true,
         });
 
-        fetch(this.state.httpms.getSearchURL(album.album), {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            ...this.state.httpms.getAuthCredsHeader()
-          },
+        const req = this.state.httpms.getSearchRequest(album.album)
+
+        fetch(req.url, {
+          method: req.method,
+          headers: req.headers,
         })
         .then((response) => {
             if (response.status !== 200) {

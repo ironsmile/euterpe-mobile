@@ -10,6 +10,10 @@ export class HttpmsService {
         return `${this.settings.hostAddress}/search/${encodeURIComponent(searchText)}`;
     }
 
+    getSearchRequest(searchText) {
+        return this.getRequestByURL(this.getSearchURL(searchText))
+    }
+
     getAuthCredsHeader() {
         if (!this.settings.username) {
             return {};
@@ -26,10 +30,32 @@ export class HttpmsService {
         return `${this.settings.hostAddress}/file/${songID}`;
     }
 
+    getSongRequest(songID) {
+        return {
+            url: this.getSongURL(songID),
+            method: "GET",
+            headers: {
+                ...this.getAuthCredsHeader(),
+            },
+        };
+    }
+
     getShareURL(song) {
         const e = encodeURIComponent;
 
         return `${this.settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(song.album_id)}&at=${e(song.artist)}`;
+    }
+
+    getRequestByURL(url) {
+        return {
+            url: url,
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                ...this.getAuthCredsHeader(),
+            },
+        };
     }
 
     getBrowseArtistsURL() {
@@ -44,8 +70,16 @@ export class HttpmsService {
         return `${this.settings.hostAddress}/browse/?by=artist&per-page=5&order=desc&order-by=id`;
     }
 
+    getRecentArtistsRequest() {
+        return this.getRequestByURL(this.getRecentArtistsURL());
+    }
+
     getRecentAlbumsURL() {
         return `${this.settings.hostAddress}/browse/?by=album&per-page=5&order=desc&order-by=id`;
+    }
+
+    getRecentAlbumsRequest() {
+        return this.getRequestByURL(this.getRecentAlbumsURL());
     }
 
     getAlbumArtworkURL(albumID) {

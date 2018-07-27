@@ -57,12 +57,11 @@ class BrowseArtistsScreenRenderer extends React.Component {
             loadingMoreResults: true,
         });
 
-        fetch(this.state.nextPage, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            ...this.state.httpms.getAuthCredsHeader()
-          },
+        const req = this.state.httpms.getRequestByURL(this.state.nextPage);
+
+        fetch(req.url, {
+          method: req.method,
+          headers: req.headers,
         })
         .then((response) => {
             if (response.status !== 200) {

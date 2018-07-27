@@ -23,14 +23,12 @@ export const refreshRecentArtists = () => {
             type: START_REFRESHING_ARTISTS,
         });
 
+        const req = httpms.getRecentArtistsRequest()
+
         Promise.race([
-            fetch(httpms.getRecentArtistsURL(), {
-              method: 'GET',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                ...httpms.getAuthCredsHeader()
-              },
+            fetch(req.url, {
+              method: req.method,
+              headers: req.headers,
             }),
             new Promise((resolve, reject) => {
                 setTimeout(() => reject(new Error('Request timed out')), 15000);

@@ -63,13 +63,11 @@ class ArtistScreenRenderer extends React.Component {
             isLoading: true,
         });
 
-        fetch(this.state.httpms.getSearchURL(artist), {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            ...this.state.httpms.getAuthCredsHeader()
-          },
+        const req = this.state.httpms.getSearchRequest(artist)
+
+        fetch(req.url, {
+          method: req.method,
+          headers: req.headers,
         })
         .then((response) => {
             if (response.status !== 200) {
