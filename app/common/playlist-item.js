@@ -29,6 +29,7 @@ export default (props) => {
 const styles = StyleSheet.create({
     container: {
         margin: 8,
+        width: (D.width * 4.2) / 10,
         marginLeft: 12
     },
 
