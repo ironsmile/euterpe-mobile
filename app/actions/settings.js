@@ -27,7 +27,7 @@ export const checkSettings = (onOK, onError) => {
         });
 
         const httpms = new HttpmsService(getState().settings);
-        const req = httpms.getRecentAlbumsRequest()
+        const req = httpms.getCheckSettingsRequest()
 
         Promise.race([
             fetch(req.url, {
@@ -46,6 +46,77 @@ export const checkSettings = (onOK, onError) => {
             if (onOK) {
                 onOK(response.json());
             }
+        })
+        .catch((error) => {
+            dispatch(checkEnded());
+            if (onError) {
+                onError(error);
+            }
+        });
+    };
+};
+
+export const getToken = (onOK, onError) => {
+    return (dispatch, getState) => {
+        dispatch({
+            type: SETTINGS_CHECK_STARTED,
+        });
+
+        const httpms = new HttpmsService(getState().settings);
+        const req = httpms.getTokenRequest();
+
+        Promise.race([
+            fetch(req.url, {
+              method: req.method,
+              headers: req.headers,
+              body: req.body,
+            }),
+            new Promise((resolve, reject) => {
+                setTimeout(() => reject(new Error('request timed out')), 15000);
+            }),
+        ])
+        .then((response) => {
+            if (response.status !== 200) {
+                dispatch(checkEnded());
+                throw response;
+            }
+
+            return response.json();
+        })
+        .then((respJson) => {
+            if (!respJson.token) {
+                dispatch(checkEnded());
+                throw new Error('token is missing from response');
+            }
+
+            dispatch(changeSettings({
+                token: respJson.token,
+            }));
+
+            const registerReq = httpms.getRegisterTokenRequest();
+            Promise.race([
+                fetch(registerReq.url, {
+                  method: registerReq.method,
+                  headers: registerReq.headers,
+                }),
+                new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error('request timed out')), 15000);
+                }),
+            ]).then((response) => {
+                dispatch(checkEnded());
+                if (response.status < 200 || response.status >= 300) {
+                    throw response;
+                }
+
+                if (onOK) {
+                    onOK(response.json());
+                }
+            }).catch((error) => {
+                dispatch(checkEnded());
+                if (onError) {
+                    onError(error);
+                }
+            });
         })
         .catch((error) => {
             dispatch(checkEnded());
@@ -78,6 +149,7 @@ export const finishLogOut = () => {
             hostAddress: null,
             username: null,
             password: null,
+            token: null,
         }));
     };
 };

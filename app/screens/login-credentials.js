@@ -9,7 +9,7 @@ import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { TextInput } from '@components/text-input';
 import { login } from '@styles/global';
 import { IconButton } from '@components/icon-button';
-import { changeSettings, checkSettings, checkSuccess, checkError } from '@actions/settings';
+import { changeSettings, checkSettings, checkSuccess, checkError, getToken } from '@actions/settings';
 
 export class LoginCredentialsScreenRenderer extends React.Component {
 
@@ -86,7 +86,7 @@ export class LoginCredentialsScreenRenderer extends React.Component {
                         iconName="checkmark-circle"
                         onPress={() => {
                             Keyboard.dismiss();
-                            this.props.dispatch(checkSettings(
+                            this.props.dispatch(getToken(
                                 (responseJson) => {
                                     this.props.navigation.navigate('LoginSuccess');
                                 },
@@ -100,7 +100,7 @@ export class LoginCredentialsScreenRenderer extends React.Component {
                                     }
 
                                     this.props.dispatch(checkError(
-                                        'Error contacting the HTTPMS server'
+                                        'Error contacting the HTTPMS server: ' + error
                                     ));
                                 }
                             ));

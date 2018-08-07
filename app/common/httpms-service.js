@@ -14,9 +14,17 @@ export class HttpmsService {
         return this.getRequestByURL(this.getSearchURL(searchText))
     }
 
+    // getAuthCredsHeader preserves comaptibility with old installations where
+    // settings contains username and password for basic authentication.
     getAuthCredsHeader() {
-        if (!this.settings.username) {
+        if (!this.settings.username && !this.settings.token) {
             return {};
+        }
+
+        if (this.settings.token) {
+            return {
+                'Authorization': `Bearer ${this.settings.token}`,
+            }
         }
 
         const encoded = base64.encode(`${this.settings.username}:${this.settings.password}`);
@@ -84,7 +92,52 @@ export class HttpmsService {
 
     getAlbumArtworkURL(albumID) {
         const e = encodeURIComponent;
-        return `${this.settings.hostAddress}/album/${e(albumID)}/artwork`;
+        const url = `${this.settings.hostAddress}/album/${e(albumID)}/artwork/`;
+
+        if (this.settings.token) {
+            return `${url}?token=${e(this.settings.token)}`;
+        }
+
+        return url;
+    }
+
+    getCheckSettingsRequest() {
+        return {
+            url: this.getRecentAlbumsURL(),
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                ...this.getAuthCredsHeader(),
+            },
+        };
+    }
+
+    getTokenRequest() {
+        return {
+            url: `${this.settings.hostAddress}/login/token/`,
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: this.settings.username,
+                password: this.settings.password,
+            }),
+        };
+    }
+
+    getRegisterTokenRequest() {
+        return {
+            url: `${this.settings.hostAddress}/register/token/`,
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                ...this.getAuthCredsHeader(),
+            },
+        };
     }
 
     addressFromURI(uri) {

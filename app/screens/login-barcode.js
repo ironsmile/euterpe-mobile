@@ -123,7 +123,9 @@ export class LoginBarcodeScreenRenderer extends React.Component {
                     try {
                         parsedData = JSON.parse(event.data);
 
-                        if (typeof parsedData.httpms !== Object) {
+                        if (typeof parsedData !== Object ||
+                            (parsedData.software != "httpms" &&
+                                parsedData.software != "euterpe")) {
                             throw parsedData;
                         }
                     } catch (error) {
@@ -150,9 +152,8 @@ export class LoginBarcodeScreenRenderer extends React.Component {
                     }
 
                     this.props.dispatch(changeSettings({
-                        hostAddress: parsedData.httpms.address,
-                        username: parsedData.httpms.username,
-                        password: parsedData.httpms.password,
+                        hostAddress: parsedData.address,
+                        token: parsedData.token,
                     }));
 
                     this.props.dispatch(checkSettings(

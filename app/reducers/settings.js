@@ -3,6 +3,7 @@ const initialState = {
     hostAddress: null,
     username: null,
     password: null,
+    token: null,
     loggedIn: false,
 
     // This flag is set to true while a request for checking the settings is in progress
@@ -20,9 +21,7 @@ export const settingsReducer = (state = initialState, action) => {
         case SETTINGS_CHANGED:
             return {
                 ...state,
-                hostAddress: action.hostAddress,
-                username: action.username,
-                password: action.password,
+                ...action,
             };
 
         case SETTINGS_CHECK_STARTED:
@@ -51,12 +50,15 @@ export const settingsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loggedIn: true,
+                password: null,
             };
 
         case SETTINGS_LOGOUT_SUCCESS:
             return {
                 ...state,
                 loggedIn: false,
+                password: null,
+                token: null,
             };
 
         default:
