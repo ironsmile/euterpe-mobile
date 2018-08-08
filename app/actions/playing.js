@@ -303,7 +303,7 @@ export const setTrack = (index, errorHandler, successHandler) => {
                   title: track.title,
                   artist: track.artist,
                   album: track.album,
-                  artwork: Images.unknownAlbum,
+                  artwork: httpms.getAlbumArtworkURL(track.album_id),
                   duration,
                 });
 
