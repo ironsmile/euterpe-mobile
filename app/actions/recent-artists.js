@@ -2,6 +2,7 @@ import {
     RECENT_ARTISTS_REFRESHED,
     START_REFRESHING_ARTISTS,
     STOPPED_REFRESHING_ARTISTS,
+    CLEANUP_RECENT_ARTISTS,
 } from '@reducers/recent-artists';
 import { HttpmsService } from '@components/httpms-service';
 
@@ -57,3 +58,11 @@ export const refreshRecentArtists = () => {
         });
     };
 };
+
+export const cleanupRecentArtists = () => {
+    return (dispatch, getState) => {
+        dispatch({
+            type: CLEANUP_RECENT_ARTISTS,
+        });
+    }
+}

@@ -27,6 +27,13 @@ export const recentAlbumsReducer = (state = initialState, action) => {
                 loading: false,
             };
 
+        case CLEANUP_RECENT_ALBUMS:
+            return {
+                ...state,
+                lastFetched: 0,
+                albums: [],
+            };
+
         default:
             return state;
     }
@@ -35,3 +42,4 @@ export const recentAlbumsReducer = (state = initialState, action) => {
 export const RECENT_ALBUMS_REFRESHED = 'RecentAlbums/Refreshed';
 export const START_REFRESHING_ALBUMS = 'RecentAlbums/RefreshStarted';
 export const STOPPED_REFRESHING_ALBUMS = 'RecentAlbums/RefreshStopped';
+export const CLEANUP_RECENT_ALBUMS = 'RecentAlbums/Cleanup';

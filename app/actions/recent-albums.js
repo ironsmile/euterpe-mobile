@@ -2,6 +2,7 @@ import {
     RECENT_ALBUMS_REFRESHED,
     START_REFRESHING_ALBUMS,
     STOPPED_REFRESHING_ALBUMS,
+    CLEANUP_RECENT_ALBUMS,
 } from '@reducers/recent-albums';
 import { HttpmsService } from '@components/httpms-service';
 
@@ -57,3 +58,11 @@ export const refreshRecentAlbums = () => {
         });
     };
 };
+
+export const cleanupRecentAlbums = () => {
+    return (dispatch, getState) => {
+        dispatch({
+            type: CLEANUP_RECENT_ALBUMS,
+        });
+    }
+}

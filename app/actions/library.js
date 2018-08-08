@@ -48,7 +48,16 @@ export const downloadSong = (song, errorHandler) => {
             }
         );
 
-        const songRes = await _downloading.then((resp) => {
+        const songRes = await Promise.race([
+            _downloading,
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    _downloading.cancel();
+                    reject(new Error('request timed out'));
+                }, 15000);
+            }),
+        ])
+        .then((resp) => {
             dispatch(songDownloaded(song));
             return resp;
         }).catch((error) => {
@@ -57,7 +66,7 @@ export const downloadSong = (song, errorHandler) => {
             }
             // console.log(`Downloading ${song.id} failed`, error);
             throw error;
-        })
+        });
 
         // console.log(`Song ${song.id} downloaded to ${songRes.path()} and ready for use`);
         return songRes.path();

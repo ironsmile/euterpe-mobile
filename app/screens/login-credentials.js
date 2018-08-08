@@ -99,9 +99,17 @@ export class LoginCredentialsScreenRenderer extends React.Component {
                                         return;
                                     }
 
-                                    this.props.dispatch(checkError(
-                                        'Error contacting the HTTPMS server: ' + error
-                                    ));
+                                    let message = 'Error contacting the HTTPMS server';
+
+                                    if (error.message) {
+                                        message += ': ' + error.message;
+                                    } else if (typeof error === "string") {
+                                        message += ': ' + error;
+                                    } else {
+                                        // console.log(error);
+                                    }
+
+                                    this.props.dispatch(checkError(message));
                                 }
                             ));
                         }}

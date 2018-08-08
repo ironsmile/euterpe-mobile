@@ -27,6 +27,13 @@ export const recentArtistsReducer = (state = initialState, action) => {
                 loading: false,
             };
 
+        case CLEANUP_RECENT_ARTISTS:
+            return {
+                ...state,
+                lastFetched: 0,
+                artists: [],
+            };
+
         default:
             return state;
     }
@@ -35,3 +42,4 @@ export const recentArtistsReducer = (state = initialState, action) => {
 export const RECENT_ARTISTS_REFRESHED = 'RecentArtists/Refreshed';
 export const START_REFRESHING_ARTISTS = 'RecentArtists/RefreshStarted';
 export const STOPPED_REFRESHING_ARTISTS = 'RecentArtists/RefreshStopped';
+export const CLEANUP_RECENT_ARTISTS = 'RecentArtists/Cleanup';
