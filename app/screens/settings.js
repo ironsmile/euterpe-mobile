@@ -9,10 +9,13 @@ import {
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 
+import { gs } from '@styles/global';
 import { SETTINGS_CHANGED } from '@reducers/settings';
 import { TextInput } from '@components/text-input';
 import { IconButton } from '@components/icon-button';
 import { finishLogOut } from '@actions/settings';
+import { cleanupRecentAlbums } from '@actions/recent-albums';
+import { cleanupRecentArtists } from '@actions/recent-artists';
 import { stopPlaying } from '@actions/playing';
 
 const resetAction = NavigationActions.reset({
@@ -24,65 +27,34 @@ const resetAction = NavigationActions.reset({
 
 export class SettingsRenderer extends React.Component {
     render() {
+        let loginType = "None, open server";
+
+        if (this.props.settings.token) {
+            loginType = "Bearer Token";
+        } else if (this.props.settings.username) {
+            loginType = "Basic Authenticate";
+        }
+
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
                     <Text style={styles.header}>Library Settings</Text>
 
-                    <TextInput
-                        placeholder="Host Address"
-                        returnKeyType="next"
-                        value={this.props.settings.hostAddress}
-                        onChangeText={(text) => {
-                            this.props.dispatch({
-                                ...this.props.settings,
-                                type: SETTINGS_CHANGED,
-                                hostAddress: text,
-                            });
-                        }}
-                        onSubmitEditing={() => {
-                            this.refs.UsernameInput.focus();
-                        }}
-                    />
+                    <Text style={styles.text}>
+                        HTTPMS Address: {this.props.settings.hostAddress}
+                    </Text>
 
-                    <TextInput
-                        ref="UsernameInput"
-                        placeholder="Username"
-                        returnKeyType="next"
-                        value={this.props.settings.username}
-                        onChangeText={(text) => {
-                            this.props.dispatch({
-                                ...this.props.settings,
-                                type: SETTINGS_CHANGED,
-                                username: text,
-                            });
-                        }}
-                        onSubmitEditing={() => {
-                            this.refs.PasswordInput.focus();
-                        }}
-                    />
-
-                    <TextInput
-                        ref="PasswordInput"
-                        placeholder="Password"
-                        returnKeyType="done"
-                        value={this.props.settings.password}
-                        onChangeText={(text) => {
-                            this.props.dispatch({
-                                ...this.props.settings,
-                                type: SETTINGS_CHANGED,
-                                password: text,
-                            });
-                        }}
-                        secureTextEntry={true}
-                        onSubmitEditing={Keyboard.dismiss}
-                    />
+                    <Text style={styles.text}>
+                        Authentication: {loginType}
+                    </Text>
 
                     <IconButton
                         text="Log Out"
                         iconName="log-out"
                         onPress={() => {
                             Keyboard.dismiss();
+                            this.props.dispatch(cleanupRecentAlbums());
+                            this.props.dispatch(cleanupRecentArtists());
                             this.props.dispatch(finishLogOut());
                             this.props.dispatch(stopPlaying(true));
                             this.props.navigation.dispatch(resetAction);
@@ -108,7 +80,11 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         marginBottom: 20,
-    }
+    },
+    text: {
+        ...gs.font,
+        marginBottom: 10,
+    },
 });
 
 const mapStateToProps = (state) => ({
