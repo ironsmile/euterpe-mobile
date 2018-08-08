@@ -1,5 +1,4 @@
 import base64 from 'base-64';
-import RNFetchBlob from 'react-native-fetch-blob';
 
 export class HttpmsService {
     constructor(settings) {
@@ -7,7 +6,7 @@ export class HttpmsService {
     }
 
     getSearchURL(searchText) {
-        return `${this.settings.hostAddress}/search/${encodeURIComponent(searchText)}`;
+        return `${this.settings.hostAddress}/search?q=${encodeURIComponent(searchText)}`;
     }
 
     getSearchRequest(searchText) {
@@ -102,15 +101,7 @@ export class HttpmsService {
     }
 
     getCheckSettingsRequest() {
-        return {
-            url: this.getRecentAlbumsURL(),
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                ...this.getAuthCredsHeader(),
-            },
-        };
+        return this.getRequestByURL(this.getRecentAlbumsURL());
     }
 
     getTokenRequest() {

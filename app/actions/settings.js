@@ -56,6 +56,47 @@ export const checkSettings = (onOK, onError) => {
     };
 };
 
+export const registerToken = (onOK, onError) => {
+    return (dispatch, getState) => {
+        const httpms = new HttpmsService(getState().settings);
+        const registerReq = httpms.getRegisterTokenRequest();
+
+        let req;
+
+        try {
+            req = fetch(registerReq.url, {
+                method: registerReq.method,
+                headers: registerReq.headers,
+            });
+        } catch (error) {
+            if (onError) {
+                onError(error);
+            }
+            return;
+        }
+
+        Promise.race([
+            req,
+            new Promise((resolve, reject) => {
+                setTimeout(() => reject(new Error('request timed out')), 15000);
+            }),
+        ])
+        .then((response) => {
+            if (response.status < 200 || response.status >= 300) {
+                throw response;
+            }
+
+            if (onOK) {
+                onOK(response.json());
+            }
+        }).catch((error) => {
+            if (onError) {
+                onError(error);
+            }
+        });
+    }
+}
+
 export const getToken = (onOK, onError) => {
     return (dispatch, getState) => {
         dispatch({
@@ -93,30 +134,26 @@ export const getToken = (onOK, onError) => {
                 token: respJson.token,
             }));
 
-            const registerReq = httpms.getRegisterTokenRequest();
-            Promise.race([
-                fetch(registerReq.url, {
-                  method: registerReq.method,
-                  headers: registerReq.headers,
-                }),
-                new Promise((resolve, reject) => {
-                    setTimeout(() => reject(new Error('request timed out')), 15000);
-                }),
-            ]).then((response) => {
-                dispatch(checkEnded());
-                if (response.status < 200 || response.status >= 300) {
-                    throw response;
-                }
+            const registerOK = (responseJson) => {
+                dispatch(changeSettings({
+                    username: null,
+                    password: null,
+                }));
 
+                dispatch(checkEnded());
                 if (onOK) {
-                    onOK(response.json());
+                    onOK(responseJson);
                 }
-            }).catch((error) => {
+            }
+
+            const registerError = (error) => {
                 dispatch(checkEnded());
                 if (onError) {
                     onError(error);
                 }
-            });
+            }
+
+            dispatch(registerToken(registerOK, registerError));
         })
         .catch((error) => {
             dispatch(checkEnded());

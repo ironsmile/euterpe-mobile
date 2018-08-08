@@ -8,7 +8,7 @@ import Header from '@screens/common/header';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { Helpful } from '@components/helpful';
 import { PlatformIcon } from '@components/platform-icon';
-import { changeSettings, checkSettings, checkSuccess, checkError } from '@actions/settings';
+import { changeSettings, registerToken, checkSuccess, checkError } from '@actions/settings';
 
 export class LoginBarcodeScreenRenderer extends React.Component {
 
@@ -115,6 +115,7 @@ export class LoginBarcodeScreenRenderer extends React.Component {
                     }
 
                     this.setState({
+                        errorMessage: null,
                         evaluatingBarCode: true,
                     });
 
@@ -143,7 +144,7 @@ export class LoginBarcodeScreenRenderer extends React.Component {
                                     errorMessage: null,
                                     evaluatingBarCode: false,
                                 });
-                            }, 5000);
+                            }, 10000);
                         }
                     }
 
@@ -156,16 +157,41 @@ export class LoginBarcodeScreenRenderer extends React.Component {
                         token: parsedData.token,
                     }));
 
-                    this.props.dispatch(checkSettings(
+                    this.props.dispatch(registerToken(
                         (responseJson) => {
                             if (this._tm) {
                                 clearTimeout(this._tm);
                             }
                             this.props.navigation.navigate('LoginSuccess');
+
+                            this.setState({
+                                evaluatingBarCode: false,
+                            });
                         },
                         (error) => {
+                            let message = 'This QR code does not work.';
+
+                            switch(error.code) {
+                                case 400:
+                                    message = 'Authentication methods has changed. ' +
+                                        'Try upgrading your app!';
+                                    break;
+                                case 401:
+                                    message = 'Token has expired or has been revoked.';
+                                    break;
+                                case 404:
+                                    message = 'No HTTPMS running on this address.';
+                                    break;
+                                default:
+                                    if (error.message) {
+                                        message = error.message;
+                                    } else {
+                                        // console.log(error);
+                                    }
+                            }
+
                             this.setState({
-                                errorMessage: 'The QR code is not for this HTTPMS installation',
+                                errorMessage: message,
                             });
 
                             if (this._tm) {
@@ -174,10 +200,9 @@ export class LoginBarcodeScreenRenderer extends React.Component {
 
                             this._tm = setTimeout(() => {
                                 this.setState({
-                                    errorMessage: null,
                                     evaluatingBarCode: false,
                                 });
-                            }, 5000);
+                            }, 10000);
                         }
                     ));
                 }}
@@ -276,4 +301,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18,
     },
+    errorMessage: {
+        color: 'white',
+        backgroundColor: 'rgba(1,1,1,0.7)',
+        borderRadius: 6,
+        padding: 10,
+    }
 });

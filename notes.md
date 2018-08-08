@@ -23,3 +23,23 @@ footer menu color: #222326
   специален /status API call?
 * logout трябва да изчиства всички ресурси
 * дълги имена в списъците на home страницата разместват картите
+
+== commands ==
+
+Списък с android емулатори:
+
+avdmanager list avd
+
+Пускане на android емулатор:
+
+/Users/iron4o/Library/Android/sdk/tools/emulator -avd <name> # name идва от list-а по - горе
+
+debug menu:
+
+ctrl + d (ios)
+ctrl + m (android)
+
+reload js:
+
+ctrl + r (ios)
+rr (android)
