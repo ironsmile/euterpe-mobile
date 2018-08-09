@@ -14,6 +14,7 @@ import { Helpful } from '@components/helpful';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { ArtistsList } from '@components/artists-list';
+import { errorToMessage } from '@helpers/errors';
 
 class BrowseArtistsScreenRenderer extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
             isLoading: true,
             loadingMoreResults: false,
             errorLoading: false,
-            errorObj: null,
+            errorMessage: null,
             artists: [],
             nextPage: httpms.getBrowseArtistsURL(),
             httpms,
@@ -98,7 +99,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
                 errorLoading: true,
                 isLoading: false,
                 loadingMoreResults: false,
-                errorObj: error,
+                errorMessage: errorToMessage(error),
             });
 
             console.error('Error while GETting artists browsing data', error);
@@ -161,7 +162,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
                 iconName="warning"
                 title="Error Loading Artists"
                 firstLine="Getting artists failed due to network error."
-                secondLine={this.state.errorObj.toString()}
+                secondLine={this.state.errorMessage}
             />
         );
     }

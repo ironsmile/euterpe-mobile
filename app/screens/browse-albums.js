@@ -14,6 +14,7 @@ import { Helpful } from '@components/helpful';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { AlbumsList } from '@components/albums-list';
+import { errorToMessage } from '@helpers/errors';
 
 class BrowseAlbumsScreenRenderer extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             isLoading: true,
             loadingMoreResults: false,
             errorLoading: false,
-            errorObj: null,
+            errorMessage: null,
             albums: [],
             nextPage: httpms.getBrowseAlbumsURL(),
             httpms,
@@ -100,7 +101,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
                 errorLoading: true,
                 isLoading: false,
                 loadingMoreResults: false,
-                errorObj: error,
+                errorMessage: errorToMessage(error),
             });
 
             console.error('Error while GETting artists browsing data', error);
@@ -164,7 +165,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
                 iconName="warning"
                 title="Error Loading Albums"
                 firstLine="Getting albums failed due to network error."
-                secondLine={this.state.errorObj.toString()}
+                secondLine={this.state.errorMessage}
             />
         );
     }

@@ -9,6 +9,7 @@ import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { Helpful } from '@components/helpful';
 import { PlatformIcon } from '@components/platform-icon';
 import { changeSettings, registerToken, checkSuccess, checkError } from '@actions/settings';
+import { errorToMessage } from '@helpers/errors';
 
 export class LoginBarcodeScreenRenderer extends React.Component {
 
@@ -169,29 +170,10 @@ export class LoginBarcodeScreenRenderer extends React.Component {
                             });
                         },
                         (error) => {
-                            let message = 'This QR code does not work.';
-
-                            switch(error.code) {
-                                case 400:
-                                    message = 'Authentication methods has changed. ' +
-                                        'Try upgrading your app!';
-                                    break;
-                                case 401:
-                                    message = 'Token has expired or has been revoked.';
-                                    break;
-                                case 404:
-                                    message = 'No HTTPMS running on this address.';
-                                    break;
-                                default:
-                                    if (error.message) {
-                                        message = error.message;
-                                    } else {
-                                        // console.log(error);
-                                    }
-                            }
-
                             this.setState({
-                                errorMessage: message,
+                                errorMessage: errorToMessage(
+                                    error,
+                                    'This QR code does not work.'),
                             });
 
                             if (this._tm) {
