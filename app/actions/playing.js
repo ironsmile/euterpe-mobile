@@ -372,7 +372,7 @@ export const restorePlayingState = (errorHandler) => {
                   title: track.title,
                   artist: track.artist,
                   album: track.album,
-                  artwork: Images.unknownAlbum,
+                  artwork: httpms.getAlbumArtworkURL(track.album_id),
                   duration,
                 });
                 MediaControl.updatePlayback({
