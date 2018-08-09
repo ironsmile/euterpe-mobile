@@ -66,15 +66,15 @@ export class HttpmsService {
     }
 
     getBrowseArtistsURL() {
-        return `${this.settings.hostAddress}/browse/?by=artist&per-page=20`;
+        return `${this.settings.hostAddress}/browse?by=artist&per-page=20`;
     }
 
     getBrowseAlbumsURL() {
-        return `${this.settings.hostAddress}/browse/?by=album&per-page=20`;
+        return `${this.settings.hostAddress}/browse?by=album&per-page=20`;
     }
 
     getRecentArtistsURL() {
-        return `${this.settings.hostAddress}/browse/?by=artist&per-page=5&order=desc&order-by=id`;
+        return `${this.settings.hostAddress}/browse?by=artist&per-page=5&order=desc&order-by=id`;
     }
 
     getRecentArtistsRequest() {
@@ -82,7 +82,7 @@ export class HttpmsService {
     }
 
     getRecentAlbumsURL() {
-        return `${this.settings.hostAddress}/browse/?by=album&per-page=5&order=desc&order-by=id`;
+        return `${this.settings.hostAddress}/browse?by=album&per-page=5&order=desc&order-by=id`;
     }
 
     getRecentAlbumsRequest() {
@@ -91,7 +91,7 @@ export class HttpmsService {
 
     getAlbumArtworkURL(albumID) {
         const e = encodeURIComponent;
-        const url = `${this.settings.hostAddress}/album/${e(albumID)}/artwork/`;
+        const url = `${this.settings.hostAddress}/album/${e(albumID)}/artwork`;
 
         if (this.settings.token) {
             return `${url}?token=${e(this.settings.token)}`;
