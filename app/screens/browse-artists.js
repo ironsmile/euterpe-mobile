@@ -9,18 +9,16 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import { Helpful } from '@components/helpful';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { ArtistsList } from '@components/artists-list';
 import { errorToMessage } from '@helpers/errors';
 
-class BrowseArtistsScreenRenderer extends React.Component {
+export class BrowseArtistsScreen extends React.Component {
     constructor(props) {
         super(props);
-
-        const httpms = new HttpmsService(this.props.settings);
 
         this.state = {
             isLoading: true,
@@ -29,7 +27,6 @@ class BrowseArtistsScreenRenderer extends React.Component {
             errorMessage: null,
             artists: [],
             nextPage: httpms.getBrowseArtistsURL(),
-            httpms,
         };
     }
 
@@ -58,7 +55,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
             loadingMoreResults: true,
         });
 
-        const req = this.state.httpms.getRequestByURL(this.state.nextPage);
+        const req = httpms.getRequestByURL(this.state.nextPage);
 
         fetch(req.url, {
           method: req.method,
@@ -79,7 +76,7 @@ class BrowseArtistsScreenRenderer extends React.Component {
             let nextPage = null;
 
             if (responseJson.next) {
-                nextPage = this.state.httpms.addressFromURI(responseJson.next);
+                nextPage = httpms.addressFromURI(responseJson.next);
             }
 
             this.setState({
@@ -193,9 +190,3 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
 });
-
-const mapStateToProps = (state) => ({
-    settings: state.settings,
-});
-
-export const BrowseArtistsScreen = connect(mapStateToProps)(BrowseArtistsScreenRenderer);

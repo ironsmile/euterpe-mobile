@@ -2,7 +2,6 @@ import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 
-import { HttpmsService } from '@components/httpms-service';
 import { Screen } from '@screens/screen';
 import { AlbumsList } from '@components/albums-list';
 import { playAlbum } from '@actions/playing';
@@ -11,10 +10,8 @@ import Header from '@screens/common/header';
 class SearchAlbumsRenderer extends React.PureComponent {
     constructor(props) {
         super(props);
-        const httpms = new HttpmsService(this.props.settings);
-        this.state = {
-            httpms,
-        };
+
+        this.state = {};
     }
 
     componentWillMount() {
@@ -79,7 +76,6 @@ class SearchAlbumsRenderer extends React.PureComponent {
                                 { album }
                             );
                         }}
-                        httpms={this.state.httpms}
                     />
                 </View>
             </Screen>
@@ -89,7 +85,6 @@ class SearchAlbumsRenderer extends React.PureComponent {
 
 const mapStateToProps = (state) => ({
     search: state.search,
-    settings: state.settings,
 });
 
 export const SearchAlbums = connect(mapStateToProps)(SearchAlbumsRenderer);

@@ -4,7 +4,7 @@ import {
     STOPPED_REFRESHING_ALBUMS,
     CLEANUP_RECENT_ALBUMS,
 } from '@reducers/recent-albums';
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 
 export const refreshRecentAlbums = () => {
     return (dispatch, getState) => {
@@ -16,9 +16,6 @@ export const refreshRecentAlbums = () => {
         if (now - lastFetched < 60 * 60 * 1000) {
             return;
         }
-
-        const { settings } = state;
-        const httpms = new HttpmsService(settings);
 
         dispatch({
             type: START_REFRESHING_ALBUMS,

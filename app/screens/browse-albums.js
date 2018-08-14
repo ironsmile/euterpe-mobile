@@ -9,18 +9,16 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import { Helpful } from '@components/helpful';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { AlbumsList } from '@components/albums-list';
 import { errorToMessage } from '@helpers/errors';
 
-class BrowseAlbumsScreenRenderer extends React.Component {
+export class BrowseAlbumsScreen extends React.Component {
     constructor(props) {
         super(props);
-
-        const httpms = new HttpmsService(this.props.settings);
 
         this.state = {
             isLoading: true,
@@ -29,7 +27,6 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             errorMessage: null,
             albums: [],
             nextPage: httpms.getBrowseAlbumsURL(),
-            httpms,
         };
 
         this._mounted = false;
@@ -60,7 +57,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             loadingMoreResults: true,
         });
 
-        const req = this.state.httpms.getRequestByURL(this.state.nextPage);
+        const req = httpms.getRequestByURL(this.state.nextPage);
 
         this.fetchJob = fetch(req.url, {
           method: req.method,
@@ -81,7 +78,7 @@ class BrowseAlbumsScreenRenderer extends React.Component {
             let nextPage = null;
 
             if (responseJson.next) {
-                nextPage = this.state.httpms.addressFromURI(responseJson.next);
+                nextPage = httpms.addressFromURI(responseJson.next);
             }
 
             this.setState({
@@ -153,7 +150,6 @@ class BrowseAlbumsScreenRenderer extends React.Component {
                     onEndReachedThreshold={0.2}
                     onEndReached={this.endReached.bind(this)}
                     showLoadingIndicator={this.state.loadingMoreResults}
-                    httpms={this.state.httpms}
                 />
             </View>
         );
@@ -196,9 +192,3 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
 });
-
-const mapStateToProps = (state) => ({
-    settings: state.settings,
-});
-
-export const BrowseAlbumsScreen = connect(mapStateToProps)(BrowseAlbumsScreenRenderer);

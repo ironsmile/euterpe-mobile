@@ -5,15 +5,13 @@ import {
     SONG_USED,
 } from '@reducers/library';
 
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 
-let _httpms = null;
 let _downloading = null;
 
 export const downloadSong = (song, errorHandler) => {
     // console.log(`downloadSong action creator filer for ${song.id}`);
     return async (dispatch, getState) => {
-        const httpms = getHttpmsService(getState);
         const filePath = songFilePath(song.id);
 
         const fileExists = await RNFetchBlob.fs.exists(filePath).then((exist) => {
@@ -133,13 +131,3 @@ export const restoreLibrary = () => {
             });
     }
 }
-
-const getHttpmsService = (getState) => {
-    if (_httpms !== null) {
-        return _httpms;
-    }
-
-    _httpms = new HttpmsService(getState().settings);
-
-    return _httpms;
-};

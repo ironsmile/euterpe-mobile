@@ -22,6 +22,7 @@ import { recentlyPlayedReducer } from './reducers/recently-played';
 import { restorePlayingState } from './actions/playing';
 import { restoreLibrary } from './actions/library';
 import { HttpmsNavigator, navRootReducer } from '@nav';
+import { httpms } from '@components/httpms-service';
 
 
 const appReducer = combineReducers({
@@ -112,6 +113,7 @@ class Root extends React.Component {
                 debounce: 1000,
             },
             () => {
+                httpms.setStore(store);
                 store.dispatch(restorePlayingState());
                 this.setState({ rehydrated: true });
                 store.dispatch(restoreLibrary());

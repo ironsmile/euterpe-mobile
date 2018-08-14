@@ -18,14 +18,11 @@ import {
 import MediaControl from '@components/media-control-shim';
 import { setProgress, setDuration } from '@actions/progress';
 import { downloadSong } from '@actions/library';
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import { addToRecentlyPlayed } from '@actions/recently-played';
 
 // The player instance which would be used in these action creators
 let player = null;
-
-// The cached httpms service object which would be used in these action creators
-let _httpms = null;
 
 // A setInterval timer for updating a track progress
 let _timer = null;
@@ -263,8 +260,6 @@ export const setTrack = (index, errorHandler, successHandler) => {
         dispatch(selectTrack(track, index));
         dispatch(setProgress(0));
 
-        const httpms = getHttpmsService(getState);
-
         // console.log(`Loading track ${track.id}`);
         dispatch(trackIsLoading());
 
@@ -341,7 +336,6 @@ export const restorePlayingState = (errorHandler) => {
         dispatch(togglePlaying(false));
 
         const track = state.playing.now;
-        const httpms = getHttpmsService(getState);
         const { progress } = state;
 
         dispatch(trackIsLoading());
@@ -421,16 +415,6 @@ const cleanupProgressTimer = () => {
         clearInterval(_timer);
         _timer = null;
     }
-};
-
-const getHttpmsService = (getState) => {
-    if (_httpms !== null) {
-        return _httpms;
-    }
-
-    _httpms = new HttpmsService(getState().settings);
-
-    return _httpms;
 };
 
 const playCallback = (dispatch, errorHandler) => {

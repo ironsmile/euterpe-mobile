@@ -1,12 +1,21 @@
 import base64 from 'base-64';
 
-export class HttpmsService {
-    constructor(settings) {
-        this.settings = settings;
+class HttpmsService {
+    constructor() {
+        this.store = null;
+    }
+
+    setStore(store) {
+        this.store = store;
+    }
+
+    getState() {
+        return this.store.getState();
     }
 
     getSearchURL(searchText) {
-        return `${this.settings.hostAddress}/search?q=${encodeURIComponent(searchText)}`;
+        const { settings } = this.getState();
+        return `${settings.hostAddress}/search?q=${encodeURIComponent(searchText)}`;
     }
 
     getSearchRequest(searchText) {
@@ -16,17 +25,19 @@ export class HttpmsService {
     // getAuthCredsHeader preserves comaptibility with old installations where
     // settings contains username and password for basic authentication.
     getAuthCredsHeader() {
-        if (!this.settings.username && !this.settings.token) {
+        const { settings } = this.getState();
+
+        if (!settings.username && !settings.token) {
             return {};
         }
 
-        if (this.settings.token) {
+        if (settings.token) {
             return {
-                'Authorization': `Bearer ${this.settings.token}`,
+                'Authorization': `Bearer ${settings.token}`,
             }
         }
 
-        const encoded = base64.encode(`${this.settings.username}:${this.settings.password}`);
+        const encoded = base64.encode(`${settings.username}:${settings.password}`);
 
         return {
             'Authorization': `Basic ${encoded}`,
@@ -34,7 +45,8 @@ export class HttpmsService {
     }
 
     getSongURL(songID) {
-        return `${this.settings.hostAddress}/file/${songID}`;
+        const { settings } = this.getState();
+        return `${settings.hostAddress}/file/${songID}`;
     }
 
     getSongRequest(songID) {
@@ -48,9 +60,10 @@ export class HttpmsService {
     }
 
     getShareURL(song) {
+        const { settings } = this.getState();
         const e = encodeURIComponent;
 
-        return `${this.settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(song.album_id)}&at=${e(song.artist)}`;
+        return `${settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(song.album_id)}&at=${e(song.artist)}`;
     }
 
     getRequestByURL(url) {
@@ -66,15 +79,18 @@ export class HttpmsService {
     }
 
     getBrowseArtistsURL() {
-        return `${this.settings.hostAddress}/browse?by=artist&per-page=20`;
+        const { settings } = this.getState();
+        return `${settings.hostAddress}/browse?by=artist&per-page=20`;
     }
 
     getBrowseAlbumsURL() {
-        return `${this.settings.hostAddress}/browse?by=album&per-page=20`;
+        const { settings } = this.getState();
+        return `${settings.hostAddress}/browse?by=album&per-page=20`;
     }
 
     getRecentArtistsURL() {
-        return `${this.settings.hostAddress}/browse?by=artist&per-page=5&order=desc&order-by=id`;
+        const { settings } = this.getState();
+        return `${settings.hostAddress}/browse?by=artist&per-page=5&order=desc&order-by=id`;
     }
 
     getRecentArtistsRequest() {
@@ -82,7 +98,8 @@ export class HttpmsService {
     }
 
     getRecentAlbumsURL() {
-        return `${this.settings.hostAddress}/browse?by=album&per-page=5&order=desc&order-by=id`;
+        const { settings } = this.getState();
+        return `${settings.hostAddress}/browse?by=album&per-page=5&order=desc&order-by=id`;
     }
 
     getRecentAlbumsRequest() {
@@ -91,10 +108,11 @@ export class HttpmsService {
 
     getAlbumArtworkURL(albumID) {
         const e = encodeURIComponent;
-        const url = `${this.settings.hostAddress}/album/${e(albumID)}/artwork`;
+        const { settings } = this.getState();
+        const url = `${settings.hostAddress}/album/${e(albumID)}/artwork`;
 
-        if (this.settings.token) {
-            return `${url}?token=${e(this.settings.token)}`;
+        if (settings.token) {
+            return `${url}?token=${e(settings.token)}`;
         }
 
         return url;
@@ -105,23 +123,27 @@ export class HttpmsService {
     }
 
     getTokenRequest() {
+        const { settings } = this.getState();
+
         return {
-            url: `${this.settings.hostAddress}/login/token/`,
+            url: `${settings.hostAddress}/login/token/`,
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username: this.settings.username,
-                password: this.settings.password,
+                username: settings.username,
+                password: settings.password,
             }),
         };
     }
 
     getRegisterTokenRequest() {
+        const { settings } = this.getState();
+
         return {
-            url: `${this.settings.hostAddress}/register/token/`,
+            url: `${settings.hostAddress}/register/token/`,
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -133,7 +155,10 @@ export class HttpmsService {
 
     addressFromURI(uri) {
         const noSlashes = uri.replace(/^\/+/, '');
+        const { settings } = this.getState();
 
-        return `${this.settings.hostAddress}/${noSlashes}`;
+        return `${settings.hostAddress}/${noSlashes}`;
     }
 }
+
+export const httpms = new HttpmsService();

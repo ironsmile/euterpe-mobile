@@ -6,6 +6,7 @@ import { headerHeight } from '@screens/common/header';
 import Images from '@assets/images';
 import D from '@screens/common/dimensions';
 import { PlatformIcon } from '@components/platform-icon';
+import { httpms } from '@components/httpms-service';
 
 class QueueItem extends React.PureComponent {
     _onPress = () => {
@@ -34,11 +35,7 @@ export class ArtistBig extends React.PureComponent {
     };
 
     _renderItem = ({item, index}) => {
-        let artwork = undefined;
-
-        if (this.props.httpms) {
-            artwork = this.props.httpms.getAlbumArtworkURL(item.album_id);
-        }
+        const artwork = httpms.getAlbumArtworkURL(item.album_id);
 
         return (
             <QueueItem

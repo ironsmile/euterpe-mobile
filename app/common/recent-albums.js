@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import { refreshRecentAlbums } from '@actions/recent-albums';
 import { PlayList } from '@components/playlist';
 import Images from '@assets/images';
@@ -15,9 +15,7 @@ class RecentAlbumsRenderer extends React.Component {
     constructor(props) {
         super(props);
     
-        this.state = {
-            httpms: new HttpmsService(this.props.settings),
-        };
+        this.state = {};
     }
 
     componentWillMount() {
@@ -42,7 +40,7 @@ class RecentAlbumsRenderer extends React.Component {
                 getItemTitle={(item) => item.album}
                 getItemSubTitle={(item) => item.artist}
                 getItemArtwork={(item) => {
-                    return this.state.httpms.getAlbumArtworkURL(item.album_id);
+                    return httpms.getAlbumArtworkURL(item.album_id);
                 }}
                 defaultItemSource={Images.unknownAlbum}
             />
@@ -53,7 +51,6 @@ class RecentAlbumsRenderer extends React.Component {
 
 const mapStateToProps = (state) => ({
     recentAlbums: state.recentAlbums,
-    settings: state.settings,
 });
 
 export const RecentAlbums = connect(mapStateToProps)(RecentAlbumsRenderer);

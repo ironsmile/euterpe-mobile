@@ -9,18 +9,16 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import Images from '@assets/images';
 import D from '../screens/common/dimensions';
 
 
-class NowPlayingRenderer extends React.Component {
+export class NowPlaying extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            httpms: new HttpmsService(this.props.settings),
-        };
+        this.state = {};
     }
 
     renderImageArea() {
@@ -32,7 +30,7 @@ class NowPlayingRenderer extends React.Component {
             <Image
                 style={styles.image}
                 defaultSource={Images.unknownAlbum}
-                source={{uri: this.state.httpms.getAlbumArtworkURL(this.props.song.album_id)}}
+                source={{uri: httpms.getAlbumArtworkURL(this.props.song.album_id)}}
             />
         );
     }
@@ -106,9 +104,3 @@ const styles = StyleSheet.create({
         width: D.width - 50,
     },
 });
-
-const mapStateToProps = (state) => ({
-    settings: state.settings,
-});
-
-export const NowPlaying = connect(mapStateToProps)(NowPlayingRenderer);

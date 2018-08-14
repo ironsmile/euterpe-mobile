@@ -13,15 +13,14 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { Helpful } from '@components/helpful';
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import { AlbumBig } from '@components/album-big';
 import { setPlaylist, appendToPlaylist } from '@actions/playing';
 import { gs } from '@styles/global';
 
-class AlbumScreenRenderer extends React.Component {
+export class AlbumScreen extends React.Component {
     constructor(props) {
         super(props);
-        const httpms = new HttpmsService(this.props.settings);
         this.state = {
             isLoading: true,
             errorLoading: false,
@@ -29,7 +28,6 @@ class AlbumScreenRenderer extends React.Component {
             album: null,
             artwork: null,
             songs: [],
-            httpms,
         };
     }
 
@@ -42,7 +40,7 @@ class AlbumScreenRenderer extends React.Component {
                 isLoading: true,
                 errorLoading: false,
                 album: params.album,
-                artwork: this.state.httpms.getAlbumArtworkURL(params.album.album_id),
+                artwork: httpms.getAlbumArtworkURL(params.album.album_id),
             });
             this.getAlbumData(params.album);
         }
@@ -63,7 +61,7 @@ class AlbumScreenRenderer extends React.Component {
             isLoading: true,
         });
 
-        const req = this.state.httpms.getSearchRequest(album.album)
+        const req = httpms.getSearchRequest(album.album)
 
         fetch(req.url, {
           method: req.method,
@@ -200,9 +198,3 @@ const styles = StyleSheet.create({
         height: '100%',
     },
 });
-
-const mapStateToProps = (state) => ({
-    settings: state.settings,
-});
-
-export const AlbumScreen = connect(mapStateToProps)(AlbumScreenRenderer);

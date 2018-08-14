@@ -6,7 +6,7 @@ import {
     SETTINGS_LOGIN_SUCCESS,
     SETTINGS_LOGOUT_SUCCESS,
 } from '@reducers/settings';
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 
 export const changeSettings = (newSettings) => {
     return (dispatch, getState) => {
@@ -26,7 +26,6 @@ export const checkSettings = (onOK, onError) => {
             type: SETTINGS_CHECK_STARTED,
         });
 
-        const httpms = new HttpmsService(getState().settings);
         const req = httpms.getCheckSettingsRequest()
 
         Promise.race([
@@ -58,7 +57,6 @@ export const checkSettings = (onOK, onError) => {
 
 export const registerToken = (onOK, onError) => {
     return (dispatch, getState) => {
-        const httpms = new HttpmsService(getState().settings);
         const registerReq = httpms.getRegisterTokenRequest();
 
         let req;
@@ -103,7 +101,6 @@ export const getToken = (onOK, onError) => {
             type: SETTINGS_CHECK_STARTED,
         });
 
-        const httpms = new HttpmsService(getState().settings);
         const req = httpms.getTokenRequest();
 
         Promise.race([

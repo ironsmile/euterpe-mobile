@@ -16,7 +16,7 @@ import { RecentSearches } from '@components/recent-searches';
 import _ from 'lodash';
 import DropdownAlert from 'react-native-dropdownalert';
 
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import {
     setSearchQuery,
     resultsFetched,
@@ -84,8 +84,6 @@ class SearchRenderer extends React.Component {
             );
             return;
         }
-
-        const httpms = new HttpmsService(this.props.settings);
 
         this.props.dispatch(startSearch(text));
 

@@ -4,7 +4,7 @@ import {
     STOPPED_REFRESHING_ARTISTS,
     CLEANUP_RECENT_ARTISTS,
 } from '@reducers/recent-artists';
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 
 export const refreshRecentArtists = () => {
     return (dispatch, getState) => {
@@ -16,9 +16,6 @@ export const refreshRecentArtists = () => {
         if (now - lastFetched < 60 * 60 * 1000) {
             return;
         }
-
-        const { settings } = state;
-        const httpms = new HttpmsService(settings);
 
         dispatch({
             type: START_REFRESHING_ARTISTS,

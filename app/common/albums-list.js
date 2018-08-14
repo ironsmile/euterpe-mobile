@@ -3,6 +3,7 @@ import { FlatList, View, StyleSheet, Text, ActivityIndicator } from 'react-nativ
 
 import { AlbumSmall } from '@components/album-small';
 import { headerHeight } from '@screens/common/header';
+import { httpms } from '@components/httpms-service';
 
 class AlbumItem extends React.PureComponent {
     _onPress = () => {
@@ -30,10 +31,7 @@ export class AlbumsList extends React.PureComponent {
     };
 
     _renderItem = ({item, index}) => {
-        let artworkURL = null;
-        if (this.props.httpms) {
-            artworkURL = this.props.httpms.getAlbumArtworkURL(item.album_id);
-        }
+        let artworkURL = httpms.getAlbumArtworkURL(item.album_id);
         return (
             <AlbumItem
                 id={item.id}

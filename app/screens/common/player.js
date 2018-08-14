@@ -33,16 +33,14 @@ import { FOOTER_HEIGHT } from './footer';
 import { NowPlaying } from '../../common/now-playing-small';
 import { SongsList } from '../../common/songs-list';
 import { PlatformIcon } from '../../common/platform-icon';
-import { HttpmsService } from '../../common/httpms-service';
+import { httpms } from '../../common/httpms-service';
 
 class PlaylerRenderer extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            httpms: new HttpmsService(this.props.settings),
-        };
+        this.state = {};
     }
 
     onPreviousSong() {
@@ -136,7 +134,7 @@ class PlaylerRenderer extends React.Component {
                 width={width}
                 height={height}
                 defaultSource={Images.unknownAlbum}
-                source={{uri: this.state.httpms.getAlbumArtworkURL(playing.album_id)}}
+                source={{uri: httpms.getAlbumArtworkURL(playing.album_id)}}
             />
         );
     }
@@ -168,7 +166,7 @@ class PlaylerRenderer extends React.Component {
                         <TouchableOpacity
                             onPress={() => {
                                 Share.share({
-                                    message: `${playing.title} by ${playing.artist}\n${this.state.httpms.getShareURL(playing)}`,
+                                    message: `${playing.title} by ${playing.artist}\n${httpms.getShareURL(playing)}`,
                                     title: 'Share this song',
                                 }).catch((error) => {
                                     // ignored
@@ -500,7 +498,6 @@ const mapStateToProps = (state) => ({
     repeat: state.playing.repeat,
     repeatSong: state.playing.repeatSong,
     player: state.player,
-    settings: state.settings,
 });
 
 export default Player = connect(mapStateToProps)(PlaylerRenderer);

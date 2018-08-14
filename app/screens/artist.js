@@ -13,22 +13,21 @@ import DropdownAlert from 'react-native-dropdownalert';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { Helpful } from '@components/helpful';
-import { HttpmsService } from '@components/httpms-service';
+import { httpms } from '@components/httpms-service';
 import { ArtistBig } from '@components/artist-big';
 import { setPlaylist, appendToPlaylist } from '@actions/playing';
 import { gs } from '@styles/global';
 
-class ArtistScreenRenderer extends React.Component {
+export class ArtistScreen extends React.Component {
     constructor(props) {
         super(props);
-        const httpms = new HttpmsService(this.props.settings);
+
         this.state = {
             isLoading: true,
             errorLoading: false,
             errorObj: null,
             artist: null,
             albums: [],
-            httpms,
         };
     }
 
@@ -63,7 +62,7 @@ class ArtistScreenRenderer extends React.Component {
             isLoading: true,
         });
 
-        const req = this.state.httpms.getSearchRequest(artist)
+        const req = httpms.getSearchRequest(artist)
 
         fetch(req.url, {
           method: req.method,
@@ -160,7 +159,6 @@ class ArtistScreenRenderer extends React.Component {
             <ArtistBig
                 artist={this.state.artist}
                 albums={this.state.albums}
-                httpms={this.state.httpms}
                 onPressAlbum={(album) => {
                     this.props.navigation.navigate(
                         'SearchAlbum',
@@ -199,9 +197,3 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
 });
-
-const mapStateToProps = (state) => ({
-    settings: state.settings,
-});
-
-export const ArtistScreen = connect(mapStateToProps)(ArtistScreenRenderer);
