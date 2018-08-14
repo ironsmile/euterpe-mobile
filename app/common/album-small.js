@@ -6,6 +6,7 @@ import {
 
 import Images from '@assets/images';
 import { SmallClickable } from '@components/small-clickable';
+import { httpms } from '@components/httpms-service';
 
 export class AlbumSmall extends React.PureComponent {
 
@@ -24,7 +25,7 @@ export class AlbumSmall extends React.PureComponent {
             <Image
                 style={styles.resultRowImage}
                 defaultSource={Images.unknownAlbum}
-                source={{uri: this.props.artwork}}
+                source={{uri: httpms.getAlbumArtworkURL(this.props.album.album_id)}}
             />
         );
     }

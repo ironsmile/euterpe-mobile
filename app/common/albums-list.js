@@ -3,7 +3,6 @@ import { FlatList, View, StyleSheet, Text, ActivityIndicator } from 'react-nativ
 
 import { AlbumSmall } from '@components/album-small';
 import { headerHeight } from '@screens/common/header';
-import { httpms } from '@components/httpms-service';
 
 class AlbumItem extends React.PureComponent {
     _onPress = () => {
@@ -22,23 +21,31 @@ class AlbumItem extends React.PureComponent {
 
 export class AlbumsList extends React.PureComponent {
 
+    state = {selected: (new Map(): Map<int, boolean>)};
+
     _keyExtractor = (item, index) => item.album_id;
 
     _onPressItem = (album) => {
+        this.setState((state) => {
+          // copy the map rather than modifying state.
+          const selected = new Map(state.selected);
+          selected.set(album.album_id, !selected.get(album.album_id)); // toggle
+          return {selected};
+        });
+
         if (this.props.onPressItem) {
             this.props.onPressItem(album);
         }
     };
 
     _renderItem = ({item, index}) => {
-        let artworkURL = httpms.getAlbumArtworkURL(item.album_id);
         return (
             <AlbumItem
                 id={item.id}
                 index={index}
                 onPressItem={this._onPressItem}
                 album={item}
-                artwork={artworkURL}
+                selected={!!this.state.selected.get(item.album_id)}
             />
         );
     };
@@ -85,12 +92,15 @@ export class AlbumsList extends React.PureComponent {
             <FlatList
                 style={this.props.style}
                 data={this.props.albums}
+                extraData={this.state}
+                removeClippedSubviews
                 keyExtractor={this._keyExtractor}
                 renderItem={this._renderItem}
                 ListHeaderComponent={this._renderHeader()}
                 ListFooterComponent={this._renderFooter()}
                 onEndReachedThreshold={this.props.onEndReachedThreshold}
                 onEndReached={this.props.onEndReached}
+                initialNumToRender={15}
             />
         );
     }
