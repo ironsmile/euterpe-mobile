@@ -17,14 +17,15 @@ import { httpms } from '@components/httpms-service';
 import { AlbumBig } from '@components/album-big';
 import { setPlaylist, appendToPlaylist } from '@actions/playing';
 import { gs } from '@styles/global';
+import { errorToMessage } from '@helpers/errors';
 
-export class AlbumScreen extends React.Component {
+class AlbumScreenRenderer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: true,
             errorLoading: false,
-            errorObj: null,
+            errorMessage: null,
             album: null,
             artwork: null,
             songs: [],
@@ -51,7 +52,7 @@ export class AlbumScreen extends React.Component {
             this.setState({
                 isLoading: false,
                 errorLoading: true,
-                errorObj: 'No album was selected.',
+                errorMessage: 'No album was selected.',
             });
 
             return;
@@ -94,7 +95,7 @@ export class AlbumScreen extends React.Component {
             this.setState({
                 errorLoading: true,
                 isLoading: false,
-                errorObj: error,
+                errorMessage: errorToMessage(error),
             });
 
             console.error('Error while GETting album data', error);
@@ -118,7 +119,7 @@ export class AlbumScreen extends React.Component {
                 iconName="warning"
                 title="Error Loading Album"
                 firstLine="Getting info for this album failed."
-                secondLine={this.state.errorObj.toString()}
+                secondLine={this.state.errorMessage}
             />
         );
     }
