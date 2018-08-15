@@ -16,7 +16,7 @@ import Header from '@screens/common/header';
 import { AlbumsList } from '@components/albums-list';
 import { errorToMessage } from '@helpers/errors';
 
-export class BrowseAlbumsScreen extends React.Component {
+class BrowseAlbumsScreenRenderer extends React.Component {
     constructor(props) {
         super(props);
 
@@ -192,3 +192,5 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
 });
+
+export const BrowseAlbumsScreen = connect()(BrowseAlbumsScreenRenderer);

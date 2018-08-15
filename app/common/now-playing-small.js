@@ -14,7 +14,7 @@ import Images from '@assets/images';
 import D from '../screens/common/dimensions';
 
 
-export class NowPlaying extends React.Component {
+class NowPlayingRenderer extends React.Component {
     constructor(props) {
         super(props);
 
@@ -104,3 +104,5 @@ const styles = StyleSheet.create({
         width: D.width - 50,
     },
 });
+
+export const NowPlaying = connect()(NowPlayingRenderer);

@@ -16,7 +16,7 @@ import Header from '@screens/common/header';
 import { ArtistsList } from '@components/artists-list';
 import { errorToMessage } from '@helpers/errors';
 
-export class BrowseArtistsScreen extends React.Component {
+class BrowseArtistsScreenRenderer extends React.Component {
     constructor(props) {
         super(props);
 
@@ -190,3 +190,5 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
 });
+
+export const BrowseArtistsScreen = connect()(BrowseArtistsScreenRenderer);
