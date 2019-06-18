@@ -10,8 +10,6 @@ import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 
 import { gs } from '@styles/global';
-import { SETTINGS_CHANGED } from '@reducers/settings';
-import { TextInput } from '@components/text-input';
 import { IconButton } from '@components/icon-button';
 import { finishLogOut } from '@actions/settings';
 import { cleanupRecentAlbums } from '@actions/recent-albums';

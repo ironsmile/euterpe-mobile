@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from '@screens/screen';
+import { IconButton } from '@components/icon-button';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
+import { startService } from '@actions/playing';
 
-export class AboutScreen extends React.Component {
+export class AboutScreenRenderer extends React.Component {
 
     static navigationOptions = ({ navigation }) => ({
         tabBarLabel: CreateTabLabel('About'),
@@ -46,6 +49,16 @@ export class AboutScreen extends React.Component {
                         app possible!
                     </Text>
 
+                    <View style={{marginTop: 15, paddingLeft: 30, paddingRight: 30}}>
+                        <IconButton
+                            text="Start Service"
+                            iconName="build"
+                            onPress={() => {
+                                this.props.dispatch(startService());
+                            }}
+                        />
+                    </View>
+
                 </View>
             </Screen>
         )
@@ -77,3 +90,7 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapStateToProps = (state) => ({
+});
+
+export const AboutScreen = connect(mapStateToProps)(AboutScreenRenderer);

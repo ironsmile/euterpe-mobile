@@ -1,6 +1,5 @@
 import CallDetectorManager from 'react-native-call-detection';
 import Wakeful from 'react-native-wakeful';
-import Images from '@assets/images';
 const Sound = require('react-native-sound');
 
 import {
@@ -20,6 +19,7 @@ import { setProgress, setDuration } from '@actions/progress';
 import { downloadSong } from '@actions/library';
 import { httpms } from '@components/httpms-service';
 import { addToRecentlyPlayed } from '@actions/recently-played';
+import { mediaPlayer } from '@media-player/media-player';
 
 // The player instance which would be used in these action creators
 let player = null;
@@ -32,6 +32,12 @@ let _cdm = null;
 
 // Instance of the Wakeful class for keeping the CPU and WiFi awake during playback
 const _wakeful = new Wakeful();
+
+export const startService = () => {
+    return (dispatch) => {
+        mediaPlayer.startService();
+    };
+}
 
 export const setPlaylist = (tracks, startPlaying = false) => {
     return (dispatch) => {

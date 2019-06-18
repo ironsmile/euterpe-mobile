@@ -2,7 +2,6 @@ import React from 'react';
 import {
     View,
     Text,
-    Image,
     TouchableOpacity,
     TouchableWithoutFeedback,
     StyleSheet,
@@ -12,28 +11,24 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
-    setPlaylist,
     togglePlaying,
     toggleShuffle,
     toggleRepeat,
     setTrack,
-    stopPlaying,
-    trackLoaded,
     previousSongInQueue,
     nextSongInQueue,
     seekToSeconds,
-} from '../../actions/playing';
-import { togglePlayerViewState } from '../../actions/player';
+} from '@actions/playing';
+import { togglePlayerViewState } from '@actions/player';
 import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
-import { TimedProgress, TrackProgress } from '../../common/track-progress';
+import { TimedProgress, TrackProgress } from '@components/track-progress';
 import Images from '@assets/images';
-import MediaControl from '../../common/media-control-shim';
-import { FOOTER_HEIGHT } from './footer';
-import { NowPlaying } from '../../common/now-playing-small';
-import { SongsList } from '../../common/songs-list';
-import { PlatformIcon } from '../../common/platform-icon';
-import { httpms } from '../../common/httpms-service';
+import MediaControl from '@components/media-control-shim';
+import { NowPlaying } from '@components/now-playing-small';
+import { SongsList } from '@components/songs-list';
+import { PlatformIcon } from '@components/platform-icon';
+import { httpms } from '@components/httpms-service';
 
 class PlaylerRenderer extends React.Component {
 

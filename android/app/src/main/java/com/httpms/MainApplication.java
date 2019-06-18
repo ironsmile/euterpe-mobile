@@ -30,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new MediaPlayerPackage(),
             new RCTCameraPackage(),
             new RNFetchBlobPackage(),
             new RNWakefulPackage(),
