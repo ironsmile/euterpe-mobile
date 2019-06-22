@@ -33,9 +33,20 @@ let _cdm = null;
 // Instance of the Wakeful class for keeping the CPU and WiFi awake during playback
 const _wakeful = new Wakeful();
 
-export const startService = () => {
-    return (dispatch) => {
-        mediaPlayer.startService();
+export const playMediaViaService = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const track = state.playing.playlist[state.playing.currentIndex];
+
+        if (!track || !track.id) {
+            console.error("track does not exist");
+            return;
+        }
+
+        const songURL = httpms.getSongURL(track.id);
+        const token = state.settings.token;
+
+        mediaPlayer.playMedia(songURL, token);
     };
 }
 

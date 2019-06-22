@@ -5,8 +5,8 @@ class AndroidMediaPlayer {
       this.java = NativeModules.MediaPlayer;
     }
 
-    startService() {
-        this.java.startService();
+    playMedia(media, token) {
+        this.java.playMedia(media, token);
     }
 
     getCurrentTime(callback) {
@@ -16,7 +16,7 @@ class AndroidMediaPlayer {
 
 class DummyMediaPlayer {
     constructor() {}
-    startService(){}
+    playMedia(media, token){}
 }
 
 let MediaPlayer;

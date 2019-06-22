@@ -4,7 +4,7 @@ import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from '@screens/screen';
 import { IconButton } from '@components/icon-button';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
-import { startService } from '@actions/playing';
+import { playMediaViaService } from '@actions/playing';
 
 export class AboutScreenRenderer extends React.Component {
 
@@ -51,10 +51,10 @@ export class AboutScreenRenderer extends React.Component {
 
                     <View style={{marginTop: 15, paddingLeft: 30, paddingRight: 30}}>
                         <IconButton
-                            text="Start Service"
-                            iconName="build"
+                            text="Play Via Service"
+                            iconName="play"
                             onPress={() => {
-                                this.props.dispatch(startService());
+                                this.props.dispatch(playMediaViaService());
                             }}
                         />
                     </View>
