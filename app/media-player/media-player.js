@@ -8,6 +8,10 @@ class AndroidMediaPlayer {
     startService() {
         this.java.startService();
     }
+
+    getCurrentTime(callback) {
+        this.java.getCurrentTime(callback);
+    }
 }
 
 class DummyMediaPlayer {

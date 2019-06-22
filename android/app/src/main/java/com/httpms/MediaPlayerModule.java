@@ -40,6 +40,11 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule {
     serviceStarted = true;
   }
 
+  @ReactMethod
+  public void getCurrentTime(final Callback callback) {
+    callback.invoke(5, isPlaying);
+}
+
   @Override
   public Map<String, Object> getConstants() {
     return constants;
