@@ -40,9 +40,8 @@ export const playMediaViaService = () => {
         }
 
         const songURL = httpms.getSongURL(track.id);
-        const token = state.settings.token;
 
-        mediaPlayer.playMedia(songURL, token);
+        mediaPlayer.playMedia(songURL);
     };
 }
 
@@ -326,8 +325,17 @@ export const setTrack = (index, errorHandler, successHandler) => {
     };
 };
 
+export const setPlayerAuthCreds = () => {
+    return (dispatch) => {
+        const headers = httpms.getAuthCredsHeader();
+        mediaPlayer.setAuthenticationHeader(headers);
+    }
+}
+
 export const restorePlayingState = (errorHandler) => {
     return (dispatch, getState) => {
+        dispatch(setPlayerAuthCreds());
+
         if (player !== null) {
             return;
         }

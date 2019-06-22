@@ -5,10 +5,83 @@ class AndroidMediaPlayer {
       this.java = NativeModules.MediaPlayer;
     }
 
-    playMedia(media, token) {
-        this.java.playMedia(media, token);
+    play() {
+
     }
 
+    onMediaLoading(callback) {
+
+    }
+
+    onPlayStarted(callback) {
+
+    }
+
+    onPlayCompleted(callback) {
+
+    }
+
+    pause() {
+
+    }
+
+    onPaused(callback) {
+
+    }
+
+    stop() {
+
+    }
+
+    onStopped(callback) {
+
+    }
+
+    setPlaylist(playlist, currentIndex) {
+
+    }
+
+    // onPlaylistSet is of the type func(playlist, currentIndex)
+    onPlaylistSet(callback) {
+
+    }
+
+    seekTo(seconds) {
+
+    }
+
+    setTrack(index) {
+
+    }
+
+    // callback is of the type func()
+    onTrackSet(callback) {
+
+    }
+
+    toggleShuffle() {
+
+    }
+
+    // callback is of type func (bool isShuffleOn).
+    getShuffleState(callback) {
+
+    }
+
+    // callback is of type func (int duration) where duration is in seconds.
+    getDuration(callback) {
+
+    }
+
+    setAuthenticationHeader(headers) {
+        this.java.setAuthenticationHeader(headers);
+    }
+
+    playMedia(media) {
+        this.java.playMedia(media);
+    }
+
+    // callback is of type func (int seconds, bool isPlaying).
     getCurrentTime(callback) {
         this.java.getCurrentTime(callback);
     }
@@ -16,7 +89,9 @@ class AndroidMediaPlayer {
 
 class DummyMediaPlayer {
     constructor() {}
-    playMedia(media, token){}
+    playMedia(media){}
+    getCurrentTime(callbacl){}
+    setAuthenticationHeader(headers) {}
 }
 
 let MediaPlayer;

@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.ReadableMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +23,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   ReactApplicationContext context;
   Map<String, Object> constants;
 
+  private final String authHeaderName = "Authorization";
   private MediaPlayerService player;
   boolean serviceBound = false;
   boolean serviceStarting = false;
 
+  public static Map<String, String> AuthHeaders;
   public static final String Broadcast_PLAY_NEW_AUDIO = "com.httpms.PlayNewAudio";
 
   public MediaPlayerModule(ReactApplicationContext context) {
@@ -33,6 +36,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     this.context = context;
 
     this.constants = new HashMap<>();
+    this.AuthHeaders = new HashMap<>();
     this.constants.put("IsAndroid", true);
     this.context.addLifecycleEventListener(this);
   }
@@ -62,7 +66,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   };
 
   @ReactMethod
-  private void playMedia(String media, String token) {
+  private void playMedia(String media) {
     if (serviceStarting) {
       return;
     }
@@ -71,7 +75,6 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     if (!serviceBound) {
       Intent playerIntent = new Intent(context, MediaPlayerService.class);
       playerIntent.putExtra("media", media);
-      playerIntent.putExtra("token", token);
       context.startService(playerIntent);
       context.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
       serviceStarting = true;
@@ -86,6 +89,13 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   public void getCurrentTime(final Callback callback) {
     boolean isPlaying = false;
     callback.invoke(5, isPlaying);
+  }
+
+  @ReactMethod
+  public void setAuthenticationHeader(ReadableMap headers) {
+    if (headers.hasKey(authHeaderName)) {
+      AuthHeaders.put(authHeaderName, headers.getString(authHeaderName));
+    }
   }
 
   @Override

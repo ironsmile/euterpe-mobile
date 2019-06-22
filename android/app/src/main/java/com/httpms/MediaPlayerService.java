@@ -36,7 +36,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private AudioManager audioManager;
   private MediaPlayer mediaPlayer;
   private String mediaFile;
-  private Map<String, String> authHeaders;
 
   //Used to pause/resume MediaPlayer
   private int resumePosition;
@@ -105,9 +104,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       stopSelf();
       return START_STICKY;
     }
-
-    authHeaders = new HashMap<>();
-    authHeaders.put("Authorization", "Bearer " + authToken);
 
     //Request audio focus
     if (requestAudioFocus() == false) {
@@ -364,7 +360,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     try {
         // Set the data source to the mediaFile location
-        mediaPlayer.setDataSource(this, uri, authHeaders);
+        mediaPlayer.setDataSource(this, uri, MediaPlayerModule.AuthHeaders);
     } catch (IOException e) {
         e.printStackTrace();
         stopSelf();

@@ -7,16 +7,20 @@ import {
     SETTINGS_LOGOUT_SUCCESS,
 } from '@reducers/settings';
 import { httpms } from '@components/httpms-service';
+import { setPlayerAuthCreds } from '@actions/playing';
 
 export const changeSettings = (newSettings) => {
     return (dispatch, getState) => {
         const currentSettings = getState().settings;
-
         dispatch({
             type: SETTINGS_CHANGED,
             ...currentSettings,
             ...newSettings,
         });
+
+        if (newSettings.token) {
+            dispatch(setPlayerAuthCreds());
+        }
     };
 };
 

@@ -5,10 +5,9 @@ import Camera from 'react-native-camera';
 
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
-import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { Helpful } from '@components/helpful';
 import { PlatformIcon } from '@components/platform-icon';
-import { changeSettings, registerToken, checkSuccess, checkError } from '@actions/settings';
+import { changeSettings, registerToken } from '@actions/settings';
 import { errorToMessage } from '@helpers/errors';
 
 export class LoginBarcodeScreenRenderer extends React.Component {
