@@ -1,5 +1,4 @@
 import CallDetectorManager from 'react-native-call-detection';
-import Wakeful from 'react-native-wakeful';
 const Sound = require('react-native-sound');
 
 import {
@@ -29,9 +28,6 @@ let _timer = null;
 
 // Call detection manager
 let _cdm = null;
-
-// Instance of the Wakeful class for keeping the CPU and WiFi awake during playback
-const _wakeful = new Wakeful();
 
 export const playMediaViaService = () => {
     return (dispatch, getState) => {
@@ -107,7 +103,6 @@ export const togglePlaying = (play, fromCallManager = false, errorHandler = unde
         }
 
         if (player !== null && !statePlaying) {
-            releaseLocks();
             cleanupProgressTimer();
             if (!fromCallManager) {
                 stopCallDetection();
@@ -147,10 +142,6 @@ export const stopPlaying = (hardStop = true) => {
     return (dispatch) => {
         cleanupProgressTimer();
         stopCallDetection();
-
-        if (hardStop) {
-            releaseLocks();
-        }
 
         if (player !== null) {
             player.stop();
@@ -214,8 +205,6 @@ export const trackEnded = (errorHandler, nextSongPressed = false) => {
         if (currentIndex >= playlistLen - 1) {
             if (state.playing.repeat) {
                 dispatch(setTrack(0, errorHandler));
-            } else {
-                releaseLocks();
             }
 
             return;
@@ -436,7 +425,6 @@ const cleanupProgressTimer = () => {
 
 const playCallback = (dispatch, errorHandler) => {
     setUpCallDetection(dispatch);
-    acquireLocks();
 
     return (success) => {
         // console.log('track playback ended');
@@ -496,14 +484,4 @@ const stopCallDetection = () => {
     }
     _cdm.dispose();
     _cdm = null;
-};
-
-const acquireLocks = () => {
-    // console.log('Wakeful lock acquired');
-    _wakeful.acquire();
-};
-
-const releaseLocks = () => {
-    // console.log('Wakeful lock released');
-    _wakeful.release();
 };
