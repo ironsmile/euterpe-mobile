@@ -1,5 +1,4 @@
 import CallDetectorManager from 'react-native-call-detection';
-const Sound = require('react-native-sound');
 
 import {
     SET_PLAYLIST,
@@ -15,13 +14,9 @@ import {
 
 import MediaControl from '@components/media-control-shim';
 import { setProgress, setDuration } from '@actions/progress';
-import { downloadSong } from '@actions/library';
 import { httpms } from '@components/httpms-service';
 import { addToRecentlyPlayed } from '@actions/recently-played';
 import { mediaPlayer } from '@media-player/media-player';
-
-// The player instance which would be used in these action creators
-let player = null;
 
 // A setInterval timer for updating a track progress
 let _timer = null;
@@ -47,13 +42,10 @@ export const playMediaViaService = () => {
 
 export const setPlaylist = (tracks, startPlaying = false) => {
     return (dispatch) => {
-        dispatch({
-            type: SET_PLAYLIST,
-            playlist: tracks,
-        });
+        mediaPlayer.setPlaylist(tracks, 0);
 
         if (startPlaying) {
-            dispatch(setTrack(0));
+            mediaPlayer.setTrack(0);
         }
     };
 };
@@ -78,45 +70,10 @@ export const togglePlaying = (play, fromCallManager = false, errorHandler = unde
             statePlaying = state.playing.paused;
         }
 
-        if (player === null && statePlaying) {
-            dispatch(setTrack(state.playing.currentIndex, errorHandler, () => {
-                dispatch(togglePlaying(true, fromCallManager, errorHandler));
-            }));
-
-            return;
-        }
-
-        if (player !== null && statePlaying) {
-            const duration = player.getDuration();
-            const progressUpdate = 1000;
-
-            cleanupProgressTimer();
-
-            _timer = setInterval(() => {
-                player.getCurrentTime((seconds) => {
-                    dispatch(setProgress(seconds / duration));
-                });
-            }, progressUpdate);
-            // console.log(`Starting player playback with playCallback`);
-            player.play(playCallback(dispatch, errorHandler));
-        }
-
-        if (player !== null && !statePlaying) {
-            cleanupProgressTimer();
-            if (!fromCallManager) {
-                stopCallDetection();
-            }
-            player.pause();
-        }
-
-        if (player !== null) {
-            player.getCurrentTime((seconds, isPlaying) => {
-                MediaControl.updatePlayback({
-                  state: isPlaying ? MediaControl.STATE_PLAYING : MediaControl.STATE_PAUSED,
-                  elapsedTime: seconds,
-                });
-                dispatch(setProgress(seconds / player.getDuration()));
-            });
+        if (statePlaying) {
+            mediaPlayer.play();
+        } else {
+            mediaPlayer.pause();
         }
 
         dispatch({
@@ -137,16 +94,10 @@ export const toggleRepeat = () => ({
 // The `hardStop` arguments means this would be the end of the playback and all resources
 // should be released no matter what. On the other hand, when `hardStop` is false then
 // new playback is expected immediately after this call so not all resources may be relesed.
-export const stopPlaying = (hardStop = true) => {
+export const stopPlaying = () => {
     return (dispatch) => {
         cleanupProgressTimer();
         stopCallDetection();
-
-        if (player !== null) {
-            player.stop();
-            player.release();
-            player = null;
-        }
 
         dispatch({
             type: STOP,
@@ -170,7 +121,15 @@ export const trackIsLoading = () => {
     };
 };
 
-export const trackEnded = (errorHandler, nextSongPressed = false) => {
+export const trackEnded = () => {
+    return (dispatch) => {
+        dispatch({
+            type: TRACK_ENDED,
+        });
+    };
+}
+
+export const _old_trackEnded = (errorHandler, nextSongPressed = false) => {
     // console.log('Creating trackEnded action');
 
     return (dispatch, getState) => {
@@ -180,7 +139,7 @@ export const trackEnded = (errorHandler, nextSongPressed = false) => {
         // console.log(`Executing trackEnded for track with index ${currentIndex}`);
 
         cleanupProgressTimer();
-        dispatch(stopPlaying(false));
+        dispatch(stopPlaying());
 
         if (repeatSong && !nextSongPressed) {
             dispatch(setTrack(currentIndex, errorHandler));
@@ -215,25 +174,13 @@ export const trackEnded = (errorHandler, nextSongPressed = false) => {
 
 export const previousSongInQueue = () => {
     return (dispatch, getState) => {
-        const state = getState();
-        const { currentIndex } = state.playing;
-
-        dispatch({
-            type: TRACK_ENDED,
-        });
-
-
-        if (!state.playing.playlist[currentIndex - 1]) {
-            return;
-        }
-
-        dispatch(setTrack(currentIndex - 1));
+        mediaPlayer.previous();
     };
 };
 
 export const nextSongInQueue = () => {
     return (dispatch) => {
-        dispatch(trackEnded(null, true));
+        mediaPlayer.next();
     };
 };
 
@@ -245,83 +192,10 @@ export const selectTrack = (track, index) => ({
 
 export const setTrack = (index, errorHandler, successHandler) => {
     return (dispatch, getState) => {
-        dispatch(stopPlaying(false));
-        const state = getState();
-
-        const track = state.playing.playlist[index];
-
-        if (!track || !track.id) {
-            // console.log(`Track index out of range: ${index}`);
-            if (errorHandler) {
-                errorHandler(`Track index out of range: ${index}`);
-            }
-
-            return;
+        mediaPlayer.setTrack(index);
+        if (successHandler) {
+            successHandler();
         }
-
-        MediaControl.resetNowPlaying();
-        setMuscControlNextPre(state.playing.playlist, index);
-
-        dispatch(selectTrack(track, index));
-        dispatch(setProgress(0));
-
-        // console.log(`Loading track ${track.id}`);
-        dispatch(trackIsLoading());
-
-        dispatch(downloadSong(track, errorHandler)).then((songPath) => {
-
-            if (player !== null) {
-                console.error('Finished downloading song but an other one is currenlty playing');
-                player.pause();
-                player.release();
-                player = null;
-            }
-
-            // console.log(`Track ${track.id} downloaded, creating player instance`);
-
-            player = new Sound(songPath, undefined, (error) => {
-                // console.log(`Loaded track ${track.id}`);
-                if (error) {
-                    if (errorHandler) {
-                        errorHandler(`failed to load the sound: ${error}`);
-                    }
-                    // console.log('Error loading track:', error);
-                    dispatch(stopPlaying());
-
-                    return;
-                }
-
-                const duration = player.getDuration();
-
-                // Loaded successfully
-                dispatch(trackLoaded());
-                // console.log(`Track loaded ${track.id}. Dispatching togglePlaying`);
-                dispatch(togglePlaying(true, false, errorHandler));
-                dispatch(setDuration(duration));
-
-                MediaControl.setNowPlaying({
-                  title: track.title,
-                  artist: track.artist,
-                  album: track.album,
-                  artwork: httpms.getAlbumArtworkURL(track.album_id),
-                  duration,
-                });
-
-                dispatch(addToRecentlyPlayed(track));
-            });
-        })
-        .then(() => {
-            if (successHandler) {
-                successHandler();
-            }
-        })
-        .catch((error) => {
-            // console.log(`Error downloading song ${track.id}`, error);
-            dispatch(stopPlaying());
-            if (errorHandler) {
-                errorHandler(error);
-            }
-        });
     };
 };
 
@@ -336,9 +210,108 @@ export const restorePlayingState = (errorHandler) => {
     return (dispatch, getState) => {
         dispatch(setPlayerAuthCreds());
 
-        if (player !== null) {
-            return;
-        }
+        mediaPlayer.dispatch = dispatch;
+
+        mediaPlayer.onError((error) => {
+            console.error('mediaPlayer.onError', error);
+
+            dispatch(stopPlaying());
+            if (errorHandler) {
+                errorHandler(error);
+            }
+        });
+
+        mediaPlayer.onMediaLoading(() => {
+            console.log("onMediaLoading");
+
+            MediaControl.resetNowPlaying();
+            dispatch(trackIsLoading());
+        });
+
+        mediaPlayer.onMediaLoaded(() => {
+            console.log("onMediaLoaded");
+
+            dispatch(trackLoaded());
+            dispatch(togglePlaying());
+        });
+
+        mediaPlayer.onPlayStarted(() => {
+            console.log("onPlayStarted");
+
+            cleanupProgressTimer();
+            setUpCallDetection(dispatch);
+            mediaPlayer.getDuration((duration) => {
+                dispatch(setDuration(duration));
+
+                const state = getState();
+                const index = state.playing.currentIndex;
+                const track = state.playing.playlist[index];
+
+                MediaControl.updatePlayback({
+                    state: MediaControl.STATE_PLAYING,
+                    elapsedTime: 0,
+                });
+
+                console.log("with index and track", index, track);
+
+                dispatch(addToRecentlyPlayed(track));
+
+                if (duration <= 0) {
+                    return;
+                }
+
+                const progressUpdate = 1000;
+                _timer = setInterval(() => {
+                    mediaPlayer.getCurrentTime((seconds, isPlaying) => {
+                        dispatch(setProgress(seconds / duration));
+                        if (!isPlaying) {
+                            cleanupProgressTimer();
+                        }
+                    });
+                }, progressUpdate);
+            });
+        });
+
+        mediaPlayer.onPlayCompleted((success) => {
+            console.log("onPlayCompleted", success);
+
+            cleanupProgressTimer();
+            dispatch(trackEnded());
+            dispatch(stopPlaying());
+        });
+
+        mediaPlayer.onTrackSet((index) => {
+            console.log("onTrackSet", index);
+
+            const state = getState();
+            const track = state.playing.playlist[index];
+
+            mediaPlayer.getDuration((duration) => {
+                MediaControl.setNowPlaying({
+                    title: track.title,
+                    artist: track.artist,
+                    album: track.album,
+                    artwork: httpms.getAlbumArtworkURL(track.album_id),
+                    duration,
+                });
+                MediaControl.updatePlayback({
+                    state: MediaControl.STATE_PAUSED,
+                    elapsedTime: 0,
+                });
+            });
+
+            dispatch(selectTrack(track, index));
+            setMuscControlNextPre(state.playing.playlist, index);
+        });
+
+        mediaPlayer.onPlaylistSet((playlist, currentIndex) => {
+            console.log("onPlaylistSet", playlist);
+
+            dispatch({
+                type: SET_PLAYLIST,
+                playlist,
+            });
+        });
 
         const state = getState();
 
@@ -346,67 +319,24 @@ export const restorePlayingState = (errorHandler) => {
             return;
         }
 
-        setMuscControlNextPre(state.playing.playlist, state.playing.currentIndex);
-        dispatch(togglePlaying(false));
-
-        const track = state.playing.now;
-        const { progress } = state;
-
-        dispatch(trackIsLoading());
-
-        dispatch(downloadSong(track, errorHandler)).then((songPath) => {
-
-            if (player !== null) {
-                console.error('Finished downloading song but an other one is currenlty playing');
-                player.pause();
-                player.release();
-                player = null;
-            }
-
-            player = new Sound(songPath, undefined, (error) => {
-                if (error) {
-                    dispatch(stopPlaying());
-                    if (errorHandler) {
-                        errorHandler(error);
-                    }
-
-                    return;
-                }
-
-                const duration = player.getDuration();
-
-                player.setCurrentTime(duration * progress.value);
-                MediaControl.setNowPlaying({
-                  title: track.title,
-                  artist: track.artist,
-                  album: track.album,
-                  artwork: httpms.getAlbumArtworkURL(track.album_id),
-                  duration,
-                });
-                MediaControl.updatePlayback({
-                    state: MediaControl.STATE_PAUSED,
-                    elapsedTime: duration * progress.value,
-                });
-                dispatch(trackLoaded());
-                dispatch(setDuration(duration));
-            });
-        })
-        .catch((error) => {
-            dispatch(stopPlaying());
-            if (errorHandler) {
-                errorHandler(error);
-            }
+        console.log("pausing! cmon!");
+        dispatch({
+            type: STOP,
         });
+        dispatch(() => {
+            mediaPlayer.setPlaylist(state.playing.playlist, state.playing.currentIndex);
+
+            if (state.playing.currentIndex !== null) {
+                mediaPlayer.setTrack(state.playing.currentIndex);
+                mediaPlayer.seekTo(state.progress.value);
+            }
+        })
     };
 };
 
 export const seekToSeconds = (pos) => {
-    return (dispatch, getState) => {
-        if (player === null) {
-            return;
-        }
-
-        player.setCurrentTime(pos);
+    return () => {
+        mediaPlayer.seekTo(pos);
     };
 };
 
@@ -429,24 +359,6 @@ const cleanupProgressTimer = () => {
         clearInterval(_timer);
         _timer = null;
     }
-};
-
-const playCallback = (dispatch, errorHandler) => {
-    setUpCallDetection(dispatch);
-
-    return (success) => {
-        // console.log('track playback ended');
-        MediaControl.resetNowPlaying();
-        if (success) {
-            dispatch(trackEnded(errorHandler));
-        } else {
-            // console.log('playback failed due to audio decoding errors');
-            if (errorHandler) {
-                errorHandler('playback failed due to audio decoding errors');
-            }
-            dispatch(togglePlaying(false, false, errorHandler));
-        }
-    };
 };
 
 const setUpCallDetection = (dispatch) => {
@@ -476,9 +388,9 @@ const setUpCallDetection = (dispatch) => {
             // This clause will only be executed for iOS
             dispatch(togglePlaying(false, true));
         } else if (event === 'Offhook') {
-            // Device call state: Off-hook. 
+            // Device call state: Off-hook.
             // At least one call exists that is dialing,
-            // active, or on hold, 
+            // active, or on hold,
             // and no calls are ringing or waiting.
             // This clause will only be executed for Android
             dispatch(togglePlaying(false, true));
