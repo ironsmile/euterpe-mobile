@@ -55,7 +55,7 @@ export const appendToPlaylist = (songs) => ({
     songs,
 });
 
-export const togglePlaying = (play, fromCallManager = false, errorHandler = undefined) => {
+export const togglePlaying = (doPlay) => {
 
     return (dispatch, getState) => {
         const state = getState();
@@ -64,24 +64,47 @@ export const togglePlaying = (play, fromCallManager = false, errorHandler = unde
             return;
         }
 
-        let statePlaying = play;
+        let statePlaying = doPlay;
 
-        if (play === undefined) {
+        if (doPlay === undefined) {
             statePlaying = state.playing.paused;
         }
 
         if (statePlaying) {
-            mediaPlayer.play();
+            dispatch(play());
         } else {
-            mediaPlayer.pause();
+            dispatch(pause());
         }
-
-        dispatch({
-            type: TOGGLE_PLAYING,
-            play: statePlaying,
-        });
     };
 };
+
+export const pause = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+
+        if (state.playing.trackLoading) {
+            return;
+        }
+
+        dispatch(() => {
+            mediaPlayer.pause();
+        });
+    }
+}
+
+export const play = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+
+        if (state.playing.trackLoading) {
+            return;
+        }
+
+        dispatch(() => {
+            mediaPlayer.play();
+        });
+    }
+}
 
 export const toggleShuffle = () => ({
     type: TOGGLE_SHUFFLE,
@@ -91,9 +114,6 @@ export const toggleRepeat = () => ({
     type: TOGGLE_REPEAT,
 });
 
-// The `hardStop` arguments means this would be the end of the playback and all resources
-// should be released no matter what. On the other hand, when `hardStop` is false then
-// new playback is expected immediately after this call so not all resources may be relesed.
 export const stopPlaying = () => {
     return (dispatch) => {
         cleanupProgressTimer();
@@ -103,6 +123,7 @@ export const stopPlaying = () => {
             type: STOP,
         });
         dispatch(setProgress(0));
+        mediaPlayer.stop();
     };
 };
 
@@ -121,11 +142,13 @@ export const trackIsLoading = () => {
     };
 };
 
+// !TODO: why do we have trackEnded and stopPlaying
 export const trackEnded = () => {
     return (dispatch) => {
         dispatch({
             type: TRACK_ENDED,
         });
+        dispatch(stopPlaying());
     };
 }
 
@@ -173,7 +196,7 @@ export const _old_trackEnded = (errorHandler, nextSongPressed = false) => {
 };
 
 export const previousSongInQueue = () => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         mediaPlayer.previous();
     };
 };
@@ -192,10 +215,7 @@ export const selectTrack = (track, index) => ({
 
 export const setTrack = (index, errorHandler, successHandler) => {
     return (dispatch, getState) => {
-        mediaPlayer.setTrack(index);
-        if (successHandler) {
-            successHandler();
-        }
+        mediaPlayer.setTrack(index, successHandler);
     };
 };
 
@@ -203,6 +223,29 @@ export const setPlayerAuthCreds = () => {
     return (dispatch) => {
         const headers = httpms.getAuthCredsHeader();
         mediaPlayer.setAuthenticationHeader(headers);
+    }
+}
+
+const updateMediaControls = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const track = state.playing.playlist[state.playing.currentIndex];
+        const mediaControlState = state.playing.paused ?
+            MediaControl.STATE_PAUSED : MediaControl.STATE_PLAYING;
+
+        mediaPlayer.getDuration((duration) => {
+            MediaControl.setNowPlaying({
+                title: track.title,
+                artist: track.artist,
+                album: track.album,
+                artwork: httpms.getAlbumArtworkURL(track.album_id),
+                duration,
+            });
+            MediaControl.updatePlayback({
+                state: mediaControlState,
+                elapsedTime: state.progress.value * duration,
+            });
+        });
     }
 }
 
@@ -232,11 +275,16 @@ export const restorePlayingState = (errorHandler) => {
             console.log("onMediaLoaded");
 
             dispatch(trackLoaded());
-            dispatch(togglePlaying());
+            dispatch(updateMediaControls());
         });
 
         mediaPlayer.onPlayStarted(() => {
             console.log("onPlayStarted");
+
+            dispatch({
+                type: TOGGLE_PLAYING,
+                play: true,
+            });
 
             cleanupProgressTimer();
             setUpCallDetection(dispatch);
@@ -249,7 +297,6 @@ export const restorePlayingState = (errorHandler) => {
 
                 MediaControl.updatePlayback({
                     state: MediaControl.STATE_PLAYING,
-                    elapsedTime: 0,
                 });
 
                 console.log("with index and track", index, track);
@@ -272,12 +319,24 @@ export const restorePlayingState = (errorHandler) => {
             });
         });
 
+        mediaPlayer.onPaused(() => {
+            console.log("onPaused");
+
+            MediaControl.updatePlayback({
+                state: MediaControl.STATE_PAUSED,
+            });
+
+            dispatch({
+                type: TOGGLE_PLAYING,
+                play: false,
+            });
+        });
+
         mediaPlayer.onPlayCompleted((success) => {
             console.log("onPlayCompleted", success);
 
             cleanupProgressTimer();
             dispatch(trackEnded());
-            dispatch(stopPlaying());
         });
 
         mediaPlayer.onTrackSet((index) => {
@@ -285,20 +344,6 @@ export const restorePlayingState = (errorHandler) => {
 
             const state = getState();
             const track = state.playing.playlist[index];
-
-            mediaPlayer.getDuration((duration) => {
-                MediaControl.setNowPlaying({
-                    title: track.title,
-                    artist: track.artist,
-                    album: track.album,
-                    artwork: httpms.getAlbumArtworkURL(track.album_id),
-                    duration,
-                });
-                MediaControl.updatePlayback({
-                    state: MediaControl.STATE_PAUSED,
-                    elapsedTime: 0,
-                });
-            });
 
             dispatch(selectTrack(track, index));
             setMuscControlNextPre(state.playing.playlist, index);
@@ -319,18 +364,20 @@ export const restorePlayingState = (errorHandler) => {
             return;
         }
 
-        console.log("pausing! cmon!");
-        dispatch({
-            type: STOP,
-        });
         dispatch(() => {
+            console.log("mediaPlayer.setPlaylist playlist called!");
             mediaPlayer.setPlaylist(state.playing.playlist, state.playing.currentIndex);
+        });
 
-            if (state.playing.currentIndex !== null) {
-                mediaPlayer.setTrack(state.playing.currentIndex);
-                mediaPlayer.seekTo(state.progress.value);
-            }
-        })
+        if (state.playing.currentIndex !== null) {
+            dispatch(() => {
+                console.log("mediaPlayer.setTrack playlist called with seekTo!",
+                    state.playing.currentIndex);
+                mediaPlayer.setTrack(state.playing.currentIndex, () => {
+                    mediaPlayer.seekTo(state.progress.value);
+                });
+            });
+        }
     };
 };
 
@@ -376,24 +423,24 @@ const setUpCallDetection = (dispatch) => {
 
         if (event === 'Disconnected') {
             // Do something call got disconnected
-            dispatch(togglePlaying(true, true));
+            dispatch(togglePlaying(true));
         } else if (event === 'Connected') {
             // Do something call got connected
             // This clause will only be executed for iOS
         } else if (event === 'Incoming') {
             // Do something call got incoming
-            dispatch(togglePlaying(false, true));
+            dispatch(togglePlaying(false));
         } else if (event === 'Dialing') {
             // Do something call got dialing
             // This clause will only be executed for iOS
-            dispatch(togglePlaying(false, true));
+            dispatch(togglePlaying(false));
         } else if (event === 'Offhook') {
             // Device call state: Off-hook.
             // At least one call exists that is dialing,
             // active, or on hold,
             // and no calls are ringing or waiting.
             // This clause will only be executed for Android
-            dispatch(togglePlaying(false, true));
+            dispatch(togglePlaying(false));
         }
     });
 };
