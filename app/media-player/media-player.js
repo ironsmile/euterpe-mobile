@@ -328,13 +328,28 @@ class JavaScriptMediaPlayer {
     }
 
     next() {
+        const playlistLen = this.playlist.length;
+        if (this.current + 1 >= playlistLen) {
+            return;
+        }
+
         this._cleanupPlayer();
         this.playCompletedCallback(true);
+        this.setTrack(this.current + 1, () => {
+            this.play();
+        });
     }
 
     previous() {
+        if (this.current - 1 <= 0) {
+            return;
+        }
+
         this._cleanupPlayer();
         this.playCompletedCallback(true);
+        this.setTrack(this.current - 1, () => {
+            this.play();
+        });
     }
 }
 

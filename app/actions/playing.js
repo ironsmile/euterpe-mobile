@@ -201,7 +201,12 @@ export const selectTrack = (track, index) => ({
 
 export const setTrack = (index, errorHandler, successHandler) => {
     return (dispatch, getState) => {
-        mediaPlayer.setTrack(index, successHandler);
+        mediaPlayer.setTrack(index, () => {
+            if (successHandler) {
+                successHandler();
+            }
+            mediaPlayer.play();
+        });
     };
 };
 
