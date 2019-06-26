@@ -181,49 +181,6 @@ export const trackEnded = () => {
     };
 }
 
-export const _old_trackEnded = (errorHandler, nextSongPressed = false) => {
-    // console.log('Creating trackEnded action');
-
-    return (dispatch, getState) => {
-        const { playing } = getState();
-        const { currentIndex, repeatSong } = playing;
-
-        // console.log(`Executing trackEnded for track with index ${currentIndex}`);
-
-        cleanupProgressTimer();
-        dispatch(stopPlaying());
-
-        if (repeatSong && !nextSongPressed) {
-            dispatch(setTrack(currentIndex, errorHandler));
-
-            return;
-        }
-
-        const playlistLen = playing.playlist.length;
-
-        if (playing.shuffle && playlistLen > 1) {
-            let randomIndex = currentIndex;
-
-            while (randomIndex === currentIndex) {
-                randomIndex = parseInt(Math.random() * playlistLen, 10);
-            }
-            dispatch(setTrack(randomIndex, errorHandler));
-
-            return;
-        }
-
-        if (currentIndex >= playlistLen - 1) {
-            if (playing.repeat) {
-                dispatch(setTrack(0, errorHandler));
-            }
-
-            return;
-        }
-
-        dispatch(setTrack(currentIndex + 1, errorHandler));
-    };
-};
-
 export const previousSongInQueue = () => {
     return (dispatch) => {
         mediaPlayer.previous();
