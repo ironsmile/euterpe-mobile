@@ -316,6 +316,7 @@ export const restorePlayingState = (errorHandler) => {
         mediaPlayer.onPaused(() => {
             console.log("onPaused");
 
+            stopCallDetection();
             MediaControl.updatePlayback({
                 state: MediaControl.STATE_PAUSED,
             });
@@ -324,6 +325,12 @@ export const restorePlayingState = (errorHandler) => {
                 type: TOGGLE_PLAYING,
                 play: false,
             });
+        });
+
+        mediaPlayer.onStopped(() => {
+            console.log("onStopped");
+
+            stopCallDetection();
         });
 
         mediaPlayer.onPlayCompleted((success) => {
