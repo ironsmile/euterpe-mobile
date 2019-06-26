@@ -178,6 +178,7 @@ export const trackEnded = () => {
         dispatch({
             type: TRACK_ENDED,
         });
+        dispatch(setProgress(0));
     };
 }
 
@@ -242,6 +243,8 @@ const updateMediaControls = () => {
 
 export const restorePlayingState = (errorHandler) => {
     return (dispatch, getState) => {
+        mediaPlayer.init();
+
         dispatch(setPlayerAuthCreds());
 
         mediaPlayer.dispatch = dispatch;
@@ -333,11 +336,11 @@ export const restorePlayingState = (errorHandler) => {
         mediaPlayer.onTrackSet((index) => {
             console.log("onTrackSet", index);
 
-            const state = getState();
-            const track = state.playing.playlist[index];
+            const { playing } = getState();
+            const track = playing.playlist[index];
 
             dispatch(selectTrack(track, index));
-            setMuscControlNextPre(state.playing.playlist, index);
+            setMuscControlNextPre(playing.playlist, index);
         });
 
         mediaPlayer.onPlaylistSet((playlist, currentIndex) => {

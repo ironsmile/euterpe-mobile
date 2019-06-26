@@ -7,7 +7,6 @@ import { REHYDRATE } from 'redux-persist/constants';
 import { connect, Provider } from 'react-redux';
 import MediaControl from './common/media-control-shim';
 import thunkMiddleware from 'redux-thunk';
-const Sound = require('react-native-sound');
 
 import { Loader } from './screens/common/loader';
 import { playingReducer } from './reducers/playing';
@@ -91,8 +90,6 @@ class Root extends React.Component {
             rehydrated: false,
             store,
         };
-
-        Sound.setCategory('Playback');
 
         MediaControl.enableBackgroundMode(true);
         MediaControl.enableControl('play', true);

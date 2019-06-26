@@ -7,6 +7,10 @@ class AndroidMediaPlayer {
       this.java = NativeModules.MediaPlayer;
     }
 
+    init() {
+
+    }
+
     play() {
 
     }
@@ -53,7 +57,8 @@ class AndroidMediaPlayer {
 
     }
 
-    setTrack(index) {
+    // successCallback is of type func()
+    setTrack(index, successCallback) {
 
     }
 
@@ -62,12 +67,11 @@ class AndroidMediaPlayer {
 
     }
 
-    toggleShuffle() {
+    setShuffle(isSet) {
 
     }
 
-    // callback is of type func (bool isShuffleOn).
-    getShuffleState(callback) {
+    setRepeat(repeat, repeatSong) {
 
     }
 
@@ -110,6 +114,10 @@ class JavaScriptMediaPlayer {
         this.playlistSetCallback = () => {};
         this.setTrackCallback = () => {};
         this.errorHandler = () => {};
+    }
+
+    init() {
+        Sound.setCategory('Playback');
     }
 
     play() {
@@ -291,11 +299,6 @@ class JavaScriptMediaPlayer {
     setRepeat(repeat, repeatSong) {
         this.repeat = repeat;
         this.repeatSong = repeatSong;
-    }
-
-    // callback is of type func (bool isShuffleOn).
-    getShuffleState(callback) {
-        callback(this.shuffle);
     }
 
     // callback is of type func (int duration) where duration is in seconds.
