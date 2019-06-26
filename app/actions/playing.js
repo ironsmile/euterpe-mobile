@@ -3,8 +3,8 @@ import CallDetectorManager from 'react-native-call-detection';
 import {
     SET_PLAYLIST,
     TOGGLE_PLAYING,
-    TOGGLE_SHUFFLE,
-    TOGGLE_REPEAT,
+    SET_SHUFFLE,
+    SET_REPEAT,
     STOP,
     SET_IS_LOADING_STATUS,
     TRACK_ENDED,
@@ -26,8 +26,8 @@ let _cdm = null;
 
 export const playMediaViaService = () => {
     return (dispatch, getState) => {
-        const state = getState();
-        const track = state.playing.playlist[state.playing.currentIndex];
+        const { playing } = getState();
+        const track = playing.playlist[playing.currentIndex];
 
         if (!track || !track.id) {
             console.error("track does not exist");
@@ -45,7 +45,9 @@ export const setPlaylist = (tracks, startPlaying = false) => {
         mediaPlayer.setPlaylist(tracks, 0);
 
         if (startPlaying) {
-            mediaPlayer.setTrack(0);
+            mediaPlayer.setTrack(0, () => {
+                mediaPlayer.play();
+            });
         }
     };
 };
@@ -58,16 +60,16 @@ export const appendToPlaylist = (songs) => ({
 export const togglePlaying = (doPlay) => {
 
     return (dispatch, getState) => {
-        const state = getState();
+        const { playing } = getState();
 
-        if (state.playing.trackLoading) {
+        if (playing.trackLoading) {
             return;
         }
 
         let statePlaying = doPlay;
 
         if (doPlay === undefined) {
-            statePlaying = state.playing.paused;
+            statePlaying = playing.paused;
         }
 
         if (statePlaying) {
@@ -80,9 +82,9 @@ export const togglePlaying = (doPlay) => {
 
 export const pause = () => {
     return (dispatch, getState) => {
-        const state = getState();
+        const { playing } = getState();
 
-        if (state.playing.trackLoading) {
+        if (playing.trackLoading) {
             return;
         }
 
@@ -94,9 +96,9 @@ export const pause = () => {
 
 export const play = () => {
     return (dispatch, getState) => {
-        const state = getState();
+        const { playing } = getState();
 
-        if (state.playing.trackLoading) {
+        if (playing.trackLoading) {
             return;
         }
 
@@ -106,13 +108,41 @@ export const play = () => {
     }
 }
 
-export const toggleShuffle = () => ({
-    type: TOGGLE_SHUFFLE,
-});
+export const toggleShuffle = () => {
+    return (dispatch, getState) => {
+        const { playing } = getState();
+        const shuffle = !playing.shuffle;
+        mediaPlayer.setShuffle(shuffle);
 
-export const toggleRepeat = () => ({
-    type: TOGGLE_REPEAT,
-});
+        dispatch({
+            type: SET_SHUFFLE,
+            shuffle,
+        });
+    };
+};
+
+export const toggleRepeat = () => {
+    return (dispatch, getState) => {
+        const { playing } = getState();
+
+        let repeat = playing.repeat;
+        let repeatSong = playing.repeatSong;
+
+        if (repeat && !repeatSong) {
+            repeatSong = true;
+        } else {
+            repeat = !repeat;
+            repeatSong = false;
+        }
+        mediaPlayer.setRepeat(repeat, repeatSong);
+
+        dispatch({
+            type: SET_REPEAT,
+            repeat,
+            repeatSong,
+        });
+    };
+};
 
 export const stopPlaying = () => {
     return (dispatch) => {
@@ -148,7 +178,6 @@ export const trackEnded = () => {
         dispatch({
             type: TRACK_ENDED,
         });
-        dispatch(stopPlaying());
     };
 }
 
@@ -156,8 +185,8 @@ export const _old_trackEnded = (errorHandler, nextSongPressed = false) => {
     // console.log('Creating trackEnded action');
 
     return (dispatch, getState) => {
-        const state = getState();
-        const { currentIndex, repeatSong } = state.playing;
+        const { playing } = getState();
+        const { currentIndex, repeatSong } = playing;
 
         // console.log(`Executing trackEnded for track with index ${currentIndex}`);
 
@@ -170,9 +199,9 @@ export const _old_trackEnded = (errorHandler, nextSongPressed = false) => {
             return;
         }
 
-        const playlistLen = state.playing.playlist.length;
+        const playlistLen = playing.playlist.length;
 
-        if (state.playing.shuffle && playlistLen > 1) {
+        if (playing.shuffle && playlistLen > 1) {
             let randomIndex = currentIndex;
 
             while (randomIndex === currentIndex) {
@@ -184,7 +213,7 @@ export const _old_trackEnded = (errorHandler, nextSongPressed = false) => {
         }
 
         if (currentIndex >= playlistLen - 1) {
-            if (state.playing.repeat) {
+            if (playing.repeat) {
                 dispatch(setTrack(0, errorHandler));
             }
 
@@ -228,9 +257,9 @@ export const setPlayerAuthCreds = () => {
 
 const updateMediaControls = () => {
     return (dispatch, getState) => {
-        const state = getState();
-        const track = state.playing.playlist[state.playing.currentIndex];
-        const mediaControlState = state.playing.paused ?
+        const { playing, progress } = getState();
+        const track = playing.playlist[playing.currentIndex];
+        const mediaControlState = playing.paused ?
             MediaControl.STATE_PAUSED : MediaControl.STATE_PLAYING;
 
         mediaPlayer.getDuration((duration) => {
@@ -243,7 +272,7 @@ const updateMediaControls = () => {
             });
             MediaControl.updatePlayback({
                 state: mediaControlState,
-                elapsedTime: state.progress.value * duration,
+                elapsedTime: progress.value * duration,
             });
         });
     }
@@ -358,29 +387,33 @@ export const restorePlayingState = (errorHandler) => {
             });
         });
 
-        const state = getState();
+        const { playing, progress } = getState();
 
-        if (!state.playing.now || !state.playing.now.id) {
+        if (!playing.now || !playing.now.id) {
             return;
         }
 
         dispatch(() => {
             console.log("mediaPlayer.setPlaylist playlist called!");
-            mediaPlayer.setPlaylist(state.playing.playlist, state.playing.currentIndex);
+            mediaPlayer.setPlaylist(playing.playlist, playing.currentIndex);
+
+            mediaPlayer.setShuffle(playing.shuffle);
+            mediaPlayer.setRepeat(playing.repeat, playing.setRepeatSong);
         });
 
-        if (state.playing.currentIndex !== null) {
+        if (playing.currentIndex !== null) {
             dispatch(() => {
                 console.log("mediaPlayer.setTrack playlist called with seekTo!",
-                    state.playing.currentIndex);
-                mediaPlayer.setTrack(state.playing.currentIndex, () => {
-                    mediaPlayer.seekTo(state.progress.value);
+                    playing.currentIndex);
+                mediaPlayer.setTrack(playing.currentIndex, () => {
+                    mediaPlayer.seekTo(progress.value);
                 });
             });
         }
     };
 };
 
+// pos must be a value in the range [0, 1].
 export const seekToSeconds = (pos) => {
     return () => {
         mediaPlayer.seekTo(pos);

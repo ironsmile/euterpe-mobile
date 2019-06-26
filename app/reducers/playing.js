@@ -24,24 +24,17 @@ export const playingReducer = (state = initialState, action) => {
                 paused: !state.paused,
             };
 
-        case TOGGLE_SHUFFLE:
+        case SET_SHUFFLE:
             return {
                 ...state,
-                shuffle: !state.shuffle,
+                shuffle: action.shuffle,
             };
 
-        case TOGGLE_REPEAT:
-            if (state.repeat && !state.repeatSong) {
-                return {
-                    ...state,
-                    repeatSong: true,
-                };
-            }
-
+        case SET_REPEAT:
             return {
                 ...state,
-                repeat: !state.repeat,
-                repeatSong: false,
+                repeat: action.repeat,
+                repeatSong: action.repeatSong,
             };
 
         case SET_PLAYLIST:
@@ -90,8 +83,8 @@ export const playingReducer = (state = initialState, action) => {
 };
 
 export const TOGGLE_PLAYING = 'Playing/TogglePlay';
-export const TOGGLE_SHUFFLE = 'Playing/ToggleShuffle';
-export const TOGGLE_REPEAT = 'Playing/ToggleRepeat';
+export const SET_SHUFFLE = 'Playing/SetShuffle';
+export const SET_REPEAT = 'Playing/SetRepeat';
 export const STOP = 'Playing/Stop';
 export const NEXT = 'Playing/Next';
 export const PREVIOUS = 'Playing/Previous';

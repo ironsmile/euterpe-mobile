@@ -98,6 +98,8 @@ class JavaScriptMediaPlayer {
         this.current = 0;
         this.dispatch = null;
         this.shuffle = false;
+        this.repeatSong = false;
+        this.repeat = false;
 
         this.mediaLoadingCallback = () => {};
         this.mediaLoadedCallback = () => {};
@@ -116,7 +118,44 @@ class JavaScriptMediaPlayer {
         }
 
         this.playStartedCallback();
-        this.player.play(this.playCompletedCallback);
+        this.player.play((success) => {
+            this.playCompletedCallback(success);
+
+            if (this.repeatSong) {
+                this.seekTo(0);
+                this.play();
+                return;
+            }
+
+            const playlistLen = this.playlist.length;
+
+            if (this.shuffle && playlistLen > 1) {
+                let randomIndex = this.current;
+
+                while (randomIndex === this.current) {
+                    randomIndex = parseInt(Math.random() * playlistLen, 10);
+                }
+
+                this.setTrack(randomIndex, () => {
+                    this.play();
+                });
+                return;
+            }
+
+            if (this.current >= playlistLen - 1) {
+                if (this.repeat) {
+                    this.setTrack(0, () => {
+                        this.play();
+                    });
+                }
+
+                return;
+            }
+
+            this.setTrack(this.current + 1, () => {
+                this.play();
+            });
+        });
     }
 
     // callback is of type func(error string)
@@ -184,7 +223,7 @@ class JavaScriptMediaPlayer {
             this.current = currentIndex;
         }
 
-        this.playlistSetCallback(this.playlist, this.currentIndex);
+        this.playlistSetCallback(this.playlist, this.current);
     }
 
     // onPlaylistSet is of the type func(playlist, currentIndex)
@@ -247,6 +286,11 @@ class JavaScriptMediaPlayer {
         }
 
         this.shuffle = isSet;
+    }
+
+    setRepeat(repeat, repeatSong) {
+        this.repeat = repeat;
+        this.repeatSong = repeatSong;
     }
 
     // callback is of type func (bool isShuffleOn).
