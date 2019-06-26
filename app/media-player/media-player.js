@@ -252,14 +252,17 @@ class JavaScriptMediaPlayer {
     setTrack(index, onSuccess) {
         const playlistLen = this.playlist.length;
         if (index < 0 || index >= playlistLen) {
-            this.errorHandler(`Index out of playlist range in setTrack: ${index}`);
+            this.errorHandler(
+                `Index out of playlist range in setTrack: ${index}`
+            );
             return;
         }
 
         const track = this.playlist[index];
 
         this.mediaLoadingCallback();
-        this.dispatch(downloadSong(track, this.errorHandler)).then((songPath) => {
+        this.dispatch(downloadSong(track, this.errorHandler))
+        .then((songPath) => {
             this._cleanupPlayer();
             this.player = new Sound(songPath, undefined, (error) => {
                 if (error) {
