@@ -53,6 +53,15 @@ class AndroidMediaPlayer {
 
     }
 
+    appendPlaylist(songs) {
+
+    }
+
+    // callback is of the type func(songs)
+    onPlaylistAppend(callback) {
+
+    }
+
     seekTo(progress) {
 
     }
@@ -112,6 +121,7 @@ class JavaScriptMediaPlayer {
         this.pauseCallback = () => {};
         this.stopCallback = () => {};
         this.playlistSetCallback = () => {};
+        this.playlistAppendCallback = () => {};
         this.setTrackCallback = () => {};
         this.errorHandler = () => {};
     }
@@ -239,6 +249,20 @@ class JavaScriptMediaPlayer {
         this.playlistSetCallback = callback;
     }
 
+    appendPlaylist(songs) {
+        this.playlist = [
+            ...this.playlist,
+            ...songs,
+        ];
+
+        this.playlistAppendCallback(songs);
+    }
+
+    // callback is of the type func(songs)
+    onPlaylistAppend(callback) {
+        this.playlistAppendCallback = callback;
+    }
+
     // progress must be a number in the range [0, 1].
     seekTo(progress) {
         if (this.player == null) {
@@ -261,6 +285,8 @@ class JavaScriptMediaPlayer {
         const track = this.playlist[index];
 
         this.mediaLoadingCallback();
+        this.setTrackCallback(index);
+
         this.dispatch(downloadSong(track, this.errorHandler))
         .then((songPath) => {
             this._cleanupPlayer();
@@ -273,7 +299,6 @@ class JavaScriptMediaPlayer {
 
                 this.current = index;
 
-                this.setTrackCallback(index);
                 this.mediaLoadedCallback();
                 if (onSuccess) {
                     onSuccess();

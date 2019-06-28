@@ -52,10 +52,11 @@ export const setPlaylist = (tracks, startPlaying = false) => {
     };
 };
 
-export const appendToPlaylist = (songs) => ({
-    type: APPEND_IN_PLAYLIST,
-    songs,
-});
+export const appendToPlaylist = (songs) => {
+    return (dispatch) => {
+        mediaPlayer.appendPlaylist(songs);
+    };
+}
 
 export const togglePlaying = (doPlay) => {
 
@@ -356,6 +357,13 @@ export const restorePlayingState = (errorHandler) => {
             dispatch({
                 type: SET_PLAYLIST,
                 playlist,
+            });
+        });
+
+        mediaPlayer.onPlaylistAppend((songs) => {
+            dispatch({
+                type: APPEND_IN_PLAYLIST,
+                songs,
             });
         });
 
