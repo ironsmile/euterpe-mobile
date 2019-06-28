@@ -1,56 +1,81 @@
 import { NativeModules, Platform } from 'react-native';
 import { downloadSong } from '@actions/library';
+import { httpms } from '@components/httpms-service';
 const Sound = require('react-native-sound');
 
 class AndroidMediaPlayer {
     constructor() {
       this.java = NativeModules.MediaPlayer;
+
+      this.playlistSetCallback = () => {};
+      this.errorHandler = () => {};
     }
 
-    init() {
-
-    }
+    init() {}
 
     play() {
+        this.java.play();
+    }
 
+    // callback is of type func(error string)
+    onError(callback) {
+        this.errorHandler = callback;
+        this.java.onErrorHandler(callback);
     }
 
     onMediaLoading(callback) {
+        this.java.onMediaLoading(callback);
+    }
 
+    onMediaLoaded(callback) {
+        this.java.onMediaLoaded(callback);
     }
 
     onPlayStarted(callback) {
-
+        this.java.onPlayStarted(callback);
     }
 
     // callback is of the type func(success bool)
     onPlayCompleted(callback) {
-
+        this.java.onPlayCompleted(callback);
     }
 
     pause() {
-
+        this.java.pause();
     }
 
     onPaused(callback) {
-
+        this.java.onPaused(callback);
     }
 
     stop() {
-
+        this.java.stop();
     }
 
     onStopped(callback) {
-
+        this.java.onStopped(callback);
     }
 
     setPlaylist(playlist, currentIndex) {
+        const songsURLs = [];
+        const playlistLength = playlist.length;
 
+        for (let i = 0; i < playlistLength; i++) {
+            songsURLs.push(httpms.getSongURL(playlist[i].id));
+        }
+
+        if (currentIndex !== undefined) {
+            this.java.setCurrent(currentIndex);
+        }
+
+        this.java.setPlaylist(songsURLs, (index) => {
+            this.playlistSetCallback(playlist, index);
+        });
     }
 
     // onPlaylistSet is of the type func(playlist, currentIndex)
     onPlaylistSet(callback) {
-
+        this.playlistSetCallback = callback;
     }
 
     appendPlaylist(songs) {
@@ -59,7 +84,7 @@ class AndroidMediaPlayer {
 
     // callback is of the type func(songs)
     onPlaylistAppend(callback) {
-
+        this.java.onPlaylistAppend(callback);
     }
 
     seekTo(progress) {
@@ -68,33 +93,32 @@ class AndroidMediaPlayer {
 
     // successCallback is of type func()
     setTrack(index, successCallback) {
-
+        this.java.setTrack(index, successCallback);
     }
 
     // callback is of the type func()
     onTrackSet(callback) {
-
+        this.java.onTrackSet(callback);
     }
 
     setShuffle(isSet) {
-
+        this.java.setShuffle(isSet);
     }
 
     setRepeat(repeat, repeatSong) {
-
+        if (repeatSong == null) {
+            repeatSong = false;
+        }
+        this.java.setRepeat(repeat, repeatSong);
     }
 
     // callback is of type func (int duration) where duration is in seconds.
     getDuration(callback) {
-
+        this.java.getDuration(callback);
     }
 
     setAuthenticationHeader(headers) {
         this.java.setAuthenticationHeader(headers);
-    }
-
-    playMedia(media) {
-        this.java.playMedia(media);
     }
 
     // callback is of type func (int seconds, bool isPlaying).
@@ -344,10 +368,6 @@ class JavaScriptMediaPlayer {
         // get them from the httpms service object.
     }
 
-    playMedia(media) {
-        // do nothing, just an example for java playing. To be removed.
-    }
-
     // callback is of type func (int seconds, bool isPlaying).
     getCurrentTime(callback) {
         if (this.player == null) {
@@ -391,7 +411,7 @@ class JavaScriptMediaPlayer {
 
 let MediaPlayer;
 
-if (Platform.OS === 'android-5') {
+if (Platform.OS === 'android') {
     MediaPlayer = AndroidMediaPlayer;
 } else {
     MediaPlayer = JavaScriptMediaPlayer;

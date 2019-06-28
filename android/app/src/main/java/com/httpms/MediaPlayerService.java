@@ -9,10 +9,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.media.AudioManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.HandlerThread;
 import android.os.Process;
+import android.os.ResultReceiver;
 import android.os.Looper;
 import android.os.IBinder;
 import android.os.Binder;
@@ -22,6 +24,8 @@ import android.net.Uri;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.facebook.react.bridge.Callback;
 
 public class MediaPlayerService extends Service implements MediaPlayer.OnCompletionListener,
       MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -81,6 +85,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 		startForeground(ONGOING_NOTIFICATION_ID, notification);
     registerPlayNewAudio();
     registerBecomingNoisyReceiver();
+    registergetCurrentTime();
+    registerPauseReceiver();
+    registerPlayReceiver();
 	}
 
 
@@ -95,11 +102,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 		servicePlayer.sendMessage(msg);
 
     String authToken = "";
+    ResultReceiver resultReceiver;
 
     try {
       //An audio file is passed to the service through putExtra();
       mediaFile = intent.getExtras().getString("media");
       authToken = intent.getExtras().getString("token");
+      resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PLAY);
     } catch (NullPointerException e) {
       stopSelf();
       return START_STICKY;
@@ -114,6 +123,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     if (mediaFile != null && mediaFile != "") {
       initMediaPlayer();
+      resultReceiver.send(0, null);
     }
 
 		// If we get killed, after returning from here, restart
@@ -132,6 +142,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     removeAudioFocus();
     unregisterReceiver(becomingNoisyReceiver);
     unregisterReceiver(playNewAudio);
+    unregisterReceiver(playReceiver);
+    unregisterReceiver(pauseReceiver);
+    unregisterReceiver(getCurrentTime);
 	}
 
   public class LocalBinder extends Binder {
@@ -186,6 +199,96 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     //Register playNewMedia receiver
     IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_PLAY_NEW_AUDIO);
     registerReceiver(playNewAudio, filter);
+  }
+
+  // Play new file reciever
+  private BroadcastReceiver playReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      ResultReceiver resultReceiver;
+
+      try {
+        //An audio file is passed to the service through putExtra();
+        mediaFile = intent.getExtras().getString("media");
+        resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PLAY);
+      } catch (NullPointerException e) {
+        stopSelf();
+        return;
+      }
+
+      if (mediaPlayer == null) {
+        stopMedia();
+        mediaPlayer.reset();
+        initMediaPlayer();
+        resultReceiver.send(0, null);
+        return;
+      }
+
+      playMedia();
+      resultReceiver.send(0, null);
+    }
+  };
+
+  private void registerPlayReceiver() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_PLAY);
+    registerReceiver(playReceiver, filter);
+  }
+
+  private BroadcastReceiver pauseReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      ResultReceiver resultReceiver;
+
+      try {
+        resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PAUSE);
+      } catch (NullPointerException e) {
+        stopSelf();
+        return;
+      }
+
+      pauseMedia();
+      resultReceiver.send(0, null);
+    }
+  };
+
+  private void registerPauseReceiver() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_PAUSE);
+    registerReceiver(pauseReceiver, filter);
+  }
+
+  private BroadcastReceiver getCurrentTime = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      ResultReceiver resultReceiver;
+      try {
+        resultReceiver = intent.getParcelableExtra(
+          MediaPlayerModule.ResultReceiver_CURRENT_TIME
+        );
+      } catch (NullPointerException e) {
+        stopSelf();
+        return;
+      }
+
+      Bundle bundle = new Bundle();
+
+      if (mediaPlayer == null) {
+        bundle.putInt("time", 0);
+        bundle.putBoolean("isPlaying", false);
+      } else {
+        boolean isPlaying = mediaPlayer.isPlaying();
+        int pos = mediaPlayer.getCurrentPosition();
+
+        bundle.putInt("time", pos / 1000);
+        bundle.putBoolean("isPlaying", isPlaying);
+      }
+
+      resultReceiver.send(0, bundle);
+    }
+  };
+
+  private void registergetCurrentTime() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_GET_CURRENT_TIME);
+    registerReceiver(getCurrentTime, filter);
   }
 
   // Media Player events implementaions
