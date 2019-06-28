@@ -360,25 +360,30 @@ class JavaScriptMediaPlayer {
 
     next() {
         const playlistLen = this.playlist.length;
-        if (this.current + 1 >= playlistLen) {
-            return;
+        let nextIndex = this.current + 1;
+        if (nextIndex >= playlistLen) {
+            if (!this.repeat) {
+                return;
+            }
+            nextIndex = 0;
         }
 
         this._cleanupPlayer();
         this.playCompletedCallback(true);
-        this.setTrack(this.current + 1, () => {
+        this.setTrack(nextIndex, () => {
             this.play();
         });
     }
 
     previous() {
-        if (this.current - 1 <= 0) {
+        const prevIndex = this.current - 1;
+        if (prevIndex <= 0) {
             return;
         }
 
         this._cleanupPlayer();
         this.playCompletedCallback(true);
-        this.setTrack(this.current - 1, () => {
+        this.setTrack(prevIndex, () => {
             this.play();
         });
     }
