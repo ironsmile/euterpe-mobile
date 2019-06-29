@@ -7,8 +7,10 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -16,6 +18,8 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,12 +88,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
 
     if (playlist.length <= 0) {
-      executeErrorCallback("Playlist empty, nothing to play.");
+      sendErrorEvent("Playlist empty, nothing to play.");
       return;
     }
 
     if (currentIndex < 0 || currentIndex >= playlist.length) {
-      executeErrorCallback(String.format(
+      sendErrorEvent(String.format(
         "current index %d out of playlist size %d",
         currentIndex,
         playlist.length
@@ -98,7 +102,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
 
     final String media = playlist[currentIndex];
-    final PlayReceiver playReceiver = new PlayReceiver(playStartedCallback);
+    final PlayReceiver playReceiver = new PlayReceiver();
 
     //Check is service is active
     if (!serviceBound) {
@@ -119,7 +123,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   @ReactMethod
   private void pause() {
     Intent intent = new Intent(Broadcast_PAUSE);
-    intent.putExtra(ResultReceiver_PAUSE, new PauseReceiver(pausedCallback));
+    intent.putExtra(ResultReceiver_PAUSE, new PauseReceiver());
     context.sendBroadcast(intent);
   }
 
@@ -133,60 +137,6 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   @ReactMethod
   public void getDuration(final Callback callback) {
     callback.invoke(900);
-  }
-
-  public static Callback mediaLoadingCallback;
-  @ReactMethod
-  public void onMediaLoading(final Callback callback) {
-    mediaLoadingCallback = callback;
-  }
-
-  public static Callback mediaLoadedCallback;
-  @ReactMethod
-  public void onMediaLoaded(final Callback callback) {
-    mediaLoadedCallback = callback;
-  }
-
-  public static Callback playStartedCallback;
-  @ReactMethod
-  public void onPlayStarted(final Callback callback) {
-    playStartedCallback = callback;
-  }
-
-  public static Callback playCompletedCallback;
-  @ReactMethod
-  public void onPlayCompleted(final Callback callback) {
-    playCompletedCallback = callback;
-  }
-
-  public static Callback pausedCallback;
-  @ReactMethod
-  public void onPaused(final Callback callback) {
-    pausedCallback = callback;
-  }
-
-  public static Callback stoppedCallback;
-  @ReactMethod
-  public void onStopped(final Callback callback) {
-    stoppedCallback = callback;
-  }
-
-  public static Callback playlistAppendCallback;
-  @ReactMethod
-  public void onPlaylistAppend(final Callback callback) {
-    playlistAppendCallback = callback;
-  }
-
-  public static Callback trackSetCallback;
-  @ReactMethod
-  public void onTrackSet(final Callback callback) {
-    trackSetCallback = callback;
-  }
-
-  public static Callback errorHandlerCallback;
-  @ReactMethod
-  public void onErrorHandler(final Callback callback) {
-    errorHandlerCallback = callback;
   }
 
   @ReactMethod
@@ -224,7 +174,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     final int playlistLen = playlist.length;
 
     if (index < 0 || index >= playlistLen) {
-      executeErrorCallback(String.format(
+      sendErrorEvent(String.format(
         "current index %d out of playlist size %d",
         currentIndex,
         playlistLen
@@ -232,18 +182,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       return;
     }
 
-    if (mediaLoadingCallback != null) {
-      mediaLoadingCallback.invoke();
-    }
+    sendMediaLoadingEvent();
 
     currentIndex = index;
-    if (trackSetCallback != null) {
-      trackSetCallback.invoke(index);
-    }
 
-    if (mediaLoadedCallback != null) {
-      mediaLoadedCallback.invoke();
-    }
+    sendTrackSetEvent(index);
+    sendMediaLoadedEvent();
 
     if (onSuccess != null) {
       onSuccess.invoke();
@@ -293,12 +237,6 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       player.stopSelf();
   }
 
-  private void executeErrorCallback(String message) {
-    if (errorHandlerCallback != null) {
-      errorHandlerCallback.invoke(message);
-    }
-  }
-
   public static final String ResultReceiver_CURRENT_TIME = "com.httpms.resultReceiver.currentTime";
   private final class CurrentTimeReceiver extends ResultReceiver {
 
@@ -320,37 +258,84 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
   public static final String ResultReceiver_PLAY = "com.httpms.resultReceiver.play";
   private final class PlayReceiver extends ResultReceiver {
-
-    Callback callback;
-
-    public PlayReceiver(Callback withCallback) {
+    public PlayReceiver() {
       super(null);
-      callback = withCallback;
     }
 
     @Override
     protected void onReceiveResult(int resultCode, Bundle bundle) {
-      if (resultCode == 0 && callback != null) {
-        callback.invoke();
+      if (resultCode != 0) {
+        return;
       }
+      sendPlayStartedEvent();
     }
   }
 
   public static final String ResultReceiver_PAUSE = "com.httpms.resultReceiver.pause";
   private final class PauseReceiver extends ResultReceiver {
-
-    Callback callback;
-
-    public PauseReceiver(Callback withCallback) {
+    public PauseReceiver() {
       super(null);
-      callback = withCallback;
     }
 
     @Override
     protected void onReceiveResult(int resultCode, Bundle bundle) {
-      if (resultCode == 0 && callback != null) {
-        callback.invoke();
+      if (resultCode != 0) {
+        return;
       }
+      sendPausedEvent();
     }
+  }
+
+  private void sendEvent(String eventName, @Nullable WritableMap params) {
+    context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+      .emit(eventName, params);
+  }
+
+  private final String EVENT_ERROR = "EVENT_ERROR";
+  private final String EVENT_MEDIA_LOADING = "EVENT_MEDIA_LOADING";
+  private final String EVENT_MEDIA_LOADED = "EVENT_MEDIA_LOADED";
+  private final String EVENT_PLAY_STARTED = "EVENT_PLAY_STARTED";
+  private final String EVENT_PLAY_COMPLETED = "EVENT_PLAY_COMPLETED";
+  private final String EVENT_PAUSED = "EVENT_PAUSED";
+  private final String EVENT_STOPPED = "EVENT_STOPPED";
+  private final String EVENT_TRACK_SET = "EVENT_TRACK_SET";
+
+
+  private void sendErrorEvent(final String err) {
+    WritableMap params = Arguments.createMap();
+    params.putString("error", err);
+    sendEvent(EVENT_ERROR, params);
+  }
+
+  private void sendMediaLoadedEvent() {
+    sendEvent(EVENT_MEDIA_LOADED, null);
+  }
+
+  private void sendMediaLoadingEvent() {
+    sendEvent(EVENT_MEDIA_LOADING, null);
+  }
+
+  private void sendPlayStartedEvent() {
+    sendEvent(EVENT_PLAY_STARTED, null);
+  }
+
+  private void sendPlayCompletedEvent(final boolean success) {
+    WritableMap params = Arguments.createMap();
+    params.putBoolean("success", success);
+    sendEvent(EVENT_PLAY_COMPLETED, params);
+  }
+
+  private void sendPausedEvent() {
+    sendEvent(EVENT_PAUSED, null);
+  }
+
+  private void sendStoppedEvent() {
+    sendEvent(EVENT_STOPPED, null);
+  }
+
+  private void sendTrackSetEvent(final int index) {
+    WritableMap params = Arguments.createMap();
+    params.putInt("index", index);
+    sendEvent(EVENT_TRACK_SET, params);
   }
 }
