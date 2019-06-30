@@ -41,6 +41,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private MediaPlayer mediaPlayer;
   private String mediaFile;
 
+  private ResultReceiver setTrackResultReceiver;
+
   //Used to pause/resume MediaPlayer
   private int resumePosition;
 
@@ -83,11 +85,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 			.build();
 
 		startForeground(ONGOING_NOTIFICATION_ID, notification);
-    registerPlayNewAudio();
     registerBecomingNoisyReceiver();
     registergetCurrentTime();
+    registergetGetDuration();
     registerPauseReceiver();
     registerPlayReceiver();
+    registerSetNewTrackReceiver();
+    registerSeekToReceiver();
 	}
 
 
@@ -100,31 +104,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 		Message msg = servicePlayer.obtainMessage();
 		msg.arg1 = startId;
 		servicePlayer.sendMessage(msg);
-
-    String authToken = "";
-    ResultReceiver resultReceiver;
-
-    try {
-      //An audio file is passed to the service through putExtra();
-      mediaFile = intent.getExtras().getString("media");
-      authToken = intent.getExtras().getString("token");
-      resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PLAY);
-    } catch (NullPointerException e) {
-      stopSelf();
-      return START_STICKY;
-    }
-
-    //Request audio focus
-    if (requestAudioFocus() == false) {
-      //Could not gain focus
-      stopSelf();
-      return START_STICKY;
-    }
-
-    if (mediaFile != null && mediaFile != "") {
-      initMediaPlayer();
-      resultReceiver.send(0, null);
-    }
 
 		// If we get killed, after returning from here, restart
 		return START_STICKY;
@@ -141,10 +120,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   
     removeAudioFocus();
     unregisterReceiver(becomingNoisyReceiver);
-    unregisterReceiver(playNewAudio);
     unregisterReceiver(playReceiver);
     unregisterReceiver(pauseReceiver);
     unregisterReceiver(getCurrentTime);
+    unregisterReceiver(getDuration);
+    unregisterReceiver(setNewTrackReceiver);
+    unregisterReceiver(seekToReceiver);
 	}
 
   public class LocalBinder extends Binder {
@@ -176,51 +157,27 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   }
 
   // Play new file reciever
-  private BroadcastReceiver playNewAudio = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      try {
-        //An audio file is passed to the service through putExtra();
-        mediaFile = intent.getExtras().getString("media");
-      } catch (NullPointerException e) {
-        stopSelf();
-        return;
-      }
-
-      //A PLAY_NEW_AUDIO action received
-      //reset mediaPlayer to play the new Audio
-      stopMedia();
-      mediaPlayer.reset();
-      initMediaPlayer();
-    }
-  };
-
-  private void registerPlayNewAudio() {
-    //Register playNewMedia receiver
-    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_PLAY_NEW_AUDIO);
-    registerReceiver(playNewAudio, filter);
-  }
-
-  // Play new file reciever
   private BroadcastReceiver playReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
       ResultReceiver resultReceiver;
 
       try {
-        //An audio file is passed to the service through putExtra();
-        mediaFile = intent.getExtras().getString("media");
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PLAY);
       } catch (NullPointerException e) {
         stopSelf();
         return;
       }
 
+      //Request audio focus
+      if (requestAudioFocus() == false) {
+        //Could not gain focus
+        resultReceiver.send(1, bundlWithError("could not get audio focus"));
+        return;
+      }
+
       if (mediaPlayer == null) {
-        stopMedia();
-        mediaPlayer.reset();
-        initMediaPlayer();
-        resultReceiver.send(0, null);
+        resultReceiver.send(1, bundlWithError("media player is not created"));
         return;
       }
 
@@ -232,6 +189,35 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private void registerPlayReceiver() {
     IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_PLAY);
     registerReceiver(playReceiver, filter);
+  }
+
+  private BroadcastReceiver setNewTrackReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      ResultReceiver resultReceiver;
+
+      try {
+        //An audio file is passed to the service through putExtra();
+        mediaFile = intent.getExtras().getString("media");
+        resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_SET_TRACK);
+      } catch (NullPointerException e) {
+        stopSelf();
+        return;
+      }
+
+      if (mediaPlayer != null) {
+        stopMedia();
+        mediaPlayer.reset();
+      }
+
+      initMediaPlayer();
+      setTrackResultReceiver = resultReceiver;
+    }
+  };
+
+  private void registerSetNewTrackReceiver() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_SET_TRACK);
+    registerReceiver(setNewTrackReceiver, filter);
   }
 
   private BroadcastReceiver pauseReceiver = new BroadcastReceiver() {
@@ -289,6 +275,79 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private void registergetCurrentTime() {
     IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_GET_CURRENT_TIME);
     registerReceiver(getCurrentTime, filter);
+  }
+
+  private BroadcastReceiver seekToReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      float progress;
+
+      try {
+        progress = intent.getExtras().getFloat("progress");
+      } catch (NullPointerException e) {
+        stopSelf();
+        return;
+      }
+      
+      if (progress < 0 || progress > 1) {
+        return;
+      }
+
+      if (mediaPlayer == null) {
+        return;
+      }
+
+      int duration = mediaPlayer.getDuration();
+      int pos = (int)((float)duration * progress);
+      mediaPlayer.seekTo(pos);
+    }
+  };
+
+  private void registerSeekToReceiver() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_SEEK_TO);
+    registerReceiver(seekToReceiver, filter);
+  }
+  
+
+  private BroadcastReceiver getDuration = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      ResultReceiver resultReceiver;
+      try {
+        resultReceiver = intent.getParcelableExtra(
+          MediaPlayerModule.ResultReceiver_GET_DURATION
+        );
+      } catch (NullPointerException e) {
+        stopSelf();
+        return;
+      }
+
+      Bundle bundle = new Bundle();
+      int duration = 0;
+
+      if (mediaPlayer != null) {
+        duration = mediaPlayer.getDuration();
+        if (duration == -1) {
+          duration = 0;
+        } else {
+          duration = duration / 1000;
+        }
+      }
+
+      bundle.putInt("duration", duration);
+      resultReceiver.send(0, bundle);
+    }
+  };
+
+  private void registergetGetDuration() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_GET_DURATION);
+    registerReceiver(getDuration, filter);
+  }
+
+  private Bundle bundlWithError(String error) {
+    Bundle bundle = new Bundle();
+    bundle.putString("error", error);
+    return bundle;
   }
 
   // Media Player events implementaions
@@ -352,7 +411,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   @Override
   public void onPrepared(MediaPlayer mp) {
     //Invoked when the media source is ready for playback.
-    playMedia();
+    if (setTrackResultReceiver == null) {
+      playMedia();
+      return;
+    }
+
+    setTrackResultReceiver.send(0, null);
+    setTrackResultReceiver = null;
   }
 
   @Override
@@ -368,13 +433,19 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     switch (focusState) {
       case AudioManager.AUDIOFOCUS_GAIN:
         // resume playback
-        if (mediaPlayer == null) initMediaPlayer();
-        else if (!mediaPlayer.isPlaying()) mediaPlayer.start();
+        if (mediaPlayer == null) {
+          initMediaPlayer();
+        }
+        else if (!mediaPlayer.isPlaying()) {
+          mediaPlayer.start();
+        }
         mediaPlayer.setVolume(1.0f, 1.0f);
         break;
       case AudioManager.AUDIOFOCUS_LOSS:
         // Lost focus for an unbounded amount of time: stop playback and release media player
-        if (mediaPlayer.isPlaying()) mediaPlayer.stop();
+        if (mediaPlayer.isPlaying()) {
+          mediaPlayer.stop();
+        }
         mediaPlayer.release();
         mediaPlayer = null;
         break;
@@ -382,12 +453,16 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         // Lost focus for a short time, but we have to stop
         // playback. We don't release the media player because playback
         // is likely to resume
-        if (mediaPlayer.isPlaying()) mediaPlayer.pause();
+        if (mediaPlayer.isPlaying()) {
+          mediaPlayer.pause();
+        }
         break;
       case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
         // Lost focus for a short time, but it's ok to keep playing
         // at an attenuated level
-        if (mediaPlayer.isPlaying()) mediaPlayer.setVolume(0.1f, 0.1f);
+        if (mediaPlayer.isPlaying()) {
+          mediaPlayer.setVolume(0.1f, 0.1f);
+        }
         break;
     }
   }
@@ -458,6 +533,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     //Reset so that the MediaPlayer is not pointing to another data source
     mediaPlayer.reset();
     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    mediaPlayer.setLooping(MediaPlayerModule.repeatSong);
 
     Uri uri = Uri.parse(mediaFile);
 

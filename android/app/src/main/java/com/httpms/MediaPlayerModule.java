@@ -34,10 +34,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   boolean serviceBound = false;
   boolean serviceStarting = false;
 
-  public static final String Broadcast_PLAY_NEW_AUDIO = "com.httpms.PlayNewAudio";
   public static final String Broadcast_PLAY = "com.httpms.Play";
+  public static final String Broadcast_SET_TRACK = "com.httpms.SetTrack";
   public static final String Broadcast_PAUSE = "com.httpms.Pause";
   public static final String Broadcast_GET_CURRENT_TIME = "com.httpms.GetCurrentTime";
+  public static final String Broadcast_GET_DURATION = "com.httpms.GetDuration";
+  public static final String Broadcast_SEEK_TO = "com.httpms.SeekTo";
 
   public static Map<String, String> AuthHeaders;
   public static boolean repeat;
@@ -82,8 +84,24 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   };
 
   @ReactMethod
+  private void startMusicService() {
+    if (serviceBound || serviceStarting) {
+      return;
+    }
+
+    Intent playerIntent = new Intent(context, MediaPlayerService.class);
+    context.startService(playerIntent);
+    context.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+    serviceStarting = true;
+  }
+
+  @ReactMethod
   private void play() {
     if (serviceStarting) {
+      return;
+    }
+
+    if (!serviceBound) {
       return;
     }
 
@@ -92,32 +110,10 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       return;
     }
 
-    if (currentIndex < 0 || currentIndex >= playlist.length) {
-      sendErrorEvent(String.format(
-        "current index %d out of playlist size %d",
-        currentIndex,
-        playlist.length
-      ));
-      return;
-    }
-
-    final String media = playlist[currentIndex];
     final PlayReceiver playReceiver = new PlayReceiver();
-
-    //Check is service is active
-    if (!serviceBound) {
-      Intent playerIntent = new Intent(context, MediaPlayerService.class);
-      playerIntent.putExtra("media", media);
-      playerIntent.putExtra(ResultReceiver_PLAY, playReceiver);
-      context.startService(playerIntent);
-      context.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-      serviceStarting = true;
-    } else {
-      Intent broadcastIntent = new Intent(Broadcast_PLAY);
-      broadcastIntent.putExtra("media", media);
-      broadcastIntent.putExtra(ResultReceiver_PLAY, playReceiver);
-      context.sendBroadcast(broadcastIntent);
-    }
+    Intent intent = new Intent(Broadcast_PLAY);
+    intent.putExtra(ResultReceiver_PLAY, playReceiver);
+    context.sendBroadcast(intent);
   }
 
   @ReactMethod
@@ -136,7 +132,9 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
   @ReactMethod
   public void getDuration(final Callback callback) {
-    callback.invoke(900);
+    Intent intent = new Intent(Broadcast_GET_DURATION);
+    intent.putExtra(ResultReceiver_GET_DURATION, new GetDurationReceiver(callback));
+    context.sendBroadcast(intent);
   }
 
   @ReactMethod
@@ -165,6 +163,17 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   }
 
   @ReactMethod
+  public void seekTo(float progress) {
+    if (progress < 0 || progress > 1) {
+      return;
+    }
+
+    Intent intent = new Intent(Broadcast_SEEK_TO);
+    intent.putExtra("progress", progress);
+    context.sendBroadcast(intent);
+  }
+
+  @ReactMethod
   public void setCurrent(int index) {
     currentIndex = index;
   }
@@ -184,14 +193,47 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
     sendMediaLoadingEvent();
 
-    currentIndex = index;
+    final SetTrackReceiver resultReceiver = new SetTrackReceiver(onSuccess, index);
+    broadcastSetTrack(index, resultReceiver);
+  }
 
-    sendTrackSetEvent(index);
-    sendMediaLoadedEvent();
+  private void broadcastSetTrack(int index, SetTrackReceiver resultReceiver) {
+    final String media = playlist[index];
+    Intent intent = new Intent(Broadcast_SET_TRACK);
+    intent.putExtra("media", media);
+    intent.putExtra(ResultReceiver_SET_TRACK, resultReceiver);
+    context.sendBroadcast(intent);
+  }
 
-    if (onSuccess != null) {
-      onSuccess.invoke();
+  @ReactMethod
+  public void next() {
+    final int playlistLen = playlist.length;
+    int nextIndex = currentIndex + 1;
+
+    if (nextIndex >= playlistLen) {
+      if (!MediaPlayerModule.repeat) {
+        return;
+      }
+      nextIndex = 0;
     }
+
+    sendPlayCompletedEvent(true);
+    sendMediaLoadingEvent();
+    final SetTrackReceiver resultReceiver = new SetTrackReceiver(nextIndex);
+    broadcastSetTrack(nextIndex, resultReceiver);
+  }
+
+  @ReactMethod
+  public void previous() {
+    final int prevIndex = currentIndex - 1;
+    if (prevIndex < 0) {
+      return;
+    }
+
+    sendPlayCompletedEvent(true);
+    sendMediaLoadingEvent();
+    final SetTrackReceiver resultReceiver = new SetTrackReceiver(prevIndex);
+    broadcastSetTrack(prevIndex, resultReceiver);
   }
 
   @ReactMethod
@@ -256,6 +298,58 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
+  public static final String ResultReceiver_GET_DURATION = "com.httpms.resultReceiver.getDuration";
+  private final class GetDurationReceiver extends ResultReceiver {
+
+    Callback callback;
+
+    public GetDurationReceiver(Callback withCallback) {
+      super(null);
+      callback = withCallback;
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle bundle) {
+      callback.invoke(bundle.getInt("duration"));
+    }
+  }
+
+  public static final String ResultReceiver_SET_TRACK = "com.httpms.resultReceiver.setTrack";
+  private final class SetTrackReceiver extends ResultReceiver {
+
+    private Callback callback;
+    private int index;
+    private boolean playAfterSet = false;
+
+    public SetTrackReceiver(Callback withCallback, int newIndex) {
+      super(null);
+      callback = withCallback;
+      index = newIndex;
+      playAfterSet = false;
+    }
+
+    public SetTrackReceiver(int newIndex) {
+      super(null);
+      index = newIndex;
+      playAfterSet = true;
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle bundle) {
+      currentIndex = index;
+      sendTrackSetEvent(index);
+      sendMediaLoadedEvent();
+
+      if (callback != null) {
+        callback.invoke();
+      }
+
+      if (playAfterSet) {
+        play();
+      }
+    }
+  }
+
   public static final String ResultReceiver_PLAY = "com.httpms.resultReceiver.play";
   private final class PlayReceiver extends ResultReceiver {
     public PlayReceiver() {
@@ -265,6 +359,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     @Override
     protected void onReceiveResult(int resultCode, Bundle bundle) {
       if (resultCode != 0) {
+        sendErrorEvent(bundle.getString("error"));
         return;
       }
       sendPlayStartedEvent();

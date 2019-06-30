@@ -271,7 +271,7 @@ export class JavaScriptMediaPlayer {
 
     previous() {
         const prevIndex = this.current - 1;
-        if (prevIndex <= 0) {
+        if (prevIndex < 0) {
             return;
         }
 

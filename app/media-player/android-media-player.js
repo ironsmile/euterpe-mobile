@@ -59,7 +59,9 @@ export class AndroidMediaPlayer {
         );
     }
 
-    init() {}
+    init() {
+        this.java.startMusicService();
+    }
 
     play() {
         this.java.play();
@@ -134,8 +136,9 @@ export class AndroidMediaPlayer {
         this.playlistAppendCallback = callback;
     }
 
+    // progress must be a number in the range [0, 1].
     seekTo(progress) {
-
+        this.java.seekTo(progress);
     }
 
     // successCallback is of type func()
@@ -171,5 +174,13 @@ export class AndroidMediaPlayer {
     // callback is of type func (int seconds, bool isPlaying).
     getCurrentTime(callback) {
         this.java.getCurrentTime(callback);
+    }
+
+    next() {
+        this.java.next();
+    }
+
+    previous() {
+        this.java.previous();
     }
 }
