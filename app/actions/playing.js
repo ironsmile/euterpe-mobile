@@ -24,22 +24,6 @@ let _timer = null;
 // Call detection manager
 let _cdm = null;
 
-export const playMediaViaService = () => {
-    return (dispatch, getState) => {
-        const { playing } = getState();
-        const track = playing.playlist[playing.currentIndex];
-
-        if (!track || !track.id) {
-            console.error("track does not exist");
-            return;
-        }
-
-        const songURL = httpms.getSongURL(track.id);
-
-        mediaPlayer.playMedia(songURL);
-    };
-}
-
 export const setPlaylist = (tracks, startPlaying = false) => {
     return (dispatch) => {
         mediaPlayer.setPlaylist(tracks, 0);

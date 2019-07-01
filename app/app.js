@@ -19,7 +19,7 @@ import { recentArtistsReducer } from './reducers/recent-artists';
 import { recentAlbumsReducer } from './reducers/recent-albums';
 import { recentlyPlayedReducer } from './reducers/recently-played';
 import { restorePlayingState } from './actions/playing';
-import { restoreLibrary } from './actions/library';
+import { setupLibrary } from './actions/library';
 import { HttpmsNavigator, navRootReducer } from '@nav';
 import { httpms } from '@components/httpms-service';
 
@@ -113,7 +113,7 @@ class Root extends React.Component {
                 httpms.setStore(store);
                 store.dispatch(restorePlayingState());
                 this.setState({ rehydrated: true });
-                store.dispatch(restoreLibrary());
+                store.dispatch(setupLibrary());
             }
         );
     }

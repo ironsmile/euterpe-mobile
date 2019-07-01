@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { Screen } from '@screens/screen';
@@ -32,8 +31,7 @@ class SearchSongsRenderer extends React.PureComponent {
                     onPressItem={(index) => {
                         const playlist = [this.props.search.results[index]];
 
-                        this.props.dispatch(setPlaylist(playlist));
-                        this.props.dispatch(setTrack(0));
+                        this.props.dispatch(setPlaylist(playlist, true));
                     }}
                 />
             </Screen>

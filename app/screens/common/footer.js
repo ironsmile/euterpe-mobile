@@ -8,7 +8,6 @@ import {
     TouchableWithoutFeedback,
     StyleSheet,
     StatusBar,
-    Platform,
     ActivityIndicator,
     BackHandler,
 } from 'react-native';

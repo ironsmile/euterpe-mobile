@@ -4,17 +4,14 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Platform,
     ActivityIndicator,
     ScrollView,
-    Image,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { httpms } from '@components/httpms-service';
-import { FOOTER_HEIGHT } from '@screens/common/footer';
-import { setPlaylist, setTrack, playAlbum } from '@actions/playing';
+import { setPlaylist } from '@actions/playing';
 import { SongSmall } from '@components/song-small';
 import { AlbumSmall } from '@components/album-small';
 import { ArtistSmall } from '@components/artist-small';

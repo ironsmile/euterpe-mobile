@@ -1,22 +1,16 @@
 import React from 'react';
 import {
-    Text,
     StyleSheet,
     View,
     ActivityIndicator,
-    TouchableOpacity,
 } from 'react-native';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-import DropdownAlert from 'react-native-dropdownalert';
 
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { Helpful } from '@components/helpful';
 import { httpms } from '@components/httpms-service';
 import { ArtistBig } from '@components/artist-big';
-import { setPlaylist, appendToPlaylist } from '@actions/playing';
-import { gs } from '@styles/global';
 
 export class ArtistScreen extends React.Component {
     constructor(props) {

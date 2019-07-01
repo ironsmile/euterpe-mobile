@@ -1,4 +1,5 @@
 import RNFetchBlob from 'react-native-fetch-blob';
+import { Platform } from 'react-native';
 import {
     CLEANUP_LIBRARY,
     RESET_LIBRARY,
@@ -120,14 +121,22 @@ songFilePath = (songID) => {
     return `${RNFetchBlob.fs.dirs.DocumentDir}/${songID}.mp3`;
 }
 
-export const restoreLibrary = () => {
+export const setupLibrary = () => {
     return (dispatch, getState) => {
-        RNFetchBlob.fs.ls(RNFetchBlob.fs.dirs.DocumentDir)
-            .then((files) => {
-                console.log(getState().library, files);
-            })
-            .catch((error) => {
-                console.error("Error restoring library", error);
-            });
+        if (Platform.OS !== 'android') {
+            return;
+        }
+
+        const { library } = getState();
+
+        // Cleanup the song cache for android platforms since they dont
+        // use the JavaScript audio player any more. Hence they cannot
+        // use the saved tracks.
+        library.lru.forEach((songID) => {
+            unlinkSong(songID);
+        });
+        dispatch({
+            type: CLEANUP_LIBRARY,
+        });
     }
 }

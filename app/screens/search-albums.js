@@ -1,10 +1,9 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { Screen } from '@screens/screen';
 import { AlbumsList } from '@components/albums-list';
-import { playAlbum } from '@actions/playing';
 import Header from '@screens/common/header';
 
 class SearchAlbumsRenderer extends React.PureComponent {

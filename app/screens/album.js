@@ -1,10 +1,8 @@
 import React from 'react';
 import {
-    Text,
     StyleSheet,
     View,
     ActivityIndicator,
-    TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -16,7 +14,6 @@ import { Helpful } from '@components/helpful';
 import { httpms } from '@components/httpms-service';
 import { AlbumBig } from '@components/album-big';
 import { setPlaylist, appendToPlaylist } from '@actions/playing';
-import { gs } from '@styles/global';
 import { errorToMessage } from '@helpers/errors';
 
 class AlbumScreenRenderer extends React.Component {
