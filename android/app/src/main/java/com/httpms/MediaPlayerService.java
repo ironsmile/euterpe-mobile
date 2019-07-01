@@ -42,6 +42,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private String mediaFile;
 
   private ResultReceiver setTrackResultReceiver;
+  private ResultReceiver endTrackResultReceiver;
 
   //Used to pause/resume MediaPlayer
   private int resumePosition;
@@ -104,6 +105,19 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 		Message msg = servicePlayer.obtainMessage();
 		msg.arg1 = startId;
 		servicePlayer.sendMessage(msg);
+
+    try {
+      endTrackResultReceiver = intent.getParcelableExtra(
+        MediaPlayerModule.ResultReceiver_END_TRACK
+      );
+    } catch (NullPointerException e) {
+      Toast.makeText(
+        this,
+        "MediaPlayer start failed: end track receiver not found.",
+        Toast.LENGTH_LONG
+      ).show();
+      return START_STICKY;
+    }
 
 		// If we get killed, after returning from here, restart
 		return START_STICKY;
@@ -233,6 +247,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       }
 
       pauseMedia();
+      removeAudioFocus();
       resultReceiver.send(0, null);
     }
   };
@@ -360,9 +375,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
   @Override
   public void onCompletion(MediaPlayer mp) {
-    //Invoked when playback of a media source has completed.
+    // Invoked when playback of a media source has completed.
     stopMedia();
-    //stop the service
+
+    // Notify the bridge module that the playback has finished.
+    endTrackResultReceiver.send(0, null);
+
+    // Stop the service
     stopSelf();
   }
 

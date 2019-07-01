@@ -66,7 +66,7 @@ class TimedProgressRenderer extends React.Component {
                         textAlign: 'right',
                     }
                 ]}>
-                    {remamingTime(this.props.progress, this.props.duration)}
+                    {remaingTime(this.props.progress, this.props.duration)}
                 </Text>
             </View>
         );
@@ -110,7 +110,7 @@ const elapsedTime = (progress, duration) => {
     return formatDuration(progress * duration, duration);
 };
 
-const remamingTime = (progress, duration) => {
+const remaingTime = (progress, duration) => {
     if (!duration) {
         return '--:--';
     }

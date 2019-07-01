@@ -23,6 +23,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class MediaPlayerModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
@@ -90,6 +91,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
 
     Intent playerIntent = new Intent(context, MediaPlayerService.class);
+    playerIntent.putExtra(ResultReceiver_END_TRACK, new EndTrackReceiver());
     context.startService(playerIntent);
     context.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     serviceStarting = true;
@@ -347,6 +349,53 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       if (playAfterSet) {
         play();
       }
+    }
+  }
+
+  public static final String ResultReceiver_END_TRACK = "com.httpms.resultReceiver.endTrack";
+  private final class EndTrackReceiver extends ResultReceiver {
+
+    public EndTrackReceiver() {
+      super(null);
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle bundle) {
+      boolean success = resultCode == 0;
+      sendPlayCompletedEvent(success);
+
+      if (repeatSong) {
+        play();
+        return;
+      }
+
+      final int playlistLen = playlist.length;
+      if (shuffle && playlistLen > 1) {
+        int randomIndex = currentIndex;
+        Random rand = new Random();
+        while (randomIndex == currentIndex) {
+          randomIndex = rand.nextInt(playlistLen);
+        }
+
+        sendMediaLoadingEvent();
+        final SetTrackReceiver resultReceiver = new SetTrackReceiver(randomIndex);
+        broadcastSetTrack(randomIndex, resultReceiver);
+        return;
+      }
+
+      int nextIndex = currentIndex + 1;
+
+      if (nextIndex >= playlistLen) {
+        if (repeat) {
+          nextIndex = 0;
+        } else {
+          return;
+        }
+      }
+
+      sendMediaLoadingEvent();
+      final SetTrackReceiver resultReceiver = new SetTrackReceiver(nextIndex);
+      broadcastSetTrack(nextIndex, resultReceiver);
     }
   }
 
