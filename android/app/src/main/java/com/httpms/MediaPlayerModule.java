@@ -79,6 +79,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
+      Toast.makeText(context, "Service Unbound", Toast.LENGTH_SHORT).show();
       serviceStarting = false;
       serviceBound = false;
     }
@@ -273,12 +274,17 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
   @Override
   public void onHostDestroy() {
-      if (!serviceBound) {
-        return;
-      }
-
-      context.unbindService(serviceConnection);
+    if (serviceStarting) {
       player.stopSelf();
+      return;
+    }
+
+    if (!serviceBound) {
+      return;
+    }
+
+    context.unbindService(serviceConnection);
+    player.stopSelf();
   }
 
   public static final String ResultReceiver_CURRENT_TIME = "com.httpms.resultReceiver.currentTime";
