@@ -44,6 +44,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private ResultReceiver setTrackResultReceiver;
   private ResultReceiver endTrackResultReceiver;
 
+  HandlerThread playerThread;
+
   //Used to pause/resume MediaPlayer
   private int resumePosition;
 
@@ -67,11 +69,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
 	@Override
 	public void onCreate() {
-		HandlerThread thread = new HandlerThread("ServiceStartArguments",
+		playerThread = new HandlerThread("ServiceStartArguments",
 				Process.THREAD_PRIORITY_BACKGROUND);
-		thread.start();
+		playerThread.start();
 
-		serviceLooper = thread.getLooper();
+		serviceLooper = playerThread.getLooper();
 		servicePlayer = new ServicePlayer(serviceLooper);
 
 		Intent notificationIntent = new Intent(this, MediaPlayerService.class);
@@ -140,6 +142,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     unregisterReceiver(getDuration);
     unregisterReceiver(setNewTrackReceiver);
     unregisterReceiver(seekToReceiver);
+
+    if (playerThread != null) {
+      playerThread.interrupt();
+      playerThread.quit();
+      playerThread = null;
+    }
 	}
 
   public class LocalBinder extends Binder {
@@ -487,7 +495,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   }
       
   private boolean requestAudioFocus() {
-    audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    if (audioManager == null) {
+      audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    }
+
     int result = audioManager.requestAudioFocus(
       this,
       AudioManager.STREAM_MUSIC,
@@ -504,8 +515,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   }
 
   private boolean removeAudioFocus() {
-      return AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
-        audioManager.abandonAudioFocus(this);
+    if (audioManager == null) {
+      // The audio focus was never requested. So we can consider it removed.
+      return true;
+    }
+
+    return AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
+      audioManager.abandonAudioFocus(this);
   }
 
 

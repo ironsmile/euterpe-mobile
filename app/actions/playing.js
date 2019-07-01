@@ -260,22 +260,16 @@ export const restorePlayingState = (errorHandler) => {
         });
 
         mediaPlayer.onMediaLoading(() => {
-            console.log("onMediaLoading");
-
             MediaControl.resetNowPlaying();
             dispatch(trackIsLoading());
         });
 
         mediaPlayer.onMediaLoaded(() => {
-            console.log("onMediaLoaded");
-
             dispatch(trackLoaded());
             dispatch(updateMediaControls());
         });
 
         mediaPlayer.onPlayStarted(() => {
-            console.log("onPlayStarted");
-
             dispatch({
                 type: TOGGLE_PLAYING,
                 play: true,
@@ -293,8 +287,6 @@ export const restorePlayingState = (errorHandler) => {
                 MediaControl.updatePlayback({
                     state: MediaControl.STATE_PLAYING,
                 });
-
-                console.log("with index and track", index, track);
 
                 dispatch(addToRecentlyPlayed(track));
 
@@ -315,8 +307,6 @@ export const restorePlayingState = (errorHandler) => {
         });
 
         mediaPlayer.onPaused(() => {
-            console.log("onPaused");
-
             stopCallDetection();
             MediaControl.updatePlayback({
                 state: MediaControl.STATE_PAUSED,
@@ -329,21 +319,15 @@ export const restorePlayingState = (errorHandler) => {
         });
 
         mediaPlayer.onStopped(() => {
-            console.log("onStopped");
-
             stopCallDetection();
         });
 
         mediaPlayer.onPlayCompleted((success) => {
-            console.log("onPlayCompleted", success);
-
             cleanupProgressTimer();
             dispatch(trackEnded());
         });
 
         mediaPlayer.onTrackSet((index) => {
-            console.log("onTrackSet", index);
-
             const { playing } = getState();
             const track = playing.playlist[index];
 
@@ -352,8 +336,6 @@ export const restorePlayingState = (errorHandler) => {
         });
 
         mediaPlayer.onPlaylistSet((playlist, currentIndex) => {
-            console.log("onPlaylistSet", playlist);
-
             dispatch({
                 type: SET_PLAYLIST,
                 playlist,
@@ -374,17 +356,13 @@ export const restorePlayingState = (errorHandler) => {
         }
 
         dispatch(() => {
-            console.log("mediaPlayer.setPlaylist playlist called!");
             mediaPlayer.setPlaylist(playing.playlist, playing.currentIndex);
-
             mediaPlayer.setShuffle(playing.shuffle);
             mediaPlayer.setRepeat(playing.repeat, playing.setRepeatSong);
         });
 
         if (playing.currentIndex !== null) {
             dispatch(() => {
-                console.log("mediaPlayer.setTrack playlist called with seekTo!",
-                    playing.currentIndex);
                 mediaPlayer.setTrack(playing.currentIndex, () => {
                     mediaPlayer.seekTo(progress.value);
                 });
