@@ -8,20 +8,23 @@ import { connect, Provider } from 'react-redux';
 import MediaControl from './common/media-control-shim';
 import thunkMiddleware from 'redux-thunk';
 
-import { Loader } from './screens/common/loader';
-import { playingReducer } from './reducers/playing';
-import { playerReducer } from './reducers/player';
-import { progressReducer } from './reducers/progress';
-import { searchReducer } from './reducers/search';
-import { settingsReducer } from './reducers/settings';
-import { libraryReducer } from './reducers/library';
-import { recentArtistsReducer } from './reducers/recent-artists';
-import { recentAlbumsReducer } from './reducers/recent-albums';
-import { recentlyPlayedReducer } from './reducers/recently-played';
-import { restorePlayingState } from './actions/playing';
-import { setupLibrary } from './actions/library';
+import { Loader } from '@screens/common/loader';
+import { playingReducer } from '@reducers/playing';
+import { playerReducer } from '@reducers/player';
+import { progressReducer } from '@reducers/progress';
+import { searchReducer } from '@reducers/search';
+import { settingsReducer } from '@reducers/settings';
+import { libraryReducer } from '@reducers/library';
+import { recentArtistsReducer } from '@reducers/recent-artists';
+import { recentAlbumsReducer } from '@reducers/recent-albums';
+import { recentlyPlayedReducer } from '@reducers/recently-played';
+import { restorePlayingState } from '@actions/playing';
+import { setupLibrary } from '@actions/library';
 import { HttpmsNavigator, navRootReducer } from '@nav';
 import { httpms } from '@components/httpms-service';
+import { errorsReducer } from '@reducers/errors';
+import { appendError } from '@actions/errors';
+import { ErrorsOverlay } from '@screens/common/errors';
 
 
 const appReducer = combineReducers({
@@ -35,6 +38,7 @@ const appReducer = combineReducers({
     recentArtists: recentArtistsReducer,
     recentAlbums: recentAlbumsReducer,
     recentlyPlayed: recentlyPlayedReducer,
+    errors: errorsReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {
@@ -56,10 +60,15 @@ const rehydratedReducer = (state = {}, action) => {
 const mapStateToPropsRoot = (state) => ({
     nav: state.navRoot,
     settings: state.settings,
+    errors: state.errors.errors,
 });
 
 class App extends React.Component {
     render() {
+        if (this.props.errors.length > 0) {
+            return <ErrorsOverlay />;
+        }
+
         return (
             <HttpmsNavigator
                 navigation={addNavigationHelpers({
@@ -111,7 +120,9 @@ class Root extends React.Component {
             },
             () => {
                 httpms.setStore(store);
-                store.dispatch(restorePlayingState());
+                store.dispatch(restorePlayingState((error) => {
+                    store.dispatch(appendError(error));
+                }));
                 this.setState({ rehydrated: true });
                 store.dispatch(setupLibrary());
             }

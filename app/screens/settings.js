@@ -15,6 +15,7 @@ import { finishLogOut } from '@actions/settings';
 import { cleanupRecentAlbums } from '@actions/recent-albums';
 import { cleanupRecentArtists } from '@actions/recent-artists';
 import { stopPlaying } from '@actions/playing';
+import { appendError } from '@actions/errors';
 
 const resetAction = NavigationActions.reset({
     index: 0,
@@ -58,7 +59,6 @@ export class SettingsRenderer extends React.Component {
                             this.props.navigation.dispatch(resetAction);
                         }}
                     />
-
                 </View>
             </TouchableWithoutFeedback>
         );

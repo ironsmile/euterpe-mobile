@@ -232,8 +232,6 @@ export const restorePlayingState = (errorHandler) => {
         mediaPlayer.dispatch = dispatch;
 
         mediaPlayer.onError((error) => {
-            console.error('mediaPlayer.onError', error);
-
             dispatch(stopPlaying());
             if (errorHandler) {
                 errorHandler(error);
