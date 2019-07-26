@@ -20,6 +20,7 @@ footer menu color: #222326
 * "Various artists" in search album results
 * crash с "json syntax error" в browse albums
 * logout трябва да изчиства всички ресурси
+* да защитя playlist обекта и currentIndex зад lock-ове в android модула
 
 
 == links ==
@@ -46,3 +47,11 @@ reload js:
 
 ctrl + r (ios)
 rr (android)
+
+компилиране на release версия:
+
+react-native run-android --variant=release
+
+инсталиране на истински device на release версия:
+
+adb -s ZX1B23C8SJ install -r android/app/build/outputs/apk/app-release.apk
