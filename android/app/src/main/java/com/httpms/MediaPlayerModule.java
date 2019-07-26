@@ -25,6 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/*
+  !TODO: some variables here are not protected by a lock and may be used from different
+  threads. Notable examples are the playlist and currentIndex.
+*/
 public class MediaPlayerModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
   ReactApplicationContext context;
@@ -163,6 +167,26 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     playlist = tmpPlaylist;
 
     callback.invoke(currentIndex);
+  }
+
+  @ReactMethod
+  public void appendPlaylist(ReadableArray songs, final Callback callback) {
+    final int currentPlaylistSize = playlist.length;
+    final int songsSize = songs.size();
+    final int newPlaylistSize = songsSize + currentPlaylistSize;
+    String[] tmpPlaylist = new String[newPlaylistSize];
+
+    for (int i = 0; i < currentPlaylistSize; i++) {
+      tmpPlaylist[i] = playlist[i];
+    }
+
+    for (int i = 0; i < songsSize; i++) {
+      tmpPlaylist[currentPlaylistSize + i] = songs.getString(i);
+    }
+
+    playlist = tmpPlaylist;
+
+    callback.invoke();
   }
 
   @ReactMethod

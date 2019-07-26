@@ -128,7 +128,16 @@ export class AndroidMediaPlayer {
     }
 
     appendPlaylist(songs) {
+        const songsURLs = [];
+        const songsLen = songs.length;
 
+        for (let i = 0; i < songsLen; i++) {
+            songsURLs.push(httpms.getSongURL(songs[i].id));
+        }
+
+        this.java.appendPlaylist(songsURLs, () => {
+            this.playlistAppendCallback(songs);
+        })
     }
 
     // callback is of the type func(songs)
