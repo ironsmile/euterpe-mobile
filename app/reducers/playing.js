@@ -64,6 +64,13 @@ export const playingReducer = (state = initialState, action) => {
                 currentIndex: action.index,
             };
 
+        case SET_SELECTED_TRACK:
+            return {
+                ...state,
+                now: action.track,
+                currentIndex: action.index,
+            };
+
         case SET_IS_LOADING_STATUS:
             return {
                 ...state,
@@ -89,6 +96,7 @@ export const STOP = 'Playing/Stop';
 export const NEXT = 'Playing/Next';
 export const PREVIOUS = 'Playing/Previous';
 export const SELECT_TRACK = 'Playing/SelectTrack';
+export const SET_SELECTED_TRACK = 'Playing/SetSelectedTrack';
 export const SET_PLAYLIST = 'Playing/SetPlaylist';
 export const APPEND_IN_PLAYLIST = 'Playing/AppendInPlaylist';
 export const SET_IS_LOADING_STATUS = 'Playing/SetLoadigStatus';

@@ -9,6 +9,7 @@ import {
     SET_IS_LOADING_STATUS,
     TRACK_ENDED,
     SELECT_TRACK,
+    SET_SELECTED_TRACK,
     APPEND_IN_PLAYLIST,
 } from '@reducers/playing';
 
@@ -185,6 +186,12 @@ export const selectTrack = (track, index) => ({
     index,
 });
 
+export const setSelectedTrack = (track, index) => ({
+    type: SET_SELECTED_TRACK,
+    track,
+    index,
+});
+
 export const setTrack = (index) => {
     return (dispatch, getState) => {
         mediaPlayer.setTrack(index, () => {
@@ -328,25 +335,51 @@ export const restorePlayingState = (errorHandler) => {
             });
         });
 
-        const { playing, progress } = getState();
-
-        if (!playing.now || !playing.now.id) {
-            return;
-        }
-
-        dispatch(() => {
-            mediaPlayer.setPlaylist(playing.playlist, playing.currentIndex);
-            mediaPlayer.setShuffle(playing.shuffle);
-            mediaPlayer.setRepeat(playing.repeat, playing.setRepeatSong);
-        });
-
-        if (playing.currentIndex !== null) {
-            dispatch(() => {
-                mediaPlayer.setTrack(playing.currentIndex, () => {
-                    mediaPlayer.seekTo(progress.value);
+        mediaPlayer.isPlaying((isPlaying, currentIndex) => {
+            if (isPlaying) {
+                dispatch({
+                    type: TOGGLE_PLAYING,
+                    play: true,
                 });
+
+                const { playlist } = getState().playing;
+
+                if (currentIndex < 0 || currentIndex >= playlist.length) {
+                    if (errorHandler) {
+                        errorHandler(
+                            `Current track index ${currentIndex} outside of playlist size.`
+                        );
+                    }
+                    return;
+                }
+
+                const track = playlist[currentIndex];    
+                dispatch(setSelectedTrack(track, currentIndex));
+                setMuscControlNextPre(playlist, currentIndex);
+
+                return;
+            }
+
+            const { playing, progress } = getState();
+
+            if (!playing.now || !playing.now.id) {
+                return;
+            }
+    
+            dispatch(() => {
+                mediaPlayer.setPlaylist(playing.playlist, playing.currentIndex);
+                mediaPlayer.setShuffle(playing.shuffle);
+                mediaPlayer.setRepeat(playing.repeat, playing.setRepeatSong);
             });
-        }
+    
+            if (playing.currentIndex !== null) {
+                dispatch(() => {
+                    mediaPlayer.setTrack(playing.currentIndex, () => {
+                        mediaPlayer.seekTo(progress.value);
+                    });
+                });
+            }
+        });
     };
 };
 

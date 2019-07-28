@@ -55,3 +55,9 @@ react-native run-android --variant=release
 инсталиране на истински device на release версия:
 
 adb -s ZX1B23C8SJ install -r android/app/build/outputs/apk/app-release.apk
+
+== memory usage ==
+
+master, debug + remote debugging: 17MB RAM, 23.80 MB Storage
+master, debug: 20MB RAM, 23.80 MB Storage
+master, release: 20MB RAM, 24.67 MB Storage

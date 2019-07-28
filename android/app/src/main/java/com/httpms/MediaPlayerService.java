@@ -89,8 +89,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
 		startForeground(ONGOING_NOTIFICATION_ID, notification);
     registerBecomingNoisyReceiver();
-    registergetCurrentTime();
-    registergetGetDuration();
+    registerGetCurrentTimeReceiver();
+    registerIsPlayingReceiver();
+    registerGetDurationReceiver();
     registerPauseReceiver();
     registerPlayReceiver();
     registerSetNewTrackReceiver();
@@ -100,8 +101,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
-
 		// For each start request, send a message to start a job and deliver the
 		// start ID so we know which request we're stopping when we finish the job
 		Message msg = servicePlayer.obtainMessage();
@@ -142,6 +141,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     unregisterReceiver(getDuration);
     unregisterReceiver(setNewTrackReceiver);
     unregisterReceiver(seekToReceiver);
+    unregisterReceiver(isPlayingReceiver);
 
     if (playerThread != null) {
       playerThread.interrupt();
@@ -295,9 +295,39 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
   };
 
-  private void registergetCurrentTime() {
+  private void registerGetCurrentTimeReceiver() {
     IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_GET_CURRENT_TIME);
     registerReceiver(getCurrentTime, filter);
+  }
+
+  private BroadcastReceiver isPlayingReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      ResultReceiver resultReceiver;
+      try {
+        resultReceiver = intent.getParcelableExtra(
+          MediaPlayerModule.ResultReceiver_IS_PLAYING
+        );
+      } catch (NullPointerException e) {
+        stopSelf();
+        return;
+      }
+
+      Bundle bundle = new Bundle();
+
+      if (mediaPlayer == null) {
+        bundle.putBoolean("isPlaying", false);
+      } else {
+        bundle.putBoolean("isPlaying", mediaPlayer.isPlaying());
+      }
+
+      resultReceiver.send(0, bundle);
+    }
+  };
+
+  private void registerIsPlayingReceiver() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_IS_PLAYING);
+    registerReceiver(isPlayingReceiver, filter);
   }
 
   private BroadcastReceiver seekToReceiver = new BroadcastReceiver() {
@@ -362,7 +392,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
   };
 
-  private void registergetGetDuration() {
+  private void registerGetDurationReceiver() {
     IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_GET_DURATION);
     registerReceiver(getDuration, filter);
   }

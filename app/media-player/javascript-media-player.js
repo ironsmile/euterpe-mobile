@@ -281,4 +281,16 @@ export class JavaScriptMediaPlayer {
             this.play();
         });
     }
+
+    // callback is of type func(boolean isPlaying, int currentIndexInPlaylist).
+    isPlaying(callback) {
+        if (this.player == null) {
+            callback(false, this.current);
+            return;
+        }
+
+        this.player.getCurrentTime((secs, isPlaying) => {
+            callback(isPlaying, this.current);
+        });
+    }
 }

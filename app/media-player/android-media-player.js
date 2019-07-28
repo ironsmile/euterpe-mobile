@@ -60,7 +60,11 @@ export class AndroidMediaPlayer {
     }
 
     init() {
-        this.java.startMusicService();
+        let debugMode = false;
+        if (__DEV__) {
+            debugMode = true;
+        }
+        this.java.startMusicService(debugMode);
     }
 
     play() {
@@ -191,5 +195,10 @@ export class AndroidMediaPlayer {
 
     previous() {
         this.java.previous();
+    }
+
+    // callback is of type func(boolean isPlaying, int currentIndexInPlaylist).
+    isPlaying(callback) {
+        this.java.isPlaying(callback);
     }
 }

@@ -38,6 +38,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   private MediaPlayerService player;
   boolean serviceBound = false;
   boolean serviceStarting = false;
+  boolean isDebugMode = false;
 
   public static final String Broadcast_PLAY = "com.httpms.Play";
   public static final String Broadcast_SET_TRACK = "com.httpms.SetTrack";
@@ -45,6 +46,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   public static final String Broadcast_GET_CURRENT_TIME = "com.httpms.GetCurrentTime";
   public static final String Broadcast_GET_DURATION = "com.httpms.GetDuration";
   public static final String Broadcast_SEEK_TO = "com.httpms.SeekTo";
+  public static final String Broadcast_IS_PLAYING = "com.httpms.IsPlaying";
 
   public static Map<String, String> AuthHeaders;
   public static boolean repeat;
@@ -78,19 +80,25 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       player = binder.getService();
       serviceBound = true;
       serviceStarting = false;
-      Toast.makeText(context, "Service Bound", Toast.LENGTH_SHORT).show();
+      if (isDebugMode) {
+        Toast.makeText(context, "Service Bound", Toast.LENGTH_SHORT).show();
+      }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-      Toast.makeText(context, "Service Unbound", Toast.LENGTH_SHORT).show();
+      if (isDebugMode) {
+        Toast.makeText(context, "Service Unbound", Toast.LENGTH_SHORT).show();
+      }
       serviceStarting = false;
       serviceBound = false;
     }
   };
 
   @ReactMethod
-  private void startMusicService() {
+  private void startMusicService(final boolean debugMode) {
+    isDebugMode = debugMode;
+
     if (serviceBound || serviceStarting) {
       return;
     }
@@ -100,6 +108,18 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     context.startService(playerIntent);
     context.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     serviceStarting = true;
+  }
+
+  @ReactMethod
+  private void isPlaying(final Callback callback) {
+    if (!serviceBound || serviceStarting) {
+      callback.invoke(false, currentIndex);
+      return;
+    }
+
+    Intent intent = new Intent(Broadcast_IS_PLAYING);
+    intent.putExtra(ResultReceiver_IS_PLAYING, new IsPlayingReceiver(callback));
+    context.sendBroadcast(intent);
   }
 
   @ReactMethod
@@ -288,11 +308,33 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
   @Override
   public void onHostResume() {
-    Toast.makeText(context, "Host Resume", Toast.LENGTH_SHORT).show();
+    if (!isDebugMode) {
+      return;
+    }
+
+    int playlistLen = -1;
+    if (playlist != null) {
+      playlistLen = playlist.length;
+    }
+
+    Toast.makeText(
+      context,
+      String.format(
+        "Host Resume. sb: %b, ss: %b, pl: %d",
+        serviceBound,
+        serviceStarting,
+        playlistLen
+      ),
+      Toast.LENGTH_SHORT
+      ).show();
   }
 
   @Override
   public void onHostPause() {
+    if (!isDebugMode) {
+      return;
+    }
+
     Toast.makeText(context, "Host Pause", Toast.LENGTH_SHORT).show();
   }
 
@@ -459,6 +501,29 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       sendPausedEvent();
     }
   }
+
+  public static final String ResultReceiver_IS_PLAYING = "com.httpms.resultReceiver.isPlaying";
+  private final class IsPlayingReceiver extends ResultReceiver {
+    Callback callback;
+
+    public IsPlayingReceiver(Callback withCallback) {
+      super(null);
+      callback = withCallback;
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle bundle) {
+      if (resultCode != 0) {
+        sendErrorEvent(
+          String.format("Error in isPlaying: %s", bundle.getString("error"))
+        );
+        return;
+      }
+      callback.invoke(bundle.getBoolean("isPlaying"), currentIndex);
+    }
+  }
+
+  // Java to JS events handling.
 
   private void sendEvent(String eventName, @Nullable WritableMap params) {
     context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
