@@ -56,6 +56,10 @@ react-native run-android --variant=release
 
 adb -s ZX1B23C8SJ install -r android/app/build/outputs/apk/app-release.apk
 
+логовете само на моя арр:
+
+adb logcat --pid $(adb shell ps | grep httpms | awk '{ print $2 }')
+
 == memory usage ==
 
 master, debug + remote debugging: 17MB RAM, 23.80 MB Storage

@@ -24,6 +24,7 @@ class TrackProgressRenderer extends React.Component {
                 progress={this.props.progress}
                 indeterminate={this.props.loading === true}
                 animated={this.props.loading === true}
+                useNativeDriver={true}
             />
         );
     }
@@ -57,6 +58,7 @@ class TimedProgressRenderer extends React.Component {
                         progress={this.props.progress}
                         indeterminate={this.props.loading === true}
                         animated={this.props.loading === true}
+                        useNativeDriver={true}
                     />
                 </View>
                 <Text style={[
