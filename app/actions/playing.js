@@ -1,3 +1,5 @@
+
+import { Platform } from 'react-native';
 import CallDetectorManager from 'react-native-call-detection';
 
 import {
@@ -412,6 +414,12 @@ const cleanupProgressTimer = () => {
 };
 
 const setUpCallDetection = (dispatch) => {
+    if (Platform.OS == "android") {
+        // Call detection on adroid is handled by the player service on the native
+        // code side.
+        return;
+    }
+
     if (_cdm) {
         // Call detection is already active
         return;
