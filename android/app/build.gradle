@@ -165,7 +165,6 @@ android {
 dependencies {
     compile project(':react-native-camera')
     compile project(':react-native-fetch-blob')
-    compile project(':react-native-wakeful')
     compile project(':react-native-call-detection')
     compile project(':react-native-music-control')
     compile project(':react-native-sound')

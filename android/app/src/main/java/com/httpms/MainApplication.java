@@ -5,7 +5,6 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import com.ironsmile.RNWakeful.RNWakefulPackage;
 import com.pritesh.calldetection.CallDetectionManager;
 import com.tanguyantoine.react.MusicControl;
 import com.zmxv.RNSound.RNSoundPackage;
@@ -33,7 +32,6 @@ public class MainApplication extends Application implements ReactApplication {
             new MediaPlayerPackage(),
             new RCTCameraPackage(),
             new RNFetchBlobPackage(),
-            new RNWakefulPackage(),
             new CallDetectionManager(MainApplication.this),
             new MusicControl(),
             new RNSoundPackage(),

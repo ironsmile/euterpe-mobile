@@ -3,8 +3,6 @@ include ':react-native-camera'
 project(':react-native-camera').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-camera/android')
 include ':react-native-fetch-blob'
 project(':react-native-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fetch-blob/android')
-include ':react-native-wakeful'
-project(':react-native-wakeful').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wakeful/android')
 include ':react-native-call-detection'
 project(':react-native-call-detection').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-call-detection/android')
 include ':react-native-music-control'
