@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-    Animated,
     View,
     StyleSheet,
     StatusBar
