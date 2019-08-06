@@ -21,8 +21,14 @@ import { httpms } from '@components/httpms-service';
 import { addToRecentlyPlayed } from '@actions/recently-played';
 import { mediaPlayer } from '@media-player/media-player';
 
+// The time in ms between progress updates.
+const progressUpdate = 1000;
+
 // A setInterval timer for updating a track progress
 let _timer = null;
+
+// The unix timestamp of when the track has started.
+let _startedTime = 0;
 
 // Call detection manager
 let _cdm = null;
@@ -282,19 +288,12 @@ export const restorePlayingState = (errorHandler) => {
                     return;
                 }
 
-                const progressUpdate = 1000;
-                _timer = setInterval(() => {
-                    mediaPlayer.getCurrentTime((seconds, isPlaying) => {
-                        dispatch(setProgress(seconds / duration));
-                        if (!isPlaying) {
-                            cleanupProgressTimer();
-                        }
-                    });
-                }, progressUpdate);
+                dispatch(startProgressTimer(duration));
             });
         });
 
         mediaPlayer.onPaused(() => {
+            cleanupProgressTimer();
             stopCallDetection();
             MediaControl.updatePlayback({
                 state: MediaControl.STATE_PAUSED,
@@ -307,6 +306,7 @@ export const restorePlayingState = (errorHandler) => {
         });
 
         mediaPlayer.onStopped(() => {
+            cleanupProgressTimer();
             stopCallDetection();
         });
 
@@ -355,9 +355,13 @@ export const restorePlayingState = (errorHandler) => {
                     return;
                 }
 
-                const track = playlist[currentIndex];    
+                const track = playlist[currentIndex];
                 dispatch(setSelectedTrack(track, currentIndex));
                 setMuscControlNextPre(playlist, currentIndex);
+
+                mediaPlayer.getDuration((duration) => {
+                    dispatch(startProgressTimer(duration));
+                });
 
                 return;
             }
@@ -367,13 +371,13 @@ export const restorePlayingState = (errorHandler) => {
             if (!playing.now || !playing.now.id) {
                 return;
             }
-    
+
             dispatch(() => {
                 mediaPlayer.setPlaylist(playing.playlist, playing.currentIndex);
                 mediaPlayer.setShuffle(playing.shuffle);
                 mediaPlayer.setRepeat(playing.repeat, playing.setRepeatSong);
             });
-    
+
             if (playing.currentIndex !== null) {
                 dispatch(() => {
                     mediaPlayer.setTrack(playing.currentIndex, () => {
@@ -463,3 +467,27 @@ const stopCallDetection = () => {
     _cdm.dispose();
     _cdm = null;
 };
+
+const startProgressTimer = (duration) => {
+    return (dispatch) => {
+        mediaPlayer.getCurrentTime((seconds, isPlaying) => {
+            cleanupProgressTimer();
+
+            dispatch(setProgress(seconds / duration));
+            if (!isPlaying) {
+                return;
+            }
+
+            _startedTime = nowSeconds() - seconds;
+            _timer = setInterval(() => {
+                const playingTime = nowSeconds() - _startedTime;
+                dispatch(setProgress(playingTime / duration));
+            }, progressUpdate);
+        });
+    };
+}
+
+// nowSeconds returns the current unix timestamp in seconds.
+const nowSeconds = () => {
+    return Math.round((new Date()).getTime() / 1000);
+}

@@ -38,6 +38,10 @@ avdmanager list avd
 
 /Users/iron4o/Library/Android/sdk/tools/emulator -avd <name> # name идва от list-а по - горе
 
+или алтернативно този по - бърз емулатор:
+
+~/Downloads/emulator/emulator -avd <name>
+
 debug menu:
 
 ctrl + d (ios)
