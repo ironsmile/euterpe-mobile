@@ -20,6 +20,7 @@ import android.os.IBinder;
 import android.os.Binder;
 import android.widget.Toast;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,6 +33,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener,
       MediaPlayer.OnBufferingUpdateListener, AudioManager.OnAudioFocusChangeListener {
 
+  private static final String TAG = "MediaPlayerService";
+  private boolean debugMode = false;
 	private int ONGOING_NOTIFICATION_ID = 42;
 	private Looper serviceLooper;
 	private ServicePlayer servicePlayer;
@@ -46,7 +49,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
   HandlerThread playerThread;
 
-  //Used to pause/resume MediaPlayer
+  // Used to pause/resume MediaPlayer
   private int resumePosition;
 
 	private final class ServicePlayer extends Handler {
@@ -111,12 +114,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       endTrackResultReceiver = intent.getParcelableExtra(
         MediaPlayerModule.ResultReceiver_END_TRACK
       );
+      debugMode = intent.getExtras().getBoolean("debugMode");
     } catch (NullPointerException e) {
-      Toast.makeText(
-        this,
-        "MediaPlayer start failed: end track receiver not found.",
-        Toast.LENGTH_LONG
-      ).show();
+      String logMsg = "MediaPlayer start failed: null pointer exception: " + e;
+      Toast.makeText(this, logMsg, Toast.LENGTH_LONG).show();
+      Log.e(TAG, logMsg);
       return START_STICKY;
     }
 
@@ -126,7 +128,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
 	@Override
 	public void onDestroy() {
-		Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+    if (debugMode) {
+      Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+    }
 
     if (mediaPlayer != null) {
       stopMedia();
@@ -173,7 +177,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   };
 
   private void registerBecomingNoisyReceiver() {
-    //register after getting audio focus
+    // Register after getting audio focus
     IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     registerReceiver(becomingNoisyReceiver, intentFilter);
   }
@@ -188,12 +192,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PLAY);
       } catch (NullPointerException e) {
         stopSelf();
+        Log.e(TAG, "play null pointer exception: " + e);
         return;
       }
 
-      //Request audio focus
+      // Request audio focus
       if (requestAudioFocus() == false) {
-        //Could not gain focus
+        // Could not gain focus
         resultReceiver.send(1, bundlWithError("could not get audio focus"));
         return;
       }
@@ -219,11 +224,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       ResultReceiver resultReceiver;
 
       try {
-        //An audio file is passed to the service through putExtra();
+        // An audio file is passed to the service through putExtra();
         mediaFile = intent.getExtras().getString("media");
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_SET_TRACK);
       } catch (NullPointerException e) {
         stopSelf();
+        Log.e(TAG, "setNewTrack null pointer exception: " + e);
         return;
       }
 
@@ -251,6 +257,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PAUSE);
       } catch (NullPointerException e) {
         stopSelf();
+        Log.e(TAG, "pause null pointer exception: " + e);
         return;
       }
 
@@ -275,6 +282,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         );
       } catch (NullPointerException e) {
         stopSelf();
+        Log.e(TAG, "getCurrentTime null pointer exception: " + e);
         return;
       }
 
@@ -310,6 +318,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         );
       } catch (NullPointerException e) {
         stopSelf();
+        Log.e(TAG, "isPlaying null pointer exception: " + e);
         return;
       }
 
@@ -339,6 +348,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         progress = intent.getExtras().getFloat("progress");
       } catch (NullPointerException e) {
         stopSelf();
+        Log.e(TAG, "progress null pointer exception: " + e);
         return;
       }
       
@@ -372,6 +382,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         );
       } catch (NullPointerException e) {
         stopSelf();
+        Log.e(TAG, "getDuration null pointer exception: " + e);
         return;
       }
 
@@ -407,8 +418,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
   @Override
   public void onBufferingUpdate(MediaPlayer mp, int percent) {
-    //Invoked indicating buffering status of
-    //a media resource being streamed over the network.
+    // Invoked indicating buffering status of
+    // a media resource being streamed over the network.
   }
 
   @Override
@@ -423,51 +434,41 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     stopSelf();
   }
 
-  //Handle errors
+  // Handle medila player errors.
   @Override
   public boolean onError(MediaPlayer mp, int what, int extra) {
-    //Invoked when there has been an error during an asynchronous operation
+    // Invoked when there has been an error during an asynchronous operation.
+
+    String msg;
     switch (what) {
       case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
-        Toast.makeText(
-          this,
-          "MediaPlayer Error not valid for progressive playback " + extra,
-          Toast.LENGTH_LONG
-        ).show();
+        msg = "MediaPlayer Error not valid for progressive playback " + extra;
         break;
       case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-        Toast.makeText(
-          this,
-          "MediaPlayer Error media error server died " + extra,
-          Toast.LENGTH_LONG
-        ).show();
+        msg = "MediaPlayer Error server died " + extra;
         break;
       case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-        Toast.makeText(
-          this,
-          "MediaPlayer Error media error unknown " + extra,
-          Toast.LENGTH_LONG
-        ).show();
+        msg = "MediaPlayer Error unknown " + extra;
         break;
       default:
-        Toast.makeText(
-          this,
-          "MediaPlayer Error media really uknown type this time " + extra,
-          Toast.LENGTH_LONG
-        ).show();
+        msg = "MediaPlayer Error really uknown type this time " + extra;
     }
+
+    Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    Log.e(TAG, msg);
+
     return false;
   }
 
   @Override
   public boolean onInfo(MediaPlayer mp, int what, int extra) {
-    //Invoked to communicate some info.
+    // Invoked to communicate some info.
     return false;
   }
 
   @Override
   public void onPrepared(MediaPlayer mp) {
-    //Invoked when the media source is ready for playback.
+    // Invoked when the media source is ready for playback.
     if (setTrackResultReceiver == null) {
       playMedia();
       return;
@@ -479,14 +480,14 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
   @Override
   public void onSeekComplete(MediaPlayer mp) {
-    //Invoked indicating the completion of a seek operation.
+    // Invoked indicating the completion of a seek operation.
   }
 
   // AudioManager methods
 
   @Override
   public void onAudioFocusChange(int focusState) {
-    //Invoked when the audio focus of the system is updated.
+    // Invoked when the audio focus of the system is updated.
     switch (focusState) {
       case AudioManager.AUDIOFOCUS_GAIN:
         // resume playback
@@ -536,11 +537,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     );
 
     if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-      //Focus gained
+      // Focus gained
       return true;
     }
 
-    //Could not gain focus
+    Log.e(TAG, "could not gain audio focus");
     return false;
   }
 
@@ -587,15 +588,17 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   // Init methods
 
   private void initMediaPlayer() {
+    logDebug("initializing new media player");
+
     mediaPlayer = new MediaPlayer();
-    //Set up MediaPlayer event listeners
+    // Set up MediaPlayer event listeners
     mediaPlayer.setOnCompletionListener(this);
     mediaPlayer.setOnErrorListener(this);
     mediaPlayer.setOnPreparedListener(this);
     mediaPlayer.setOnBufferingUpdateListener(this);
     mediaPlayer.setOnSeekCompleteListener(this);
     mediaPlayer.setOnInfoListener(this);
-    //Reset so that the MediaPlayer is not pointing to another data source
+    // Reset so that the MediaPlayer is not pointing to another data source
     mediaPlayer.reset();
     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     mediaPlayer.setLooping(MediaPlayerModule.repeatSong);
@@ -606,10 +609,18 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         // Set the data source to the mediaFile location
         mediaPlayer.setDataSource(this, uri, MediaPlayerModule.AuthHeaders);
     } catch (IOException e) {
+        Log.e(TAG, "set data source exception: " + e);
         e.printStackTrace();
         stopSelf();
     }
     mediaPlayer.prepareAsync();
   }
 
+  private void logDebug(String msg) {
+    if (!debugMode) {
+      return;
+    }
+
+    Log.d(TAG, msg);
+  }
 }

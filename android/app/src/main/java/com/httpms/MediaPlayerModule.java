@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -34,6 +35,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   ReactApplicationContext context;
   Map<String, Object> constants;
 
+  private static final String TAG = "MediaPlayerModule";
   private final String authHeaderName = "Authorization";
   private MediaPlayerService player;
   boolean serviceBound = false;
@@ -43,6 +45,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   public static final String Broadcast_PLAY = "com.httpms.Play";
   public static final String Broadcast_SET_TRACK = "com.httpms.SetTrack";
   public static final String Broadcast_PAUSE = "com.httpms.Pause";
+  public static final String Broadcast_STOP = "com.httpms.Stop";
   public static final String Broadcast_GET_CURRENT_TIME = "com.httpms.GetCurrentTime";
   public static final String Broadcast_GET_DURATION = "com.httpms.GetDuration";
   public static final String Broadcast_SEEK_TO = "com.httpms.SeekTo";
@@ -81,6 +84,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       serviceBound = true;
       serviceStarting = false;
       if (isDebugMode) {
+        Log.d(TAG, "service bound");
         Toast.makeText(context, "Service Bound", Toast.LENGTH_SHORT).show();
       }
     }
@@ -88,6 +92,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     @Override
     public void onServiceDisconnected(ComponentName name) {
       if (isDebugMode) {
+        Log.d(TAG, "service unbound");
         Toast.makeText(context, "Service Unbound", Toast.LENGTH_SHORT).show();
       }
       serviceStarting = false;
@@ -103,11 +108,16 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       return;
     }
 
+    if (isDebugMode) {
+      Log.d(TAG, "starting music service");
+    }
+
     Intent playerIntent = new Intent(context, MediaPlayerService.class);
     playerIntent.putExtra(ResultReceiver_END_TRACK, new EndTrackReceiver());
+    playerIntent.putExtra("debugMode", debugMode);
+    serviceStarting = true;
     context.startService(playerIntent);
     context.bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-    serviceStarting = true;
   }
 
   @ReactMethod
@@ -125,10 +135,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   @ReactMethod
   private void play() {
     if (serviceStarting) {
+      sendErrorEvent("Аndroid playback service is still starting.");
       return;
     }
 
     if (!serviceBound) {
+      sendErrorEvent("Аndroid playback service is not bound.");
       return;
     }
 

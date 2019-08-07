@@ -288,7 +288,7 @@ export const restorePlayingState = (errorHandler) => {
                     return;
                 }
 
-                dispatch(startProgressTimer(duration));
+                dispatch(startProgressTimer());
             });
         });
 
@@ -358,10 +358,7 @@ export const restorePlayingState = (errorHandler) => {
                 const track = playlist[currentIndex];
                 dispatch(setSelectedTrack(track, currentIndex));
                 setMuscControlNextPre(playlist, currentIndex);
-
-                mediaPlayer.getDuration((duration) => {
-                    dispatch(startProgressTimer(duration));
-                });
+                dispatch(startProgressTimer());
 
                 return;
             }
@@ -468,8 +465,10 @@ const stopCallDetection = () => {
     _cdm = null;
 };
 
-const startProgressTimer = (duration) => {
-    return (dispatch) => {
+const startProgressTimer = () => {
+    return (dispatch, getState) => {
+        const { duration } = getState().progress;
+
         mediaPlayer.getCurrentTime((seconds, isPlaying) => {
             cleanupProgressTimer();
 
