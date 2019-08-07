@@ -155,6 +155,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       public void onReceive(Context context, Intent intent) {
         // pause audio on ACTION_AUDIO_BECOMING_NOISY
         pauseMedia();
+        removeAudioFocus();
+        pauseResultReceiver.send(0, null);
     }
   };
 
