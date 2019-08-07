@@ -37,7 +37,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private boolean debugMode = false;
 	private int ONGOING_NOTIFICATION_ID = 42;
 	private Looper serviceLooper;
-	private ServicePlayer servicePlayer;
   private final IBinder iBinder = new LocalBinder();
 
   private AudioManager audioManager;
@@ -52,33 +51,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   // Used to pause/resume MediaPlayer
   private int resumePosition;
 
-	private final class ServicePlayer extends Handler {
-		public ServicePlayer(Looper looper) {
-			super(looper);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			try {
-				Thread.sleep(20000);
-			} catch (InterruptedException e) {
-				// Restore interrupt status.
-				Thread.currentThread().interrupt();
-			}
-
-			stopSelf(msg.arg1);
-		}
-	}
-
 	@Override
 	public void onCreate() {
-		playerThread = new HandlerThread("ServiceStartArguments",
-				Process.THREAD_PRIORITY_BACKGROUND);
-		playerThread.start();
-
-		serviceLooper = playerThread.getLooper();
-		servicePlayer = new ServicePlayer(serviceLooper);
-
 		Intent notificationIntent = new Intent(this, MediaPlayerService.class);
 		PendingIntent pendingIntent =
 				PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -105,12 +79,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// For each start request, send a message to start a job and deliver the
-		// start ID so we know which request we're stopping when we finish the job
-		Message msg = servicePlayer.obtainMessage();
-		msg.arg1 = startId;
-		servicePlayer.sendMessage(msg);
-
     try {
       endTrackResultReceiver = intent.getParcelableExtra(
         MediaPlayerModule.ResultReceiver_END_TRACK
