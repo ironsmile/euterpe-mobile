@@ -141,7 +141,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
-        //pause audio on ACTION_AUDIO_BECOMING_NOISY
+        // pause audio on ACTION_AUDIO_BECOMING_NOISY
         pauseMedia();
     }
   };
@@ -258,8 +258,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
       if (mediaPlayer != null) {
         stopMedia();
-        mediaPlayer.release();
-        mediaPlayer = null;
       }
       removeAudioFocus();
       resultReceiver.send(0, null);
@@ -571,6 +569,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   }
 
   private void pauseMedia() {
+    if (mediaPlayer == null) return;
     if (mediaPlayer.isPlaying()) {
       mediaPlayer.pause();
       resumePosition = mediaPlayer.getCurrentPosition();

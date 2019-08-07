@@ -292,7 +292,7 @@ export const restorePlayingState = (errorHandler) => {
             });
         });
 
-        mediaPlayer.onPaused(() => {
+        const stopPauseCb = () => {
             cleanupProgressTimer();
             stopCallDetection();
             MediaControl.updatePlayback({
@@ -303,12 +303,10 @@ export const restorePlayingState = (errorHandler) => {
                 type: TOGGLE_PLAYING,
                 play: false,
             });
-        });
+        };
 
-        mediaPlayer.onStopped(() => {
-            cleanupProgressTimer();
-            stopCallDetection();
-        });
+        mediaPlayer.onPaused(stopPauseCb);
+        mediaPlayer.onStopped(stopPauseCb);
 
         mediaPlayer.onPlayCompleted((success) => {
             cleanupProgressTimer();
