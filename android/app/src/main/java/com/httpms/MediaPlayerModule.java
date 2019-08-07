@@ -114,6 +114,9 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
     Intent playerIntent = new Intent(context, MediaPlayerService.class);
     playerIntent.putExtra(ResultReceiver_END_TRACK, new EndTrackReceiver());
+    playerIntent.putExtra(ResultReceiver_PLAY, new PlayReceiver());
+    playerIntent.putExtra(ResultReceiver_PAUSE, new PauseReceiver());
+    playerIntent.putExtra(ResultReceiver_STOP, new StopReceiver());
     playerIntent.putExtra("debugMode", debugMode);
     serviceStarting = true;
     context.startService(playerIntent);

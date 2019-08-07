@@ -45,6 +45,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
   private ResultReceiver setTrackResultReceiver;
   private ResultReceiver endTrackResultReceiver;
+  private ResultReceiver playResultReceiver;
+  private ResultReceiver pauseResultReceiver;
+  private ResultReceiver stopResultReceiver;
 
   HandlerThread playerThread;
 
@@ -83,9 +86,18 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       endTrackResultReceiver = intent.getParcelableExtra(
         MediaPlayerModule.ResultReceiver_END_TRACK
       );
+      playResultReceiver = intent.getParcelableExtra(
+        MediaPlayerModule.ResultReceiver_PLAY
+      );
+      pauseResultReceiver = intent.getParcelableExtra(
+        MediaPlayerModule.ResultReceiver_PAUSE
+      );
+      stopResultReceiver = intent.getParcelableExtra(
+        MediaPlayerModule.ResultReceiver_STOP
+      );
       debugMode = intent.getExtras().getBoolean("debugMode");
     } catch (NullPointerException e) {
-      String logMsg = "MediaPlayer start failed: null pointer exception: " + e;
+      String logMsg = "MediaPlayer start null pointer exception: " + e;
       Toast.makeText(this, logMsg, Toast.LENGTH_LONG).show();
       Log.e(TAG, logMsg);
       return START_STICKY;
@@ -493,6 +505,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         }
         else if (!mediaPlayer.isPlaying()) {
           mediaPlayer.start();
+          playResultReceiver.send(0, null);
         }
         mediaPlayer.setVolume(1.0f, 1.0f);
         break;
@@ -500,6 +513,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         // Lost focus for an unbounded amount of time: stop playback and release media player
         if (mediaPlayer.isPlaying()) {
           mediaPlayer.stop();
+          stopResultReceiver.send(0, null);
         }
         mediaPlayer.release();
         mediaPlayer = null;
@@ -510,6 +524,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         // is likely to resume
         if (mediaPlayer.isPlaying()) {
           mediaPlayer.pause();
+          pauseResultReceiver.send(0, null);
         }
         break;
       case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
