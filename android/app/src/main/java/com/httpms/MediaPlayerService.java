@@ -97,6 +97,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     registerGetDurationReceiver();
     registerPauseReceiver();
     registerPlayReceiver();
+    registerStopReceiver();
     registerSetNewTrackReceiver();
     registerSeekToReceiver();
 	}
@@ -141,6 +142,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     unregisterReceiver(becomingNoisyReceiver);
     unregisterReceiver(playReceiver);
     unregisterReceiver(pauseReceiver);
+    unregisterReceiver(stopReceiver);
     unregisterReceiver(getCurrentTime);
     unregisterReceiver(getDuration);
     unregisterReceiver(setNewTrackReceiver);
@@ -235,7 +237,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
       if (mediaPlayer != null) {
         stopMedia();
-        mediaPlayer.reset();
+        mediaPlayer.release();
+        mediaPlayer = null;
       }
 
       initMediaPlayer();
@@ -270,6 +273,34 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private void registerPauseReceiver() {
     IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_PAUSE);
     registerReceiver(pauseReceiver, filter);
+  }
+
+  private BroadcastReceiver stopReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      ResultReceiver resultReceiver;
+
+      try {
+        resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_STOP);
+      } catch (NullPointerException e) {
+        stopSelf();
+        Log.e(TAG, "stop null pointer exception: " + e);
+        return;
+      }
+
+      if (mediaPlayer != null) {
+        stopMedia();
+        mediaPlayer.release();
+        mediaPlayer = null;
+      }
+      removeAudioFocus();
+      resultReceiver.send(0, null);
+    }
+  };
+
+  private void registerStopReceiver() {
+    IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_STOP);
+    registerReceiver(stopReceiver, filter);
   }
 
   private BroadcastReceiver getCurrentTime = new BroadcastReceiver() {

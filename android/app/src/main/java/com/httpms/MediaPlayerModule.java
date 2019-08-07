@@ -163,6 +163,13 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   }
 
   @ReactMethod
+  private void stop() {
+    Intent intent = new Intent(Broadcast_STOP);
+    intent.putExtra(ResultReceiver_STOP, new StopReceiver());
+    context.sendBroadcast(intent);
+  }
+
+  @ReactMethod
   public void getCurrentTime(final Callback callback) {
     Intent intent = new Intent(Broadcast_GET_CURRENT_TIME);
     intent.putExtra(ResultReceiver_CURRENT_TIME, new CurrentTimeReceiver(callback));
@@ -473,6 +480,8 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
         if (repeat) {
           nextIndex = 0;
         } else {
+          // Nothing else to play. Release media player and focus.
+          stop();
           return;
         }
       }
@@ -511,6 +520,21 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
         return;
       }
       sendPausedEvent();
+    }
+  }
+
+  public static final String ResultReceiver_STOP = "com.httpms.resultReceiver.stop";
+  private final class StopReceiver extends ResultReceiver {
+    public StopReceiver() {
+      super(null);
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle bundle) {
+      if (resultCode != 0) {
+        return;
+      }
+      sendStoppedEvent();
     }
   }
 
