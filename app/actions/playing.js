@@ -1,4 +1,3 @@
-
 import { Platform } from 'react-native';
 import CallDetectorManager from 'react-native-call-detection';
 

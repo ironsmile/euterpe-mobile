@@ -7,7 +7,6 @@ import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.pritesh.calldetection.CallDetectionManager;
 import com.tanguyantoine.react.MusicControl;
-import com.zmxv.RNSound.RNSoundPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -34,7 +33,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFetchBlobPackage(),
             new CallDetectionManager(MainApplication.this),
             new MusicControl(),
-            new RNSoundPackage(),
             new VectorIconsPackage()
       );
     }

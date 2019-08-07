@@ -167,7 +167,6 @@ dependencies {
     compile project(':react-native-fetch-blob')
     compile project(':react-native-call-detection')
     compile project(':react-native-music-control')
-    compile project(':react-native-sound')
     compile project(':react-native-vector-icons')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"

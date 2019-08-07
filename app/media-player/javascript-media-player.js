@@ -1,8 +1,8 @@
 import { downloadSong } from '@actions/library';
-const Sound = require('react-native-sound');
 
 export class JavaScriptMediaPlayer {
     constructor() {
+        this.sound = null;
         this.player = null;
 
         this.playlist = [];
@@ -25,6 +25,7 @@ export class JavaScriptMediaPlayer {
     }
 
     init() {
+        this.sound = require('react-native-sound');
         Sound.setCategory('Playback');
     }
 
@@ -188,7 +189,7 @@ export class JavaScriptMediaPlayer {
         this.dispatch(downloadSong(track, this.errorHandler))
         .then((songPath) => {
             this._cleanupPlayer();
-            this.player = new Sound(songPath, undefined, (error) => {
+            this.player = new this.sound(songPath, undefined, (error) => {
                 if (error) {
                     this.stop();
                     this.errorHandler(error);
