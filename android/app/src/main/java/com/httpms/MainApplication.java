@@ -5,7 +5,6 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import com.pritesh.calldetection.CallDetectionManager;
 import com.tanguyantoine.react.MusicControl;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
@@ -31,7 +30,6 @@ public class MainApplication extends Application implements ReactApplication {
             new MediaPlayerPackage(),
             new RCTCameraPackage(),
             new RNFetchBlobPackage(),
-            new CallDetectionManager(MainApplication.this),
             new MusicControl(),
             new VectorIconsPackage()
       );
