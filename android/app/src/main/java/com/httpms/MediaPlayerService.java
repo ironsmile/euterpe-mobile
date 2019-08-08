@@ -28,6 +28,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
   private static final String TAG = "MediaPlayerService";
   private boolean debugMode = false;
+  private boolean playbackError = false;
 	private int ONGOING_NOTIFICATION_ID = 42;
   private final IBinder iBinder = new LocalBinder();
 
@@ -422,8 +423,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     // Invoked when playback of a media source has completed.
     stopMedia();
 
-    // Notify the bridge module that the playback has finished.
-    endTrackResultReceiver.send(0, null);
+    if (!playbackError) {
+      // Notify the bridge module that the playback has finished. Only do this
+      // when no errors have happened. The stop result receiver will be
+      // executed on error. Having "track ended" and "stop" at the same time
+      // would be confusing.
+      endTrackResultReceiver.send(0, null);
+    }
 
     // Stop the service
     stopSelf();
@@ -433,6 +439,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   @Override
   public boolean onError(MediaPlayer mp, int what, int extra) {
     // Invoked when there has been an error during an asynchronous operation.
+    playbackError = true;
 
     String msg;
     switch (what) {
@@ -451,6 +458,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     Log.e(TAG, msg);
+
+    if (mediaPlayer != null) {
+      mediaPlayer.reset();
+      removeAudioFocus();
+      stopResultReceiver.send(0, null);
+    }
 
     return false;
   }
@@ -558,6 +571,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
   private void playMedia() {
     if (!mediaPlayer.isPlaying()) {
+      playbackError = false;
       mediaPlayer.start();
     }
   }

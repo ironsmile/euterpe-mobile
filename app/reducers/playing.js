@@ -16,12 +16,14 @@ export const playingReducer = (state = initialState, action) => {
                 return {
                     ...state,
                     paused: !action.play,
+                    trackLoading: false,
                 };
             }
 
             return {
                 ...state,
                 paused: !state.paused,
+                trackLoading: false,
             };
 
         case SET_SHUFFLE:
