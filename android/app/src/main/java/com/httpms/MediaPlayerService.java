@@ -10,12 +10,7 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.HandlerThread;
-import android.os.Process;
 import android.os.ResultReceiver;
-import android.os.Looper;
 import android.os.IBinder;
 import android.os.Binder;
 import android.widget.Toast;
@@ -26,8 +21,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.facebook.react.bridge.Callback;
-
 public class MediaPlayerService extends Service implements MediaPlayer.OnCompletionListener,
       MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
       MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener,
@@ -36,7 +29,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private static final String TAG = "MediaPlayerService";
   private boolean debugMode = false;
 	private int ONGOING_NOTIFICATION_ID = 42;
-	private Looper serviceLooper;
   private final IBinder iBinder = new LocalBinder();
 
   private AudioManager audioManager;
@@ -48,8 +40,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private ResultReceiver playResultReceiver;
   private ResultReceiver pauseResultReceiver;
   private ResultReceiver stopResultReceiver;
-
-  HandlerThread playerThread;
 
   // Used to pause/resume MediaPlayer
   private int resumePosition;
@@ -128,12 +118,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     unregisterReceiver(setNewTrackReceiver);
     unregisterReceiver(seekToReceiver);
     unregisterReceiver(isPlayingReceiver);
-
-    if (playerThread != null) {
-      playerThread.interrupt();
-      playerThread.quit();
-      playerThread = null;
-    }
 	}
 
   public class LocalBinder extends Binder {
