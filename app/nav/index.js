@@ -20,7 +20,7 @@ const navOptions = {
     swipeEnabled: false,
     tabBarOptions: {
         activeTintColor: 'white',
-        inactiveTintColor: '#bdbec2',
+        inactiveTintColor: '#6f7075',
         upperCaseLabel: false,
         showIcon: true,
         style: {
