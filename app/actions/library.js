@@ -1,4 +1,4 @@
-import RNFetchBlob from 'react-native-fetch-blob';
+import RNFetchBlob from 'rn-fetch-blob';
 import { Platform } from 'react-native';
 import {
     CLEANUP_LIBRARY,

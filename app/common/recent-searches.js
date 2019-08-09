@@ -83,7 +83,7 @@ class RecentSearchesRenderer extends React.PureComponent {
                     firstLine="Listen to your own songs, artists,"
                     secondLine="albums. Wherever you go they would follow."
                     icon={(<PlatformIcon
-                        ios="ios-search-outline"
+                        ios="ios-search"
                         md="md-search"
                         color="#aeafb3"
                         size={128}

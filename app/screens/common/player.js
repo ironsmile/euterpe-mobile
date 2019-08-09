@@ -170,8 +170,7 @@ class PlaylerRenderer extends React.Component {
                             }}
                         >
                             <PlatformIcon
-                                ios="ios-share-outline"
-                                md="md-share"
+                                platform="share"
                                 color="white"
                                 size={24}
                             />

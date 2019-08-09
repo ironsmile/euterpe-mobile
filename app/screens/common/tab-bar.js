@@ -5,12 +5,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const tabFuncs = {
     CreateTabIcon: (iconName) => {
         return ({tintColor, focused}) => {
-            let name = iconName;
             if (!focused) {
-                name = iconName + '-outline';
+                // select different color
             }
             return (
-                <Icon name={name} color={tintColor} size={24} />
+                <Icon name={iconName} color={tintColor} size={24} />
             );
         }
     },

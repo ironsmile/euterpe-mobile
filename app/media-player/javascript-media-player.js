@@ -26,7 +26,7 @@ export class JavaScriptMediaPlayer {
 
     init() {
         this.sound = require('react-native-sound');
-        Sound.setCategory('Playback');
+        Sound.setCategory('Playback', false);
     }
 
     play() {
