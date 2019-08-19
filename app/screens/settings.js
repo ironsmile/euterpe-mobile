@@ -7,7 +7,7 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 import { gs } from '@styles/global';
 import { IconButton } from '@components/icon-button';
@@ -15,9 +15,8 @@ import { finishLogOut } from '@actions/settings';
 import { cleanupRecentAlbums } from '@actions/recent-albums';
 import { cleanupRecentArtists } from '@actions/recent-artists';
 import { stopPlaying } from '@actions/playing';
-import { appendError } from '@actions/errors';
 
-const resetAction = NavigationActions.reset({
+const resetAction = StackActions.reset({
     index: 0,
     actions: [
         NavigationActions.navigate({ routeName: 'LoginMain' }),

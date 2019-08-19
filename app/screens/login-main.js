@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, View, ScrollView } from 'react-native';
 import { Screen } from '@screens/screen';
-import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { IconButton } from '@components/icon-button';
 import { login } from '@styles/global';
 

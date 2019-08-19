@@ -5,9 +5,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const tabFuncs = {
     CreateTabIcon: (iconName) => {
         return ({tintColor, focused}) => {
-            if (!focused) {
-                // select different color
-            }
             return (
                 <Icon name={iconName} color={tintColor} size={24} />
             );

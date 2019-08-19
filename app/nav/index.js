@@ -1,4 +1,5 @@
-import { TabNavigator, StackNavigator } from 'react-navigation';
+import React from 'react';
+import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 
 import { SearchNavigator } from '@nav/tab-search';
 import { BrowseNavigator } from '@nav/tab-browse';
@@ -11,12 +12,12 @@ import { LoginCredentialsScreen } from '@screens/login-credentials';
 import { LoginSuccessScreen } from '@screens/login-success';
 import { LoginBarcodeScreen } from '@screens/login-barcode';
 import { TABBAR_HEIGHT } from '@screens/common/footer';
-import TabBarBottom from '@screens/common/TabBarBottom';
+// import TabBarBottom from '@screens/common/TabBarBottom';
 
 const navOptions = {
     tabBarPosition: 'bottom',
     animationEnabled: false,
-    tabBarComponent: TabBarBottom,
+    // tabBarComponent: TabBarBottom,
     swipeEnabled: false,
     tabBarOptions: {
         activeTintColor: 'white',
@@ -34,21 +35,21 @@ const navOptions = {
     },
 };
 
-export const LoggedUserNavigator = TabNavigator({
-    Home: { screen: HomeNavigator, },
-    Browse: { screen: BrowseNavigator },
-    Search: { screen: SearchNavigator },
-    Library: { screen: LibraryScreen },
-    About: { screen: AboutScreen },
+export const LoggedUserNavigator = createBottomTabNavigator({
+    Home: HomeNavigator,
+    Browse: BrowseNavigator,
+    Search: SearchNavigator,
+    Library: LibraryScreen,
+    About: AboutScreen,
 }, navOptions);
 
-export const HttpmsNavigator = StackNavigator({
-    LoginMain: { screen: LoginMainScreen },
-    LoginAddress: { screen: LoginAddressScreen },
-    LoginCredentials: { screen: LoginCredentialsScreen },
-    LoginBarcode: { screen: LoginBarcodeScreen },
-    LoginSuccess: { screen: LoginSuccessScreen },
-    LoggedUser: { screen: LoggedUserNavigator },
+export const HttpmsNavigator = createStackNavigator({
+    LoginMain: LoginMainScreen,
+    LoginAddress: LoginAddressScreen,
+    LoginCredentials: LoginCredentialsScreen,
+    LoginBarcode: LoginBarcodeScreen,
+    LoginSuccess: LoginSuccessScreen,
+    LoggedUser: LoggedUserNavigator,
 }, {
     initialRouteName: 'LoginMain',
     headerMode: 'none',
@@ -58,7 +59,15 @@ const mainParams = HttpmsNavigator.router.getActionForPathAndParams('LoginMain')
 const initialRootState = HttpmsNavigator.router.getStateForAction(mainParams);
 
 export const navRootReducer = (state = initialRootState, action) => {
-    const nextState = HttpmsNavigator.router.getStateForAction(action, state);
-
-    return nextState || state;
+    switch(action.type) {
+        case ROUTER_NAVIGATE:
+            const nextState = HttpmsNavigator.router.getStateForAction(
+                action.navState, state
+            );
+            return nextState || state;
+        default:
+            return state;
+    }
 };
+
+export const ROUTER_NAVIGATE = 'Navigation/RouterNavigate';

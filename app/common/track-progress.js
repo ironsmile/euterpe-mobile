@@ -39,10 +39,7 @@ class TimedProgressRenderer extends React.Component {
             width: null,
             color: 'white',
         };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.textWidth = getTimesWidth(nextProps.duration);
+        this.textWidth = getTimesWidth(this.props.duration);
     }
 
     render() {

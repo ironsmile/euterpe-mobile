@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppRegistry, AsyncStorage, Platform } from 'react-native';
-import { addNavigationHelpers } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
@@ -20,7 +20,7 @@ import { recentAlbumsReducer } from '@reducers/recent-albums';
 import { recentlyPlayedReducer } from '@reducers/recently-played';
 import { restorePlayingState } from '@actions/playing';
 import { setupLibrary } from '@actions/library';
-import { HttpmsNavigator, navRootReducer } from '@nav';
+import { HttpmsNavigator, navRootReducer, ROUTER_NAVIGATE } from '@nav';
 import { httpms } from '@components/httpms-service';
 import { errorsReducer } from '@reducers/errors';
 import { appendError } from '@actions/errors';
@@ -57,9 +57,10 @@ const rehydratedReducer = (state = {}, action) => {
     }
 };
 
+let Navigator = createAppContainer(HttpmsNavigator);
+
 const mapStateToPropsRoot = (state) => ({
     nav: state.navRoot,
-    settings: state.settings,
     errors: state.errors.errors,
 });
 
@@ -70,13 +71,28 @@ class App extends React.Component {
         }
 
         return (
-            <HttpmsNavigator
-                navigation={addNavigationHelpers({
-                    dispatch: this.props.dispatch,
-                    state: this.props.nav,
-                })}
+            <Navigator
+                props={this.props}
+                persistNavigationState={this._persisteNavigationState}
+                loadNavigationState={this._loadNavigationState}
             />
         );
+    }
+
+    _persisteNavigationState(navState) {
+        console.log("persisted nav state", navState);
+        try {
+            this.props.dispatch({
+                type: ROUTER_NAVIGATE,
+                navState
+            });
+        } catch (e) {
+            console.error("persist exception", e);
+        }
+    }
+
+    _loadNavigationState() {
+        return this.props.nav;
     }
 }
 
@@ -111,7 +127,7 @@ class Root extends React.Component {
         MediaControl.enableControl('seekBackward', true);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         persistStore(
             store,
             {
@@ -140,7 +156,7 @@ class Root extends React.Component {
 
         return (
             <Provider store={this.state.store}>
-                <AppWithNavigationState />
+                <Navigator />
             </Provider>
         );
     }

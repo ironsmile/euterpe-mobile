@@ -1,14 +1,12 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 import { Screen } from '@screens/screen';
-import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 import { Helpful } from '@components/helpful';
-import { finishLoginSuccess } from '@actions/settings';
 
-const resetAction = NavigationActions.reset({
+const resetAction = StackActions.reset({
     index: 0,
     actions: [
         NavigationActions.navigate({ routeName: 'LoggedUser' }),
