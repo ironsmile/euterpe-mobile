@@ -28,6 +28,11 @@ footer menu color: #222326
 * [FlatList Perf improvements](https://github.com/facebook/react-native/issues/15930#issuecomment-373816387)
 
 
+== required software ==
+
+it seems currently the project only works with Node 10 and no newer for some
+reason.
+
 == commands ==
 
 Списък с android емулатори:
@@ -40,7 +45,9 @@ avdmanager list avd
 
 или алтернативно този по - бърз емулатор:
 
-~/Downloads/emulator/emulator -avd <name>
+~/Downloads/emulator/emulator -avd <name> # OS X
+
+~/Android/Sdk/emulator/emulator -avd <name> # Linux
 
 пускане на bundler (комилитор). От root project dir:
 

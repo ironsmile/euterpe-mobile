@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
+import org.gradle.internal.os.OperatingSystem
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -91,8 +92,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 /**
 * Build release with keys saved in the osx keychain
 */
-
-def getPassword(String currentUser, String keyChain) {
+def getOSXPassword(String currentUser, String keyChain) {
    def stdout = new ByteArrayOutputStream()
    def stderr = new ByteArrayOutputStream()
    exec {
@@ -105,7 +105,28 @@ def getPassword(String currentUser, String keyChain) {
       stdout.toString().trim()
 }
 
-def pass = getPassword("iron4o","android_keystore")
+/**
+* Build release with keys saved in the Gnome keychain
+*/
+def getGnomePassword(String type, String where) {
+   def stdout = new ByteArrayOutputStream()
+   def stderr = new ByteArrayOutputStream()
+   exec {
+       commandLine 'secret-tool', 'lookup', 'type', type, 'where', where
+       standardOutput = stdout
+       errorOutput = stderr
+       ignoreExitValue true
+   }
+   //noinspection GroovyAssignabilityCheck
+      stdout.toString().trim()
+}
+
+def pass = ""
+if (OperatingSystem.current().isMacOsX()) {
+    pass = getOSXPassword("iron4o","android_keystore")
+} else {
+    pass = getGnomePassword("password", "android_keystore")
+}
 
 
 /**
@@ -119,9 +140,12 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(INVBG_RELEASE_STORE_FILE)
+            // HTTPMS_MOBILE_RELEASE_STORE_FILE and HTTPMS_MOBILE_RELEASE_KEY_ALIAS
+            // are stored in your $HOME/.gradle/gradle.properties file and point
+            // to the keystore which is used for signing the android binaries.
+            storeFile file(HTTPMS_MOBILE_RELEASE_STORE_FILE)
             storePassword pass
-            keyAlias INVBG_RELEASE_KEY_ALIAS
+            keyAlias HTTPMS_MOBILE_RELEASE_KEY_ALIAS
             keyPassword pass
         }
     }
