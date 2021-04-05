@@ -1,5 +1,6 @@
 import React from 'react';
-import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import { SearchNavigator } from '@nav/tab-search';
 import { BrowseNavigator } from '@nav/tab-browse';

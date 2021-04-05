@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { AlbumScreen } from '@screens/album';
 import { ArtistScreen } from '@screens/artist';
 import { SearchScreen } from '@screens/search';

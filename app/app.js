@@ -8,6 +8,9 @@ import { REHYDRATE } from 'redux-persist/constants';
 import { connect, Provider } from 'react-redux';
 import MediaControl from './common/media-control-shim';
 import thunkMiddleware from 'redux-thunk';
+import { enableScreens } from 'react-native-screens';
+
+enableScreens();
 
 import { Loader } from '@screens/common/loader';
 import { playingReducer } from '@reducers/playing';
