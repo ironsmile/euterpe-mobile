@@ -102,7 +102,7 @@ export class BrowseScreen extends React.PureComponent {
 
                     <SmallClickable
                         onSelect={() => {
-                            this.props.screenProps.rootNavigation.navigate('Library');
+                            this.props.navigation.navigate('Library');
                         }}
                         mainText="Offline Library"
                         leftRectangle={this.getLibraryIcon()}
@@ -119,7 +119,7 @@ export class BrowseScreen extends React.PureComponent {
                     <View style={[styles.encouragmentContainer, styles.noMargins]}>
                         <IconButton
                             onPress={() => {
-                                this.props.screenProps.rootNavigation.navigate('Search');
+                                this.props.navigation.navigate('Search');
                             }}
                             text="SEARCH"
                             iconName="search"

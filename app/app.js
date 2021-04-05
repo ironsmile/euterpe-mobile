@@ -1,7 +1,8 @@
+import 'react-native-gesture-handler';
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { AppRegistry, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createAppContainer } from 'react-navigation';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
@@ -24,7 +25,7 @@ import { recentAlbumsReducer } from '@reducers/recent-albums';
 import { recentlyPlayedReducer } from '@reducers/recently-played';
 import { restorePlayingState } from '@actions/playing';
 import { setupLibrary } from '@actions/library';
-import { HttpmsNavigator, navRootReducer, ROUTER_NAVIGATE } from '@nav';
+import { HttpmsNavigator } from '@nav';
 import { httpms } from '@components/httpms-service';
 import { errorsReducer } from '@reducers/errors';
 import { appendError } from '@actions/errors';
@@ -32,7 +33,6 @@ import { ErrorsOverlay } from '@screens/common/errors';
 
 
 const appReducer = combineReducers({
-    navRoot: navRootReducer,
     playing: playingReducer,
     player: playerReducer,
     search: searchReducer,
@@ -60,47 +60,6 @@ const rehydratedReducer = (state = {}, action) => {
             return appReducer(state, action);
     }
 };
-
-let Navigator = createAppContainer(HttpmsNavigator);
-
-const mapStateToPropsRoot = (state) => ({
-    nav: state.navRoot,
-    errors: state.errors.errors,
-});
-
-class App extends React.Component {
-    render() {
-        if (this.props.errors.length > 0) {
-            return <ErrorsOverlay />;
-        }
-
-        return (
-            <Navigator
-                props={this.props}
-                persistNavigationState={this._persisteNavigationState}
-                loadNavigationState={this._loadNavigationState}
-            />
-        );
-    }
-
-    _persisteNavigationState(navState) {
-        console.log("persisted nav state", navState);
-        try {
-            this.props.dispatch({
-                type: ROUTER_NAVIGATE,
-                navState
-            });
-        } catch (e) {
-            console.error("persist exception", e);
-        }
-    }
-
-    _loadNavigationState() {
-        return this.props.nav;
-    }
-}
-
-const AppWithNavigationState = connect(mapStateToPropsRoot)(App);
 
 const store = createStore(
     rehydratedReducer,
@@ -160,7 +119,9 @@ class Root extends React.Component {
 
         return (
             <Provider store={this.state.store}>
-                <Navigator />
+                <NavigationContainer>
+                    <HttpmsNavigator />
+                </NavigationContainer>
             </Provider>
         );
     }

@@ -4,18 +4,12 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from './screen';
-import { CreateTabIcon, CreateTabLabel } from './common/tab-bar';
 import { Settings } from './settings';
 
 export class LibraryScreen extends React.Component {
 
-    static navigationOptions = ({ navigation }) => ({
-        tabBarLabel: CreateTabLabel('Library'),
-        tabBarIcon: CreateTabIcon('ios-book'),
-    });
-
     shouldComponentUpdate(nextProps, nextState) {
-        return this.props.navigation.state.key == "Library";
+        return this.props.route.key == "Library";
     }
 
     render() {

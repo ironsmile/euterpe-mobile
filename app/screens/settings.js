@@ -7,21 +7,12 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
-import { StackActions, NavigationActions } from 'react-navigation';
-
 import { gs } from '@styles/global';
 import { IconButton } from '@components/icon-button';
 import { finishLogOut } from '@actions/settings';
 import { cleanupRecentAlbums } from '@actions/recent-albums';
 import { cleanupRecentArtists } from '@actions/recent-artists';
 import { stopPlaying } from '@actions/playing';
-
-const resetAction = StackActions.reset({
-    index: 0,
-    actions: [
-        NavigationActions.navigate({ routeName: 'LoginMain' }),
-    ],
-});
 
 export class SettingsRenderer extends React.Component {
     render() {
@@ -55,7 +46,9 @@ export class SettingsRenderer extends React.Component {
                             this.props.dispatch(cleanupRecentArtists());
                             this.props.dispatch(finishLogOut());
                             this.props.dispatch(stopPlaying(true));
-                            this.props.navigation.dispatch(resetAction);
+                            this.props.navigation.reset({
+                                routes: [{ name: 'LoginMain' }],
+                            });
                         }}
                     />
                 </View>

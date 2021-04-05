@@ -1,17 +1,11 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from '@screens/screen';
-import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 
 export class AboutScreen extends React.Component {
 
-    static navigationOptions = ({ navigation }) => ({
-        tabBarLabel: CreateTabLabel('About'),
-        tabBarIcon: CreateTabIcon('ios-information-circle'),
-    });
-
     shouldComponentUpdate(nextProps, nextState) {
-        return this.props.navigation.state.key == "About";
+        return this.props.route.key == "About";
     }
 
     render() {
