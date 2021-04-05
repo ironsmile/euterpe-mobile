@@ -1,5 +1,6 @@
 import React from 'react';
-import { AppRegistry, AsyncStorage, Platform } from 'react-native';
+import { AppRegistry, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAppContainer } from 'react-navigation';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
