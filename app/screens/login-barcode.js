@@ -80,7 +80,8 @@ export class LoginBarcodeScreenRenderer extends React.Component {
                 <View style={styles.verticallyAligned}>
                     <PlatformIcon
                         color="green"
-                        platform="qr-scanner"
+                        md="qr-code-outline"
+                        ios="qr-code-outline"
                         size={18}
                     />
                     <Text style={styles.barcodeFound}>QR Code Found. Checking...</Text>

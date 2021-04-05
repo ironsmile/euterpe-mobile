@@ -22,7 +22,7 @@ export class LoginMainScreen extends React.Component {
                     <View style={login.buttonWrapper}>
                         <IconButton
                             text="Scan a Barcode"
-                            iconName="qr-scanner"
+                            iconName="qr-code-outline"
                             onPress={() => {
                                 this.props.navigation.navigate('LoginBarcode');
                             }}
