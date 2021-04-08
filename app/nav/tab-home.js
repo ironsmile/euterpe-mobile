@@ -12,10 +12,6 @@ export function HomeNavigator() {
         <Stack.Navigator
             initialRouteName="HomeMain"
             headerMode="none"
-            options={{
-                tabBarLabel: CreateTabLabel('Home'),
-                tabBarIcon: CreateTabIcon('ios-home'),
-            }}
         >
             <Stack.Screen
                 name="SearchAlbum"

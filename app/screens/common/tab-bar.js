@@ -4,15 +4,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const tabFuncs = {
     CreateTabIcon: (iconName) => {
-        return ({tintColor, focused}) => {
+        return ({focused, color, size}) => {
             return (
-                <Icon name={iconName} color={tintColor} size={24} />
+                <Icon name={iconName} color={color} size={size} />
             );
         }
     },
 
     CreateTabLabel: (label) => {
-        return ({tintColor, focused}) => {
+        return ({focused, color}) => {
             let fontWeight = 'normal';
             if (focused) {
                 fontWeight = 'bold';
@@ -22,7 +22,7 @@ const tabFuncs = {
                     textAlign: 'center',
                     marginBottom: 3.5,
                     fontSize: 10,
-                    color: tintColor,
+                    color,
                     fontWeight
                 }}>{label}</Text>
             );

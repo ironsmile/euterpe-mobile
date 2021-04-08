@@ -42,14 +42,26 @@ export function LoggedUserNavigator() {
             <Tabs.Screen
                 name="Home"
                 component={HomeNavigator}
+                options={{
+                    tabBarLabel: CreateTabLabel('Home'),
+                    tabBarIcon: CreateTabIcon('ios-home'),
+                }}
             />
             <Tabs.Screen
                 name="Browse"
                 component={BrowseNavigator}
+                options={{
+                    tabBarLabel: CreateTabLabel('Browse'),
+                    tabBarIcon: CreateTabIcon('ios-albums'),
+                }}
             />
             <Tabs.Screen
                 name="Search"
                 component={SearchNavigator}
+                options={{
+                    tabBarLabel: CreateTabLabel('Search'),
+                    tabBarIcon: CreateTabIcon('ios-search'),
+                }}
             />
             <Tabs.Screen
                 name="Library"

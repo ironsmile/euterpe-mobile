@@ -15,10 +15,6 @@ export function BrowseNavigator() {
         <Stack.Navigator
             initialRouteName="BrowseMain"
             headerMode="none"
-            options={{
-                tabBarLabel: CreateTabLabel('Browse'),
-                tabBarIcon: CreateTabIcon('ios-albums'),
-            }}
         >
             <Stack.Screen
                 name="SearchAlbum"

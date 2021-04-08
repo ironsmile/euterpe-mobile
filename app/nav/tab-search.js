@@ -15,10 +15,6 @@ export function SearchNavigator() {
         <Stack.Navigator
             initialRouteName="Results"
             headerMode="none"
-            options={{
-                tabBarLabel: CreateTabLabel('Search'),
-                tabBarIcon: CreateTabIcon('ios-search'),
-            }}
         >
             <Stack.Screen
                 name="SearchAlbum"
