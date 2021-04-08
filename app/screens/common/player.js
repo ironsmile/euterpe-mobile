@@ -165,7 +165,7 @@ class PlaylerRenderer extends React.Component {
                                     title: 'Share this song',
                                 }).catch((error) => {
                                     // ignored
-                                    console.log(`Error happened while sharing: ${error}`);
+                                    console.error(`Error happened while sharing: ${error}`);
                                 });
                             }}
                         >
