@@ -4,14 +4,13 @@ import { connect } from 'react-redux';
 
 import { Screen } from '@screens/screen';
 import { Helpful } from '@components/helpful';
+import { finishLoginSuccess } from '@actions/settings';
 
 export class LoginSuccessScreenRenderer extends React.Component {
 
     componentDidMount() {
         setTimeout(() => {
-            this.props.navigation.reset({
-                routes: [{ name: 'LoggedUser' }],
-            });
+            this.props.dispatch(finishLoginSuccess());
         }, 1000);
     }
 

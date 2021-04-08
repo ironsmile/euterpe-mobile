@@ -46,9 +46,6 @@ export class SettingsRenderer extends React.Component {
                             this.props.dispatch(cleanupRecentArtists());
                             this.props.dispatch(finishLogOut());
                             this.props.dispatch(stopPlaying(true));
-                            this.props.navigation.reset({
-                                routes: [{ name: 'LoginMain' }],
-                            });
                         }}
                     />
                 </View>

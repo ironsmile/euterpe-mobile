@@ -71,6 +71,10 @@ const store = createStore(
     )
 );
 
+const Navigator = connect(state => ({
+    loggedIn: state.settings.loggedIn,
+}))(HttpmsNavigator);
+
 class Root extends React.Component {
     constructor(props) {
         super(props);
@@ -120,7 +124,7 @@ class Root extends React.Component {
         return (
             <Provider store={this.state.store}>
                 <NavigationContainer>
-                    <HttpmsNavigator />
+                    <Navigator />
                 </NavigationContainer>
             </Provider>
         );

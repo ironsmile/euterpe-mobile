@@ -71,7 +71,7 @@ export function LoggedUserNavigator() {
     );
 }
 
-export function HttpmsNavigator() {
+export function LoginFlowNavigator() {
     return (
         <Stack.Navigator
             initialRouteName="LoginMain"
@@ -97,10 +97,26 @@ export function HttpmsNavigator() {
                 name="LoginSuccess"
                 component={LoginSuccessScreen}
             />
-            <Stack.Screen
-                name="LoggedUser"
-                component={LoggedUserNavigator}
-            />
+        </Stack.Navigator>
+    )
+}
+
+export function HttpmsNavigator({ loggedIn }) {
+    return (
+        <Stack.Navigator
+            headerMode="none"
+        >
+            {loggedIn ? (
+                <Stack.Screen
+                    name="LoggedUser"
+                    component={LoggedUserNavigator}
+                />
+            ) : (
+                <Stack.Screen
+                    name="LoginFlow"
+                    component={LoginFlowNavigator}
+                />
+            )}
         </Stack.Navigator>
     );
 }
