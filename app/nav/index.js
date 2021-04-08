@@ -22,6 +22,7 @@ export function LoggedUserNavigator() {
     return (
         <Tabs.Navigator
             tabBarPosition="bottom"
+            // tabBarComponent={TabBarBottom}
             animationEnabled={false}
             swipeEnabled={false}
             tabBarOptions={{

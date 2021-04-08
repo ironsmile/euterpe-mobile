@@ -5,7 +5,7 @@ import {
     StatusBar
 } from 'react-native';
 
-import { TOGETHER, TABBAR_HEIGHT } from './common/footer';
+import Footer, { TOGETHER, TABBAR_HEIGHT } from './common/footer';
 import Header from './common/header';
 import { gs } from '../styles/global';
 import { connect } from 'react-redux';
@@ -19,13 +19,7 @@ class ScreenRenderer extends Component {
         if (!header && !this.props.noHeader) {
             header = <Header title={this.props.title} />;
         }
-
-        const footerHeight = nowPlaying.now ? TOGETHER : TABBAR_HEIGHT;
-        let screenHeight = { height: D.height - footerHeight };
-
-        if (this.props.noTabBar) {
-            screenHeight = { height: D.height };
-        }
+        const screenHeight = { height: D.height };
 
         return (
             <View style={[gs.bg, styles.backgroundView]}>
@@ -44,6 +38,19 @@ class ScreenRenderer extends Component {
                         {this.props.children}
                     </View>
                     {header}
+                    <Footer
+                        hide={() => {
+                          // pass
+                        }}
+                        show={() => {
+                          // pass
+                        }}
+                        hideTabBarNavigation={
+                          (val) => {
+                            // pass
+                          }
+                        }
+                    />
                 </View>
             </View>
         );
