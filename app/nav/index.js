@@ -26,6 +26,7 @@ export function LoggedUserNavigator() {
             animationEnabled={false}
             swipeEnabled={false}
             tabBarOptions={{
+                keyboardHidesTabBar: true,
                 activeTintColor: 'white',
                 inactiveTintColor: '#6f7075',
                 upperCaseLabel: false,
