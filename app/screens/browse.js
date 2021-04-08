@@ -13,7 +13,7 @@ export class BrowseScreen extends React.PureComponent {
         return (
             <PlatformIcon
                 style={styles.sectionIcon}
-                platform="microphone"
+                platform="mic-outline"
                 color="#aeafb3"
                 size={30}
             />
