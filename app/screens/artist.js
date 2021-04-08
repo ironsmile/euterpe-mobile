@@ -26,7 +26,7 @@ export class ArtistScreen extends React.Component {
     }
 
     componentWillMount() {
-        const { params } = this.props.route.params;
+        const { params } = this.props.route;
         const { artist } = this.state;
 
         if (!artist || artist !== params.artist) {

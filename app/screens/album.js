@@ -30,7 +30,7 @@ class AlbumScreenRenderer extends React.Component {
     }
 
     componentWillMount() {
-        const { params } = this.props.route.params;
+        const { params } = this.props.route;
         const { album } = this.state;
 
         if (!album || album.album_id !== params.album.album_id) {
