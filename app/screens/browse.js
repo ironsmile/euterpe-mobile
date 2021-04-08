@@ -25,7 +25,7 @@ export class BrowseScreen extends React.PureComponent {
             <PlatformIcon
                 style={styles.sectionIcon}
                 platform="disc"
-                color="#aeafb3"
+                color={styles.subduedText.color}
                 size={30}
             />
         );
@@ -37,7 +37,7 @@ export class BrowseScreen extends React.PureComponent {
                 style={styles.sectionIcon}
                 ios="ios-book"
                 md="ios-book"
-                color="#aeafb3"
+                color={styles.subduedText.color}
                 size={30}
             />
         );
@@ -48,7 +48,7 @@ export class BrowseScreen extends React.PureComponent {
             <PlatformIcon
                 style={styles.sectionIcon}
                 platform="musical-notes"
-                color="#aeafb3"
+                color={styles.subduedText.color}
                 size={30}
             />
         );
