@@ -1,94 +1,90 @@
-
 const initialState = {
-    paused: true,
-    trackLoading: false,
-    playlist: [],
-    curretIndex: null,
-    shuffle: false,
-    repeat: false,
-    repeatSong: false,
+  paused: true,
+  trackLoading: false,
+  playlist: [],
+  curretIndex: null,
+  shuffle: false,
+  repeat: false,
+  repeatSong: false,
 };
 
 export const playingReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case TOGGLE_PLAYING:
-            if (action.play !== undefined) {
-                return {
-                    ...state,
-                    paused: !action.play,
-                    trackLoading: false,
-                };
-            }
+  switch (action.type) {
+    case TOGGLE_PLAYING:
+      if (action.play !== undefined) {
+        return {
+          ...state,
+          paused: !action.play,
+          trackLoading: false,
+        };
+      }
 
-            return {
-                ...state,
-                paused: !state.paused,
-                trackLoading: false,
-            };
+      return {
+        ...state,
+        paused: !state.paused,
+        trackLoading: false,
+      };
 
-        case SET_SHUFFLE:
-            return {
-                ...state,
-                shuffle: action.shuffle,
-            };
+    case SET_SHUFFLE:
+      return {
+        ...state,
+        shuffle: action.shuffle,
+      };
 
-        case SET_REPEAT:
-            return {
-                ...state,
-                repeat: action.repeat,
-                repeatSong: action.repeatSong,
-            };
+    case SET_REPEAT:
+      return {
+        ...state,
+        repeat: action.repeat,
+        repeatSong: action.repeatSong,
+      };
 
-        case SET_PLAYLIST:
-            return {
-                ...state,
-                playlist: action.playlist,
-                currentIndex: null,
-                paused: true,
-                now: null,
-            };
+    case SET_PLAYLIST:
+      return {
+        ...state,
+        playlist: action.playlist,
+        currentIndex: null,
+        paused: true,
+        now: null,
+      };
 
-        case APPEND_IN_PLAYLIST:
-            return {
-                ...state,
-                playlist: [
-                    ...state.playlist,
-                    ...action.songs,
-                ],
-            };
+    case APPEND_IN_PLAYLIST:
+      return {
+        ...state,
+        playlist: [...state.playlist, ...action.songs],
+      };
 
-        case SELECT_TRACK:
-            return {
-                ...state,
-                paused: true,
-                now: action.track,
-                trackLoading: true,
-                currentIndex: action.index,
-            };
+    case SELECT_TRACK:
+      return {
+        ...state,
+        paused: true,
+        now: action.track,
+        trackLoading: true,
+        currentIndex: action.index,
+      };
 
-        case SET_SELECTED_TRACK:
-            return {
-                ...state,
-                now: action.track,
-                currentIndex: action.index,
-            };
+    case SET_SELECTED_TRACK:
+      return {
+        ...state,
+        now: action.track,
+        currentIndex: action.index,
+      };
 
-        case SET_IS_LOADING_STATUS:
-            return {
-                ...state,
-                trackLoading: action.status,
-            };
+    case SET_IS_LOADING_STATUS:
+      return {
+        ...state,
+        trackLoading: action.status,
+      };
 
-        case TRACK_ENDED:
-        case STOP:
-            return {
-                ...state,
-                paused: true,
-            };
+    case TRACK_ENDED:
+    case STOP:
+      return {
+        ...state,
+        paused: true,
+      };
 
-        default:
-            return state;
-    }
+    default:
+      return state;
+  }
 };
 
 export const TOGGLE_PLAYING = 'Playing/TogglePlay';

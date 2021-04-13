@@ -1,42 +1,36 @@
-
 const initialState = {
-    lru: [],
-    maxAllowedSize: 30,
+  lru: [],
+  maxAllowedSize: 30,
 };
 
 export const libraryReducer = (state = initialState, action) => {
-    switch (action.type) {
+  switch (action.type) {
+    case CLEANUP_LIBRARY:
+      return initialState;
 
-        case CLEANUP_LIBRARY:
-            return initialState;
+    case RESET_LIBRARY:
+      return {
+        ...state,
+        lru: action.lru,
+      };
 
-        case RESET_LIBRARY:
-            return {
-                ...state,
-                lru: action.lru,
-            };
+    case SONG_USED:
+      let oldIndex = state.lru.indexOf(action.song.id);
 
-        case SONG_USED:
-            let oldIndex = state.lru.indexOf(action.song.id);
+      if (oldIndex === -1) {
+        oldIndex = state.lru.length;
+      }
 
-            if (oldIndex === -1) {
-                oldIndex = state.lru.length;
-            }
+      lru = [action.song.id, ...state.lru.slice(0, oldIndex), ...state.lru.slice(oldIndex + 1)];
 
-            lru = [
-                action.song.id,
-                ...state.lru.slice(0, oldIndex),
-                ...state.lru.slice(oldIndex + 1),
-            ];
+      return {
+        ...state,
+        lru,
+      };
 
-            return {
-                ...state,
-                lru,
-            };
-
-        default:
-            return state;
-    }
+    default:
+      return state;
+  }
 };
 
 export const CLEANUP_LIBRARY = 'Library/Cleanup';

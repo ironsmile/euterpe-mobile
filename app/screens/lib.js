@@ -1,31 +1,22 @@
-/**
- * Created by ggoma on 12/23/16.
- */
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Screen } from './screen';
 import { Settings } from './settings';
 
 export class LibraryScreen extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.route.key === 'Library';
+  }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.route.key == "Library";
-    }
-
-    render() {
-        return (
-            <Screen
-                title='LIBRARY'
-                navigation={this.props.navigation}
-            >
-                <View style={styles.container}>
-                    <Settings
-                        navigation={this.props.navigation}
-                    />
-                </View>
-            </Screen>
-        )
-    }
+  render() {
+    return (
+      <Screen title="LIBRARY" navigation={this.props.navigation}>
+        <View style={styles.container}>
+          <Settings navigation={this.props.navigation} />
+        </View>
+      </Screen>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

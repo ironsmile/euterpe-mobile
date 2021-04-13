@@ -5,9 +5,9 @@ import { JavaScriptMediaPlayer } from '@media-player/javascript-media-player';
 let MediaPlayer;
 
 if (Platform.OS === 'android') {
-    MediaPlayer = AndroidMediaPlayer;
+  MediaPlayer = AndroidMediaPlayer;
 } else {
-    MediaPlayer = JavaScriptMediaPlayer;
+  MediaPlayer = JavaScriptMediaPlayer;
 }
 
 export const mediaPlayer = new MediaPlayer();

@@ -3,46 +3,31 @@ import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from '@screens/screen';
 
 export class AboutScreen extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.route.key === 'About';
+  }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.route.key == "About";
-    }
+  render() {
+    return (
+      <Screen title="ABOUT" navigation={this.props.navigation}>
+        <View style={styles.container}>
+          <Text style={[styles.text, styles.header]}>HTTPMS Mobile Player</Text>
 
-    render() {
-        return (
-            <Screen
-                title='ABOUT'
-                navigation={this.props.navigation}
-            >
-                <View style={styles.container}>
-                    <Text style={[styles.text, styles.header]}>
-                        HTTPMS Mobile Player
-                    </Text>
+          <Text style={styles.text}>Version: 0.1 Beta</Text>
 
-                    <Text style={styles.text}>
-                        Version: 0.1 Beta
-                    </Text>
+          <Text style={[styles.text, styles.header]}>OpenSource projects used in this app:</Text>
 
-                    <Text style={[styles.text, styles.header]}>
-                        OpenSource projects used in this app:
-                    </Text>
+          <Text style={styles.text}>ReactNative</Text>
 
-                    <Text style={styles.text}>
-                        ReactNative
-                    </Text>
+          <Text style={styles.text}>ggomaeng's UI experiment</Text>
 
-                    <Text style={styles.text}>
-                        ggomaeng's UI experiment
-                    </Text>
-
-                    <Text style={[styles.text, styles.thankyou]}>
-                        Thank you all for your hard work which made this
-                        app possible!
-                    </Text>
-                </View>
-            </Screen>
-        )
-    }
+          <Text style={[styles.text, styles.thankyou]}>
+            Thank you all for your hard work which made this app possible!
+          </Text>
+        </View>
+      </Screen>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -67,5 +52,5 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     marginTop: 15,
-  }
+  },
 });

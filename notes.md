@@ -80,13 +80,6 @@ adb -s ZX1B23C8SJ install -r android/app/build/outputs/apk/app-release.apk
 
 adb logcat --pid $(adb shell ps | grep httpms | awk '{ print $2 }')
 
+== New Name ==
 
-== latest tested versions ==
-
-react-native: 0.46.2
-
-== RN migration ==
-
-https://react-native-community.github.io/upgrade-helper/?from=0.46.2&to=0.60.4
-
-up to file ios/Podfile in the diff
+Euterpe or Muzika

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    ScrollView,
-    StyleSheet,
-    View,
-    Text,
-    TouchableOpacity,
-    ActivityIndicator,
-} from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
 import { httpms } from '@components/httpms-service';
@@ -17,180 +10,174 @@ import { AlbumsList } from '@components/albums-list';
 import { errorToMessage } from '@helpers/errors';
 
 class BrowseAlbumsScreenRenderer extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            isLoading: true,
-            loadingMoreResults: false,
-            errorLoading: false,
-            errorMessage: null,
-            albums: [],
-            nextPage: httpms.getBrowseAlbumsURL(),
-        };
+    this.state = {
+      isLoading: true,
+      loadingMoreResults: false,
+      errorLoading: false,
+      errorMessage: null,
+      albums: [],
+      nextPage: httpms.getBrowseAlbumsURL(),
+    };
 
-        this._mounted = false;
+    this._mounted = false;
+  }
+
+  componentWillMount() {
+    this.getNextAlbumsPage();
+  }
+
+  componentDidMount() {
+    this._mounted = true;
+  }
+
+  componentWillUnmount() {
+    this._mounted = false;
+  }
+
+  getNextAlbumsPage() {
+    if (!this.state.nextPage) {
+      return;
     }
 
-    componentWillMount() {
-        this.getNextAlbumsPage();
+    if (this.state.loadingMoreResults) {
+      return;
     }
 
-    componentDidMount() {
-        this._mounted = true;
-    }
+    this.setState({
+      loadingMoreResults: true,
+    });
 
-    componentWillUnmount() {
-        this._mounted = false;
-    }
+    const req = httpms.getRequestByURL(this.state.nextPage);
 
-    getNextAlbumsPage() {
-        if (!this.state.nextPage) {
-            return;
+    this.fetchJob = fetch(req.url, {
+      method: req.method,
+      headers: req.headers,
+    })
+      .then((response) => {
+        if (response.status !== 200) {
+          throw response;
         }
 
-        if (this.state.loadingMoreResults) {
-            return;
+        return response.json();
+      })
+      .then((responseJson) => {
+        if (!this._mounted) {
+          return;
+        }
+
+        let nextPage = null;
+
+        if (responseJson.next) {
+          nextPage = httpms.addressFromURI(responseJson.next);
         }
 
         this.setState({
-            loadingMoreResults: true,
+          albums: this.state.albums.concat(responseJson.data),
+          isLoading: false,
+          loadingMoreResults: false,
+          nextPage: nextPage,
+          errorLoading: false,
+        });
+      })
+      .catch((error) => {
+        if (!this._mounted) {
+          return;
+        }
+
+        this.setState({
+          errorLoading: true,
+          isLoading: false,
+          loadingMoreResults: false,
+          errorMessage: errorToMessage(error),
         });
 
-        const req = httpms.getRequestByURL(this.state.nextPage);
+        console.error('Error while GETting artists browsing data', error);
+      });
+  }
 
-        this.fetchJob = fetch(req.url, {
-          method: req.method,
-          headers: req.headers,
-        })
-        .then((response) => {
-            if (response.status !== 200) {
-                throw response;
-            }
+  getHeader() {
+    return (
+      <Header
+        title="ALL ALBUMS"
+        onBackButton={() => {
+          this.props.navigation.goBack();
+        }}
+      />
+    );
+  }
 
-            return response.json();
-        })
-        .then((responseJson) => {
-            if (!this._mounted) {
-                return;
-            }
+  endReached(info) {
+    if (!this.state.nextPage) {
+      return;
+    }
+    this.getNextAlbumsPage();
+  }
 
-            let nextPage = null;
-
-            if (responseJson.next) {
-                nextPage = httpms.addressFromURI(responseJson.next);
-            }
-
-            this.setState({
-                albums: this.state.albums.concat(responseJson.data),
-                isLoading: false,
-                loadingMoreResults: false,
-                nextPage: nextPage,
-                errorLoading: false,
-            });
-        })
-        .catch((error) => {
-            if (!this._mounted) {
-                return;
-            }
-
-            this.setState({
-                errorLoading: true,
-                isLoading: false,
-                loadingMoreResults: false,
-                errorMessage: errorToMessage(error),
-            });
-
-            console.error('Error while GETting artists browsing data', error);
-        });
+  renderBody() {
+    if (this.state.isLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator />
+        </View>
+      );
     }
 
-    getHeader() {
-        return (
-            <Header
-                title="ALL ALBUMS"
-                onBackButton={() => {
-                    this.props.navigation.goBack();
-                }}
-            />
-        );
+    if (this.state.errorLoading) {
+      return this.renderError();
     }
 
-    endReached(info) {
-        if (!this.state.nextPage) {
-            return;
-        }
-        this.getNextAlbumsPage();
-    }
+    return (
+      <View style={styles.container}>
+        <AlbumsList
+          avoidHeader={true}
+          albums={this.state.albums}
+          onPressItem={(album) => {
+            this.props.navigation.navigate('SearchAlbum', { album });
+          }}
+          onEndReachedThreshold={0.2}
+          onEndReached={this.endReached.bind(this)}
+          showLoadingIndicator={this.state.loadingMoreResults}
+        />
+      </View>
+    );
+  }
 
-    renderBody() {
-        if (this.state.isLoading) {
-            return (
-                <View style={styles.loadingContainer}>
-                    <ActivityIndicator />
-                </View>
-            );
-        }
+  renderError() {
+    return (
+      <Helpful
+        iconName="warning"
+        title="Error Loading Albums"
+        firstLine="Getting albums failed due to network error."
+        secondLine={this.state.errorMessage}
+      />
+    );
+  }
 
-        if (this.state.errorLoading) {
-            return this.renderError();
-        }
-
-        return (
-            <View style={styles.container}>
-                <AlbumsList
-                    avoidHeader={true}
-                    albums={this.state.albums}
-                    onPressItem={(album) => {
-                        this.props.navigation.navigate(
-                            'SearchAlbum',
-                            { album }
-                        );
-                    }}
-                    onEndReachedThreshold={0.2}
-                    onEndReached={this.endReached.bind(this)}
-                    showLoadingIndicator={this.state.loadingMoreResults}
-                />
-            </View>
-        );
-    }
-
-    renderError() {
-        return (
-            <Helpful
-                iconName="warning"
-                title="Error Loading Albums"
-                firstLine="Getting albums failed due to network error."
-                secondLine={this.state.errorMessage}
-            />
-        );
-    }
-
-    render() {
-        return (
-            <Screen
-                header={this.getHeader()}
-                navigation={this.props.navigation}
-            >
-                {this.renderBody()}
-            </Screen>
-        );
-    }
+  render() {
+    return (
+      <Screen header={this.getHeader()} navigation={this.props.navigation}>
+        {this.renderBody()}
+      </Screen>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        paddingLeft: 10,
-        paddingRight: 10,
-        height: '100%',
-    },
-    loadingContainer: {
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column'
-    },
+  container: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: '100%',
+  },
+  loadingContainer: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
 });
 
 export const BrowseAlbumsScreen = connect()(BrowseAlbumsScreenRenderer);

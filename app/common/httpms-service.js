@@ -1,164 +1,166 @@
 import base64 from 'base-64';
 
 class HttpmsService {
-    constructor() {
-        this.store = null;
+  constructor() {
+    this.store = null;
+  }
+
+  setStore(store) {
+    this.store = store;
+  }
+
+  getState() {
+    return this.store.getState();
+  }
+
+  getSearchURL(searchText) {
+    const { settings } = this.getState();
+    return `${settings.hostAddress}/search?q=${encodeURIComponent(searchText)}`;
+  }
+
+  getSearchRequest(searchText) {
+    return this.getRequestByURL(this.getSearchURL(searchText));
+  }
+
+  // getAuthCredsHeader preserves comaptibility with old installations where
+  // settings contains username and password for basic authentication.
+  getAuthCredsHeader() {
+    const { settings } = this.getState();
+
+    if (!settings.username && !settings.token) {
+      return {};
     }
 
-    setStore(store) {
-        this.store = store;
+    if (settings.token) {
+      return {
+        Authorization: `Bearer ${settings.token}`,
+      };
     }
 
-    getState() {
-        return this.store.getState();
+    const encoded = base64.encode(`${settings.username}:${settings.password}`);
+
+    return {
+      Authorization: `Basic ${encoded}`,
+    };
+  }
+
+  getSongURL(songID) {
+    const { settings } = this.getState();
+    return `${settings.hostAddress}/file/${songID}`;
+  }
+
+  getSongRequest(songID) {
+    return {
+      url: this.getSongURL(songID),
+      method: 'GET',
+      headers: {
+        ...this.getAuthCredsHeader(),
+      },
+    };
+  }
+
+  getShareURL(song) {
+    const { settings } = this.getState();
+    const e = encodeURIComponent;
+
+    return `${settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(
+      song.album_id
+    )}&at=${e(song.artist)}`;
+  }
+
+  getRequestByURL(url) {
+    return {
+      url: url,
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...this.getAuthCredsHeader(),
+      },
+    };
+  }
+
+  getBrowseArtistsURL() {
+    const { settings } = this.getState();
+    return `${settings.hostAddress}/browse?by=artist&per-page=20`;
+  }
+
+  getBrowseAlbumsURL() {
+    const { settings } = this.getState();
+    return `${settings.hostAddress}/browse?by=album&per-page=20`;
+  }
+
+  getRecentArtistsURL() {
+    const { settings } = this.getState();
+    return `${settings.hostAddress}/browse?by=artist&per-page=5&order=desc&order-by=id`;
+  }
+
+  getRecentArtistsRequest() {
+    return this.getRequestByURL(this.getRecentArtistsURL());
+  }
+
+  getRecentAlbumsURL() {
+    const { settings } = this.getState();
+    return `${settings.hostAddress}/browse?by=album&per-page=5&order=desc&order-by=id`;
+  }
+
+  getRecentAlbumsRequest() {
+    return this.getRequestByURL(this.getRecentAlbumsURL());
+  }
+
+  getAlbumArtworkURL(albumID) {
+    const e = encodeURIComponent;
+    const { settings } = this.getState();
+    const url = `${settings.hostAddress}/album/${e(albumID)}/artwork`;
+
+    if (settings.token) {
+      return `${url}?token=${e(settings.token)}`;
     }
 
-    getSearchURL(searchText) {
-        const { settings } = this.getState();
-        return `${settings.hostAddress}/search?q=${encodeURIComponent(searchText)}`;
-    }
+    return url;
+  }
 
-    getSearchRequest(searchText) {
-        return this.getRequestByURL(this.getSearchURL(searchText))
-    }
+  getCheckSettingsRequest() {
+    return this.getRequestByURL(this.getRecentAlbumsURL());
+  }
 
-    // getAuthCredsHeader preserves comaptibility with old installations where
-    // settings contains username and password for basic authentication.
-    getAuthCredsHeader() {
-        const { settings } = this.getState();
+  getTokenRequest() {
+    const { settings } = this.getState();
 
-        if (!settings.username && !settings.token) {
-            return {};
-        }
+    return {
+      url: `${settings.hostAddress}/login/token/`,
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: settings.username,
+        password: settings.password,
+      }),
+    };
+  }
 
-        if (settings.token) {
-            return {
-                'Authorization': `Bearer ${settings.token}`,
-            }
-        }
+  getRegisterTokenRequest() {
+    const { settings } = this.getState();
 
-        const encoded = base64.encode(`${settings.username}:${settings.password}`);
+    return {
+      url: `${settings.hostAddress}/register/token/`,
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...this.getAuthCredsHeader(),
+      },
+    };
+  }
 
-        return {
-            'Authorization': `Basic ${encoded}`,
-        };
-    }
+  addressFromURI(uri) {
+    const noSlashes = uri.replace(/^\/+/, '');
+    const { settings } = this.getState();
 
-    getSongURL(songID) {
-        const { settings } = this.getState();
-        return `${settings.hostAddress}/file/${songID}`;
-    }
-
-    getSongRequest(songID) {
-        return {
-            url: this.getSongURL(songID),
-            method: "GET",
-            headers: {
-                ...this.getAuthCredsHeader(),
-            },
-        };
-    }
-
-    getShareURL(song) {
-        const { settings } = this.getState();
-        const e = encodeURIComponent;
-
-        return `${settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(song.album_id)}&at=${e(song.artist)}`;
-    }
-
-    getRequestByURL(url) {
-        return {
-            url: url,
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                ...this.getAuthCredsHeader(),
-            },
-        };
-    }
-
-    getBrowseArtistsURL() {
-        const { settings } = this.getState();
-        return `${settings.hostAddress}/browse?by=artist&per-page=20`;
-    }
-
-    getBrowseAlbumsURL() {
-        const { settings } = this.getState();
-        return `${settings.hostAddress}/browse?by=album&per-page=20`;
-    }
-
-    getRecentArtistsURL() {
-        const { settings } = this.getState();
-        return `${settings.hostAddress}/browse?by=artist&per-page=5&order=desc&order-by=id`;
-    }
-
-    getRecentArtistsRequest() {
-        return this.getRequestByURL(this.getRecentArtistsURL());
-    }
-
-    getRecentAlbumsURL() {
-        const { settings } = this.getState();
-        return `${settings.hostAddress}/browse?by=album&per-page=5&order=desc&order-by=id`;
-    }
-
-    getRecentAlbumsRequest() {
-        return this.getRequestByURL(this.getRecentAlbumsURL());
-    }
-
-    getAlbumArtworkURL(albumID) {
-        const e = encodeURIComponent;
-        const { settings } = this.getState();
-        const url = `${settings.hostAddress}/album/${e(albumID)}/artwork`;
-
-        if (settings.token) {
-            return `${url}?token=${e(settings.token)}`;
-        }
-
-        return url;
-    }
-
-    getCheckSettingsRequest() {
-        return this.getRequestByURL(this.getRecentAlbumsURL());
-    }
-
-    getTokenRequest() {
-        const { settings } = this.getState();
-
-        return {
-            url: `${settings.hostAddress}/login/token/`,
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: settings.username,
-                password: settings.password,
-            }),
-        };
-    }
-
-    getRegisterTokenRequest() {
-        const { settings } = this.getState();
-
-        return {
-            url: `${settings.hostAddress}/register/token/`,
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                ...this.getAuthCredsHeader(),
-            },
-        };
-    }
-
-    addressFromURI(uri) {
-        const noSlashes = uri.replace(/^\/+/, '');
-        const { settings } = this.getState();
-
-        return `${settings.hostAddress}/${noSlashes}`;
-    }
+    return `${settings.hostAddress}/${noSlashes}`;
+  }
 }
 
 export const httpms = new HttpmsService();

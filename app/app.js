@@ -29,104 +29,101 @@ import { HttpmsNavigator } from '@nav';
 import { httpms } from '@components/httpms-service';
 import { errorsReducer } from '@reducers/errors';
 import { appendError } from '@actions/errors';
-import { ErrorsOverlay } from '@screens/common/errors';
-
+import { ErrorsOverlay } from '@screens/common/errors'; // todo add it to the App
 
 const appReducer = combineReducers({
-    playing: playingReducer,
-    player: playerReducer,
-    search: searchReducer,
-    settings: settingsReducer,
-    progress: progressReducer,
-    library: libraryReducer,
-    recentArtists: recentArtistsReducer,
-    recentAlbums: recentAlbumsReducer,
-    recentlyPlayed: recentlyPlayedReducer,
-    errors: errorsReducer,
+  playing: playingReducer,
+  player: playerReducer,
+  search: searchReducer,
+  settings: settingsReducer,
+  progress: progressReducer,
+  library: libraryReducer,
+  recentArtists: recentArtistsReducer,
+  recentAlbums: recentAlbumsReducer,
+  recentlyPlayed: recentlyPlayedReducer,
+  errors: errorsReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {
-    switch (action.type) {
-        case REHYDRATE:
-            const incoming = action.payload.myReducer;
+  switch (action.type) {
+    case REHYDRATE:
+      const incoming = action.payload.myReducer;
 
-            if (incoming) {
-                return {
-                    ...state,
-                    ...incoming,
-                };
-            }
-        default:
-            return appReducer(state, action);
-    }
+      if (incoming) {
+        return {
+          ...state,
+          ...incoming,
+        };
+      }
+    default:
+      return appReducer(state, action);
+  }
 };
 
 const store = createStore(
-    rehydratedReducer,
-    applyMiddleware(
-        thunkMiddleware
-    ),
-    compose(
-        autoRehydrate()
-    )
+  rehydratedReducer,
+  applyMiddleware(thunkMiddleware),
+  compose(autoRehydrate())
 );
 
-const Navigator = connect(state => ({
-    loggedIn: state.settings.loggedIn,
+const Navigator = connect((state) => ({
+  loggedIn: state.settings.loggedIn,
 }))(HttpmsNavigator);
 
 export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            rehydrated: false,
-            store,
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      rehydrated: false,
+      store,
+    };
 
-        MediaControl.enableBackgroundMode(true);
-        MediaControl.enableControl('play', true);
-        MediaControl.enableControl('pause', true);
-        MediaControl.enableControl('stop', false);
-        MediaControl.enableControl('nextTrack', false);
-        MediaControl.enableControl('previousTrack', false);
-        MediaControl.enableControl('seek', true);
-        MediaControl.enableControl('seekForward', true);
-        MediaControl.enableControl('seekBackward', true);
-    }
+    MediaControl.enableBackgroundMode(true);
+    MediaControl.enableControl('play', true);
+    MediaControl.enableControl('pause', true);
+    MediaControl.enableControl('stop', false);
+    MediaControl.enableControl('nextTrack', false);
+    MediaControl.enableControl('previousTrack', false);
+    MediaControl.enableControl('seek', true);
+    MediaControl.enableControl('seekForward', true);
+    MediaControl.enableControl('seekBackward', true);
+  }
 
-    componentDidMount() {
-        persistStore(
-            store,
-            {
-                storage: AsyncStorage,
-                debounce: 1000,
-            },
-            () => {
-                httpms.setStore(store);
-                store.dispatch(restorePlayingState((error) => {
-                    store.dispatch(appendError(error));
-                }));
-                this.setState({ rehydrated: true });
-                store.dispatch(setupLibrary());
-            }
+  componentDidMount() {
+    persistStore(
+      store,
+      {
+        storage: AsyncStorage,
+        debounce: 1000,
+      },
+      () => {
+        httpms.setStore(store);
+        store.dispatch(
+          restorePlayingState((error) => {
+            store.dispatch(appendError(error));
+          })
         );
+        this.setState({ rehydrated: true });
+        store.dispatch(setupLibrary());
+      }
+    );
+  }
+
+  render() {
+    if (!this.state.rehydrated) {
+      if (Platform.OS === 'android') {
+        return null;
+      }
+
+      return <Loader />;
     }
 
-    render() {
-        if (!this.state.rehydrated) {
-            if (Platform.OS === 'android') {
-                return null;
-            }
-
-            return (<Loader />);
-        }
-
-        return (
-            <Provider store={this.state.store}>
-                <NavigationContainer>
-                    <Navigator />
-                </NavigationContainer>
-            </Provider>
-        );
-    }
+    return (
+      <Provider store={this.state.store}>
+        <NavigationContainer>
+          <Navigator />
+        </NavigationContainer>
+      </Provider>
+    );
+  }
 }
