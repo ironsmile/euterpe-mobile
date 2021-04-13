@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SearchNavigator } from '@nav/tab-search';
 import { BrowseNavigator } from '@nav/tab-browse';
 import { HomeNavigator } from '@nav/tab-home';
@@ -14,19 +14,14 @@ import { LoginSuccessScreen } from '@screens/login-success';
 import { LoginBarcodeScreen } from '@screens/login-barcode';
 import { TABBAR_HEIGHT } from '@screens/common/footer';
 import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
-// import TabBarBottom from '@screens/common/TabBarBottom';
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 export function LoggedUserNavigator() {
-  console.log('HttpmsBottomTabView', HttpmsBottomTabView);
-  console.log('BottomTabBar', BottomTabBar);
-
   return (
     <Tabs.Navigator
-      // tabBarComponent={TabBarBottom}
-      tabBar={BottomTabBar}
+      tabBar={HttpmsBottomTabView}
       animationEnabled={false}
       swipeEnabled={false}
       tabBarOptions={{
