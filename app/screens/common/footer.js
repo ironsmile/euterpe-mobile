@@ -210,7 +210,6 @@ class FooterRenderer extends Component {
         }
     }
 
-
     scrollUp() {
         Animated.spring(
             this.state.opacity,

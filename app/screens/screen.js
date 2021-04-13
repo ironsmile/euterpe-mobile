@@ -38,19 +38,6 @@ class ScreenRenderer extends Component {
                         {this.props.children}
                     </View>
                     {header}
-                    <Footer
-                        hide={() => {
-                          // pass
-                        }}
-                        show={() => {
-                          // pass
-                        }}
-                        hideTabBarNavigation={
-                          (val) => {
-                            // pass
-                          }
-                        }
-                    />
                 </View>
             </View>
         );

@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { AppRegistry, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
@@ -75,7 +75,7 @@ const Navigator = connect(state => ({
     loggedIn: state.settings.loggedIn,
 }))(HttpmsNavigator);
 
-class Root extends React.Component {
+export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -130,5 +130,3 @@ class Root extends React.Component {
         );
     }
 }
-
-AppRegistry.registerComponent('httpms', () => Root);
