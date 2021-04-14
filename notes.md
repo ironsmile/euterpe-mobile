@@ -83,3 +83,8 @@ adb logcat --pid $(adb shell ps | grep httpms | awk '{ print $2 }')
 == New Name ==
 
 Euterpe or Muzika
+
+== Know Bugs ==
+
+* Press the hardware button so many times and at the end the program carshes when
+  trying to stop itself.

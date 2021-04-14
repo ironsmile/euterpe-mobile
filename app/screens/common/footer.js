@@ -26,6 +26,7 @@ import { gs } from '@styles/global';
 export const FOOTER_HEIGHT = 38;
 export const TABBAR_HEIGHT = 56;
 export const TOGETHER = FOOTER_HEIGHT + TABBAR_HEIGHT;
+const animationDuration = 400;
 
 class FooterRenderer extends Component {
   state = {
@@ -46,6 +47,13 @@ class FooterRenderer extends Component {
       }
       return false;
     });
+
+    if (this.props.playerFullScreen) {
+      //!TODO: make sure the player is up without any animation. The
+      // scrollUp function actually animates the player card going up
+      // which makes the screen flicker.
+      this.scrollUp();
+    }
   }
 
   // hide is called when the player modal is hidden.
@@ -118,15 +126,15 @@ class FooterRenderer extends Component {
 
           if (!this.open) {
             /*
-                            If you are swiping up quickly and your finger goes off the screen,
-                            the View doesn't always open fully (it stops a few px from the top).
-                            This sort of thing happens because the event system couldn't keep up
-                            with the fast swipe, and the last event it gets is from a few
-                            milliseconds before it hit the top.
-                            You can fix this by always fully opening the View when its `y` is
-                            within some distance from the top. I think you can just add
-                            `if (g.y0 <= 100) this.scrollUp();` in your `onPanResponderRelease`
-                         */
+                If you are swiping up quickly and your finger goes off the screen,
+                the View doesn't always open fully (it stops a few px from the top).
+                This sort of thing happens because the event system couldn't keep up
+                with the fast swipe, and the last event it gets is from a few
+                milliseconds before it hit the top.
+                You can fix this by always fully opening the View when its `y` is
+                within some distance from the top. I think you can just add
+                `if (g.y0 <= 100) this.scrollUp();` in your `onPanResponderRelease`
+             */
             if (g.y0 >= 100) {
               this.openPlaying(offsetY);
             }
@@ -139,15 +147,15 @@ class FooterRenderer extends Component {
   }
 
   openPlaying(offsetY) {
+    this.moving = true;
     if (offsetY < -100) {
       // console.log('open');
-      this.moving = true;
       this.hide();
       StatusBar.setHidden(true, true);
       this.state.opacity.setValue(0);
       Animated.timing(this.state.pan.y, {
         toValue: -D.height + TOGETHER,
-        duration: 200,
+        duration: animationDuration,
       }).start(() => {
         // console.log('opened');
         //hide tab bar
@@ -155,17 +163,16 @@ class FooterRenderer extends Component {
         setTimeout(() => {
           this.open = true;
           this.moving = false;
-        }, 200);
+        }, animationDuration);
         this.state.pan.setOffset({ y: -D.height + TOGETHER });
         this.state.pan.setValue({ y: 0 });
       });
     } else {
-      this.moving = true;
       this.reset();
       // console.log('back to original state 1!', this.state.pan.y);
       this.show();
       Animated.timing(this.state.pan.y, { toValue: 0 }).start(() => {
-        setTimeout(() => (this.moving = false), 200);
+        setTimeout(() => (this.moving = false), animationDuration);
         this.state.pan.setOffset({ y: 0 });
       });
     }
@@ -178,23 +185,24 @@ class FooterRenderer extends Component {
       this.moving = true;
       this.show();
       StatusBar.setHidden(false, true);
-      Animated.timing(this.state.pan.y, { toValue: D.height - TOGETHER, duration: 200 }).start(
-        () => {
-          // console.log('closed');
-          setTimeout(() => {
-            this.open = false;
-            this.moving = false;
-          }, 200);
-          this.state.pan.setOffset({ y: 0 });
-          this.state.pan.setValue({ y: 0 });
-        }
-      );
+      Animated.timing(this.state.pan.y, {
+        toValue: D.height - TOGETHER,
+        duration: animationDuration,
+      }).start(() => {
+        // console.log('closed');
+        setTimeout(() => {
+          this.open = false;
+          this.moving = false;
+        }, animationDuration);
+        this.state.pan.setOffset({ y: 0 });
+        this.state.pan.setValue({ y: 0 });
+      });
     } else {
       this.moving = true;
       // console.log('back to original state 2!');
       this.hide();
       Animated.timing(this.state.pan.y, { toValue: 0 }).start(() => {
-        setTimeout(() => (this.moving = false), 200);
+        setTimeout(() => (this.moving = false), animationDuration);
         this.state.pan.setOffset({ y: -D.height + TOGETHER });
       });
     }
@@ -407,6 +415,7 @@ const mapStateToProps = (state) => ({
   paused: state.playing.paused,
   trackLoading: state.playing.trackLoading,
   playerQueueShown: state.player.showQueue,
+  playerFullScreen: state.footer.shown,
 });
 
 const Footer = connect(mapStateToProps)(FooterRenderer);
