@@ -35,7 +35,7 @@ class RecentSearch extends React.PureComponent {
           </Text>
           <PlatformIcon
             style={styles.rotatedIcon}
-            platform="arrow-round-up"
+            platform="arrow-up-outline"
             color="#aeafb3"
             size={24}
           />

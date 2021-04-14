@@ -94,7 +94,7 @@ class PlaylerRenderer extends React.Component {
   }
 
   renderHeader() {
-    const stateIcon = this.props.player.showQueue ? 'ios-list-box' : 'ios-list';
+    const stateIcon = this.props.player.showQueue ? 'list-circle' : 'list-circle-outline';
 
     return (
       <View style={styles.header}>
@@ -175,17 +175,17 @@ class PlaylerRenderer extends React.Component {
 
     let prevButton = (
       <TouchableOpacity onPress={this.onPreviousSong.bind(this)}>
-        <PlatformIcon platform="skip-backward" size={32} color={iconColor} />
+        <PlatformIcon platform="play-skip-back" size={32} color={iconColor} />
       </TouchableOpacity>
     );
 
     if (currentIndex - 1 < 0 || !playlist[currentIndex - 1] || trackLoading) {
-      prevButton = <PlatformIcon platform="skip-backward" size={32} color={disabledColor} />;
+      prevButton = <PlatformIcon platform="play-skip-back" size={32} color={disabledColor} />;
     }
 
     let nextButton = (
       <TouchableOpacity onPress={this.onNextSong.bind(this)}>
-        <PlatformIcon platform="skip-forward" size={32} color={iconColor} />
+        <PlatformIcon platform="play-skip-forward" size={32} color={iconColor} />
       </TouchableOpacity>
     );
 
@@ -193,7 +193,7 @@ class PlaylerRenderer extends React.Component {
       (!playlist[currentIndex + 1] && !this.props.shuffle && !this.props.repeat) ||
       trackLoading
     ) {
-      nextButton = <PlatformIcon platform="skip-forward" size={32} color={disabledColor} />;
+      nextButton = <PlatformIcon platform="play-skip-forward" size={32} color={disabledColor} />;
     }
 
     let playButton = (
@@ -201,7 +201,7 @@ class PlaylerRenderer extends React.Component {
         onPress={() => {
           this.onTogglePlay();
         }}
-        style={[styles.playContainer, paused ? { paddingLeft: 8 } : {}]}
+        style={styles.playContainer}
       >
         <PlatformIcon platform={paused ? 'play' : 'pause'} style={styles.play} color={iconColor} />
       </TouchableOpacity>
@@ -209,13 +209,7 @@ class PlaylerRenderer extends React.Component {
 
     if (trackLoading) {
       playButton = (
-        <View
-          style={[
-            styles.playContainer,
-            paused ? { paddingLeft: 8 } : {},
-            { borderColor: disabledColor },
-          ]}
-        >
+        <View style={styles.playContainer}>
           <PlatformIcon
             platform={paused ? 'play' : 'pause'}
             style={styles.play}
