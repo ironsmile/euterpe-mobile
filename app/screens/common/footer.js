@@ -29,48 +29,19 @@ export const TOGETHER = FOOTER_HEIGHT + TABBAR_HEIGHT;
 const animationDuration = 400;
 
 class FooterRenderer extends PureComponent {
-  state = {
-    pan: new Animated.ValueXY(),
-    opacity: new Animated.Value(1),
-  };
-
   moving = false;
   open = false;
   hiding = false;
   offY = D.height - TOGETHER;
 
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      if (this.open) {
-        this.scrollDown();
-        return true;
-      }
-      return false;
-    });
+  constructor(props) {
+    super(props);
 
-    if (this.props.playerFullScreen) {
-      //!TODO: make sure the player is up without any animation. The
-      // scrollUp function actually animates the player card going up
-      // which makes the screen flicker.
-      this.scrollUp();
-    }
-  }
+    this.state = {
+      pan: new Animated.ValueXY(),
+      opacity: new Animated.Value(1),
+    };
 
-  // hide is called when the player modal is hidden.
-  hide() {
-    this.props.dispatch(showFooter(true));
-  }
-
-  // show is called when the player modal is shown.
-  show() {
-    this.props.dispatch(showFooter(false));
-  }
-
-  panResponderEnabled() {
-    return !this.open || !this.props.playerQueueShown;
-  }
-
-  componentWillMount() {
     let panMover = Animated.event([
       null,
       {
@@ -144,6 +115,37 @@ class FooterRenderer extends PureComponent {
         }
       },
     });
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      if (this.open) {
+        this.scrollDown();
+        return true;
+      }
+      return false;
+    });
+
+    if (this.props.playerFullScreen) {
+      //!TODO: make sure the player is up without any animation. The
+      // scrollUp function actually animates the player card going up
+      // which makes the screen flicker.
+      this.scrollUp();
+    }
+  }
+
+  // hide is called when the player modal is hidden.
+  hide() {
+    this.props.dispatch(showFooter(true));
+  }
+
+  // show is called when the player modal is shown.
+  show() {
+    this.props.dispatch(showFooter(false));
+  }
+
+  panResponderEnabled() {
+    return !this.open || !this.props.playerQueueShown;
   }
 
   openPlaying(offsetY) {

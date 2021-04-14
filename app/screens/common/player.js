@@ -30,11 +30,36 @@ import { SongsList } from '@components/songs-list';
 import { PlatformIcon } from '@components/platform-icon';
 import { httpms } from '@components/httpms-service';
 
-class PlaylerRenderer extends React.PureComponent {
+class PlayerRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {};
+
+    MediaControl.on('play', () => {
+      this.onTogglePlay(true);
+    });
+
+    MediaControl.on('pause', () => {
+      this.onTogglePlay(false);
+    });
+
+    MediaControl.on('nextTrack', () => {
+      this.onNextSong();
+    });
+
+    MediaControl.on('previousTrack', () => {
+      this.onPreviousSong();
+    });
+
+    MediaControl.on('seekForward', () => {});
+
+    MediaControl.on('seekBackward', () => {});
+
+    MediaControl.on('seek', (pos) => {
+      // pos is in seconds
+      this.onSeekTo(pos);
+    });
   }
 
   onPreviousSong() {
@@ -60,33 +85,6 @@ class PlaylerRenderer extends React.PureComponent {
 
   onSeekTo(pos) {
     this.props.dispatch(seekToSeconds(pos));
-  }
-
-  componentWillMount() {
-    MediaControl.on('play', () => {
-      this.onTogglePlay(true);
-    });
-
-    MediaControl.on('pause', () => {
-      this.onTogglePlay(false);
-    });
-
-    MediaControl.on('nextTrack', () => {
-      this.onNextSong();
-    });
-
-    MediaControl.on('previousTrack', () => {
-      this.onPreviousSong();
-    });
-
-    MediaControl.on('seekForward', () => {});
-
-    MediaControl.on('seekBackward', () => {});
-
-    MediaControl.on('seek', (pos) => {
-      // pos is in seconds
-      this.onSeekTo(pos);
-    });
   }
 
   toggleViewState() {
@@ -465,5 +463,5 @@ const mapStateToProps = (state) => ({
   player: state.player,
 });
 
-const Player = connect(mapStateToProps)(PlaylerRenderer);
+const Player = connect(mapStateToProps)(PlayerRenderer);
 export default Player;

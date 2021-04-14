@@ -4,10 +4,6 @@ import { Screen } from './screen';
 import { Settings } from './settings';
 
 export class LibraryScreen extends React.PureComponent {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.route.key === 'Library';
-  }
-
   render() {
     return (
       <Screen title="LIBRARY" navigation={this.props.navigation}>

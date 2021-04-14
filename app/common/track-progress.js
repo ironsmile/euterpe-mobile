@@ -4,23 +4,27 @@ import ProgressBar from 'react-native-progress/Bar';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class TrackProgressRenderer extends React.Component {
-  componentWillMount() {
-    this.renderProps = {
-      unfilledColor: '#3c3d41',
-      borderWidth: 0,
-      borderRadius: 0,
-      height: 2,
-      width: null,
-      color: 'white',
-      ...this.props,
+class TrackProgressRenderer extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      renderProps: {
+        unfilledColor: '#3c3d41',
+        borderWidth: 0,
+        borderRadius: 0,
+        height: 2,
+        width: null,
+        color: 'white',
+      },
     };
   }
 
   render() {
     return (
       <ProgressBar
-        {...this.renderProps}
+        {...this.state.renderProps}
+        {...this.props}
         progress={this.props.progress}
         indeterminate={this.props.loading === true}
         animated={this.props.loading === true}
@@ -29,43 +33,50 @@ class TrackProgressRenderer extends React.Component {
   }
 }
 
-class TimedProgressRenderer extends React.Component {
-  componentWillMount() {
-    this.renderProps = {
-      unfilledColor: '#3c3d41',
-      borderWidth: 0,
-      borderRadius: 0,
-      height: 2,
-      width: null,
-      color: 'white',
+class TimedProgressRenderer extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      renderProps: {
+        unfilledColor: '#3c3d41',
+        borderWidth: 0,
+        borderRadius: 0,
+        height: 2,
+        width: null,
+        color: 'white',
+      },
+      textWidth: getTimesWidth(props.duration),
     };
-    this.textWidth = getTimesWidth(this.props.duration);
   }
 
   render() {
+    const { textWidth } = this.state;
+    const { duration, progress, loading } = this.props;
+
     return (
       <View style={[styles.timedProgressContainer, this.props.style]}>
-        <Text style={[styles.text, { width: this.textWidth - 5 }]}>
-          {elapsedTime(this.props.progress, this.props.duration)}
+        <Text style={[styles.text, { width: textWidth - 5 }]}>
+          {elapsedTime(progress, duration)}
         </Text>
         <View style={styles.timedProgressBarElement}>
           <ProgressBar
-            {...this.renderProps}
-            progress={this.props.progress}
-            indeterminate={this.props.loading === true}
-            animated={this.props.loading === true}
+            {...this.state.renderProps}
+            progress={progress}
+            indeterminate={loading === true}
+            animated={loading === true}
           />
         </View>
         <Text
           style={[
             styles.text,
             {
-              width: this.textWidth,
+              width: textWidth,
               textAlign: 'right',
             },
           ]}
         >
-          {remaingTime(this.props.progress, this.props.duration)}
+          {remaingTime(progress, duration)}
         </Text>
       </View>
     );

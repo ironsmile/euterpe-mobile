@@ -4,8 +4,11 @@ import { refreshRecentArtists } from '@actions/recent-artists';
 import { PlayList } from '@components/playlist';
 import Images from '@assets/images';
 
-class RecentArtistsRenderer extends React.Component {
-  componentWillMount() {
+class RecentArtistsRenderer extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {};
     this.props.dispatch(refreshRecentArtists());
   }
 

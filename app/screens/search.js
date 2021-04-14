@@ -35,9 +35,7 @@ class SearchRenderer extends React.PureComponent {
       showCancel: false,
       searchValue: this.props.search.query,
     };
-  }
 
-  componentWillMount() {
     this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow',
       this._keyboardDidShow.bind(this)

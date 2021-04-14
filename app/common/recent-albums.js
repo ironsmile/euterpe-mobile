@@ -6,14 +6,11 @@ import { refreshRecentAlbums } from '@actions/recent-albums';
 import { PlayList } from '@components/playlist';
 import Images from '@assets/images';
 
-class RecentAlbumsRenderer extends React.Component {
+class RecentAlbumsRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {};
-  }
-
-  componentWillMount() {
     this.props.dispatch(refreshRecentAlbums());
   }
 

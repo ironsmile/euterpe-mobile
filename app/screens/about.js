@@ -3,10 +3,6 @@ import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from '@screens/screen';
 
 export class AboutScreen extends React.PureComponent {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.route.key === 'About';
-  }
-
   render() {
     return (
       <Screen title="ABOUT" navigation={this.props.navigation}>
