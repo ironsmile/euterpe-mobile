@@ -74,7 +74,7 @@ export class PlayList extends Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingTop: 74,
+    paddingTop: 24,
     paddingBottom: 6,
   },
 

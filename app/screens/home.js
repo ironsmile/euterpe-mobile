@@ -12,6 +12,7 @@ export class HomeScreen extends React.PureComponent {
       <Screen title="HOME" navigation={this.props.navigation}>
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.spacer} />
             <RecentArtists
               key={0}
               onArtistPress={(item) => {
@@ -46,5 +47,9 @@ export class HomeScreen extends React.PureComponent {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  spacer: {
+    height: 50,
+    width: '100%',
   },
 });
