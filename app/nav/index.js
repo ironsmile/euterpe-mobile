@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SearchNavigator } from '@nav/tab-search';
@@ -18,7 +19,7 @@ import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
-export function LoggedUserNavigator() {
+function LoggedUserNavigatorView({ showFooter }) {
   return (
     <Tabs.Navigator
       tabBar={HttpmsBottomTabView}
@@ -44,6 +45,7 @@ export function LoggedUserNavigator() {
         name="Home"
         component={HomeNavigator}
         options={{
+          tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Home'),
           tabBarIcon: CreateTabIcon('ios-home'),
         }}
@@ -52,6 +54,7 @@ export function LoggedUserNavigator() {
         name="Browse"
         component={BrowseNavigator}
         options={{
+          tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Browse'),
           tabBarIcon: CreateTabIcon('ios-albums'),
         }}
@@ -60,6 +63,7 @@ export function LoggedUserNavigator() {
         name="Search"
         component={SearchNavigator}
         options={{
+          tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Search'),
           tabBarIcon: CreateTabIcon('ios-search'),
         }}
@@ -68,6 +72,7 @@ export function LoggedUserNavigator() {
         name="Library"
         component={LibraryScreen}
         options={{
+          tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Library'),
           tabBarIcon: CreateTabIcon('ios-book'),
         }}
@@ -76,6 +81,7 @@ export function LoggedUserNavigator() {
         name="About"
         component={AboutScreen}
         options={{
+          tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('About'),
           tabBarIcon: CreateTabIcon('ios-information-circle'),
         }}
@@ -83,6 +89,10 @@ export function LoggedUserNavigator() {
     </Tabs.Navigator>
   );
 }
+
+export const LoggedUserNavigator = connect((state) => ({
+  showFooter: state.footer.shown,
+}))(LoggedUserNavigatorView);
 
 export function LoginFlowNavigator() {
   return (

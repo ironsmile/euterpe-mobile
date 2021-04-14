@@ -6,17 +6,7 @@ import Footer from '@screens/common/footer';
 export function HttpmsBottomTabView(props) {
   return (
     <View>
-      <Footer
-        hide={() => {
-          // pass
-        }}
-        show={() => {
-          // pass
-        }}
-        hideTabBarNavigation={(val) => {
-          // pass
-        }}
-      />
+      <Footer />
       <BottomTabBar {...props} />
     </View>
   );

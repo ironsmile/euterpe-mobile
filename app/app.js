@@ -15,6 +15,7 @@ enableScreens();
 
 import { Loader } from '@screens/common/loader';
 import { playingReducer } from '@reducers/playing';
+import { footerReducer } from '@reducers/footer';
 import { playerReducer } from '@reducers/player';
 import { progressReducer } from '@reducers/progress';
 import { searchReducer } from '@reducers/search';
@@ -42,6 +43,7 @@ const appReducer = combineReducers({
   recentAlbums: recentAlbumsReducer,
   recentlyPlayed: recentlyPlayedReducer,
   errors: errorsReducer,
+  footer: footerReducer,
 });
 
 const rehydratedReducer = (state = {}, action) => {

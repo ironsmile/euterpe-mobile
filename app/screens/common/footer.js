@@ -16,6 +16,7 @@ import D from './dimensions';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
+import { showFooter } from '@actions/footer';
 import { togglePlaying } from '@actions/playing';
 import { TrackProgress } from '@components/track-progress';
 import { PlatformIcon } from '@components/platform-icon';
@@ -47,13 +48,14 @@ class FooterRenderer extends Component {
     });
   }
 
-  hideTabBarNavigation(dy) {
-    let value = (this.offY + dy) % (D.height - TOGETHER);
-    if (value < 0) {
-      value = 0;
-    }
+  // hide is called when the player modal is hidden.
+  hide() {
+    this.props.dispatch(showFooter(true));
+  }
 
-    this.props.hideTabBarNavigation(value);
+  // show is called when the player modal is shown.
+  show() {
+    this.props.dispatch(showFooter(false));
   }
 
   panResponderEnabled() {
@@ -84,9 +86,6 @@ class FooterRenderer extends Component {
         if (this.moving || (!this.open && g.dy > 0) || (this.open && g.dy < 0)) {
           // console.log('shouldnt move!!');
           return;
-        }
-        if ((!this.open && g.dy < -5) || (this.open && g.dy > 5)) {
-          this.hideTabBarNavigation(g.dy);
         }
 
         if (!this.open && g.dy < 0) {
@@ -143,7 +142,7 @@ class FooterRenderer extends Component {
     if (offsetY < -100) {
       // console.log('open');
       this.moving = true;
-      this.props.hide();
+      this.hide();
       StatusBar.setHidden(true, true);
       this.state.opacity.setValue(0);
       Animated.timing(this.state.pan.y, {
@@ -164,7 +163,7 @@ class FooterRenderer extends Component {
       this.moving = true;
       this.reset();
       // console.log('back to original state 1!', this.state.pan.y);
-      this.props.show();
+      this.show();
       Animated.timing(this.state.pan.y, { toValue: 0 }).start(() => {
         setTimeout(() => (this.moving = false), 200);
         this.state.pan.setOffset({ y: 0 });
@@ -177,7 +176,7 @@ class FooterRenderer extends Component {
       // console.log('closing');
       this.reset();
       this.moving = true;
-      this.props.show();
+      this.show();
       StatusBar.setHidden(false, true);
       Animated.timing(this.state.pan.y, { toValue: D.height - TOGETHER, duration: 200 }).start(
         () => {
@@ -193,7 +192,7 @@ class FooterRenderer extends Component {
     } else {
       this.moving = true;
       // console.log('back to original state 2!');
-      this.props.hide();
+      this.hide();
       Animated.timing(this.state.pan.y, { toValue: 0 }).start(() => {
         setTimeout(() => (this.moving = false), 200);
         this.state.pan.setOffset({ y: -D.height + TOGETHER });
