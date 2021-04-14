@@ -30,7 +30,7 @@ import { SongsList } from '@components/songs-list';
 import { PlatformIcon } from '@components/platform-icon';
 import { httpms } from '@components/httpms-service';
 
-class PlaylerRenderer extends React.Component {
+class PlaylerRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 

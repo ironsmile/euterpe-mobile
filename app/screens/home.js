@@ -6,7 +6,7 @@ import { RecentAlbums } from '@components/recent-albums';
 import { RecentlyPlayedArtists } from '@components/recently-played-artists';
 import { RecentlyPlayedAlbums } from '@components/recently-played-albums';
 
-export class HomeScreen extends React.Component {
+export class HomeScreen extends React.PureComponent {
   render() {
     return (
       <Screen title="HOME" navigation={this.props.navigation}>

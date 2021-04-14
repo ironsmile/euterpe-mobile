@@ -4,7 +4,7 @@ import { Screen } from '@screens/screen';
 import { IconButton } from '@components/icon-button';
 import { login } from '@styles/global';
 
-export class LoginMainScreen extends React.Component {
+export class LoginMainScreen extends React.PureComponent {
   render() {
     return (
       <Screen noTabBar={true} noHeader={true} navigation={this.props.navigation}>

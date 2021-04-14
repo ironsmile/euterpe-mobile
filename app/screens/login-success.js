@@ -6,7 +6,7 @@ import { Screen } from '@screens/screen';
 import { Helpful } from '@components/helpful';
 import { finishLoginSuccess } from '@actions/settings';
 
-export class LoginSuccessScreenRenderer extends React.Component {
+export class LoginSuccessScreenRenderer extends React.PureComponent {
   componentDidMount() {
     setTimeout(() => {
       this.props.dispatch(finishLoginSuccess());

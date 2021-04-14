@@ -7,7 +7,7 @@ import { Helpful } from '@components/helpful';
 import { httpms } from '@components/httpms-service';
 import { ArtistBig } from '@components/artist-big';
 
-export class ArtistScreen extends React.Component {
+export class ArtistScreen extends React.PureComponent {
   constructor(props) {
     super(props);
 

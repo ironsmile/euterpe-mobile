@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
 
 import { TOGETHER, TABBAR_HEIGHT } from './common/footer';
@@ -7,7 +7,7 @@ import { gs } from '../styles/global';
 import { connect } from 'react-redux';
 import D from '@screens/common/dimensions';
 
-class ScreenRenderer extends Component {
+class ScreenRenderer extends PureComponent {
   render() {
     let { header } = this.props;
     const { nowPlaying } = this.props;

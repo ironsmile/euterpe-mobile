@@ -10,7 +10,7 @@ import { login } from '@styles/global';
 import { IconButton } from '@components/icon-button';
 import { changeSettings, checkError, getToken } from '@actions/settings';
 
-export class LoginCredentialsScreenRenderer extends React.Component {
+export class LoginCredentialsScreenRenderer extends React.PureComponent {
   getHeader() {
     return (
       <Header

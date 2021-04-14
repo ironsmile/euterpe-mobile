@@ -28,7 +28,7 @@ import {
 import { gs } from '@styles/global';
 import { PlatformIcon } from '@components/platform-icon';
 
-class SearchRenderer extends React.Component {
+class SearchRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

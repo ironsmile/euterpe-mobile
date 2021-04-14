@@ -10,7 +10,7 @@ import { PlatformIcon } from '@components/platform-icon';
 import { changeSettings, registerToken } from '@actions/settings';
 import { errorToMessage } from '@helpers/errors';
 
-export class LoginBarcodeScreenRenderer extends React.Component {
+export class LoginBarcodeScreenRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

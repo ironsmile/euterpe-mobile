@@ -8,7 +8,7 @@ import { cleanupRecentAlbums } from '@actions/recent-albums';
 import { cleanupRecentArtists } from '@actions/recent-artists';
 import { stopPlaying } from '@actions/playing';
 
-export class SettingsRenderer extends React.Component {
+export class SettingsRenderer extends React.PureComponent {
   render() {
     let loginType = 'None, open server';
 

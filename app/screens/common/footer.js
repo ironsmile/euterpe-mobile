@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   Animated,
   PanResponder,
@@ -28,7 +28,7 @@ export const TABBAR_HEIGHT = 56;
 export const TOGETHER = FOOTER_HEIGHT + TABBAR_HEIGHT;
 const animationDuration = 400;
 
-class FooterRenderer extends Component {
+class FooterRenderer extends PureComponent {
   state = {
     pan: new Animated.ValueXY(),
     opacity: new Animated.Value(1),

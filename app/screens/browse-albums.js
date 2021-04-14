@@ -9,7 +9,7 @@ import Header from '@screens/common/header';
 import { AlbumsList } from '@components/albums-list';
 import { errorToMessage } from '@helpers/errors';
 
-class BrowseAlbumsScreenRenderer extends React.Component {
+class BrowseAlbumsScreenRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 

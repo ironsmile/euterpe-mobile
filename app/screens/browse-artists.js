@@ -9,7 +9,7 @@ import Header from '@screens/common/header';
 import { ArtistsList } from '@components/artists-list';
 import { errorToMessage } from '@helpers/errors';
 
-class BrowseArtistsScreenRenderer extends React.Component {
+class BrowseArtistsScreenRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 

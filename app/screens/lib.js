@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Screen } from './screen';
 import { Settings } from './settings';
 
-export class LibraryScreen extends React.Component {
+export class LibraryScreen extends React.PureComponent {
   shouldComponentUpdate(nextProps, nextState) {
     return this.props.route.key === 'Library';
   }

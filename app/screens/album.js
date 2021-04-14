@@ -12,7 +12,7 @@ import { AlbumBig } from '@components/album-big';
 import { setPlaylist, appendToPlaylist } from '@actions/playing';
 import { errorToMessage } from '@helpers/errors';
 
-class AlbumScreenRenderer extends React.Component {
+class AlbumScreenRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

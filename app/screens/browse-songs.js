@@ -4,7 +4,7 @@ import { Screen } from '@screens/screen';
 import { Helpful } from '@components/helpful';
 import Header from '@screens/common/header';
 
-export class BrowseSongsScreen extends React.Component {
+export class BrowseSongsScreen extends React.PureComponent {
   getHeader() {
     return (
       <Header

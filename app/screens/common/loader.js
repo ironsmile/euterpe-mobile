@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
-export class Loader extends React.Component {
+export class Loader extends React.PureComponent {
   render() {
     return (
       <View style={styles.container}>
