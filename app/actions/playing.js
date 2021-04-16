@@ -147,6 +147,7 @@ export const stopPlaying = () => {
     });
     dispatch(setProgress(0));
     mediaPlayer.stop();
+    MediaControl.resetNowPlaying();
   };
 };
 
