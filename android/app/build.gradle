@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 import org.gradle.internal.os.OperatingSystem
+import groovy.json.JsonSlurper
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -131,6 +132,14 @@ if (OperatingSystem.current().isMacOsX()) {
     pass = getGnomePassword("password", "android_keystore")
 }
 
+/**
+* Reads the version string from the package.json.
+*/
+def getVersionFromNpm() {
+    def inputFile = new File("$rootDir/../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson["version"]
+}
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
@@ -163,11 +172,11 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.httpms"
+        applicationId "com.doycho.httpms"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName getVersionFromNpm()
     }
     splits {
         abi {

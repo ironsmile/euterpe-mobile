@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { Screen } from '@screens/screen';
+import { version } from '../../package.json';
 
 export class AboutScreen extends React.PureComponent {
   render() {
@@ -9,7 +10,7 @@ export class AboutScreen extends React.PureComponent {
         <View style={styles.container}>
           <Text style={[styles.text, styles.header]}>HTTPMS Mobile Player</Text>
 
-          <Text style={styles.text}>Version: 0.1 Beta</Text>
+          <Text style={styles.text}>Version: {version}</Text>
 
           <Text style={[styles.text, styles.header]}>OpenSource projects used in this app:</Text>
 
