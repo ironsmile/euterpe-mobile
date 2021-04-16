@@ -44,9 +44,13 @@ export const recentlyPlayedReducer = (state = initialState, action) => {
         artistsObjects,
       };
 
+    case CLEANUP_RECENTLY_PLAYED:
+      return initialState;
+
     default:
       return state;
   }
 };
 
 export const ADD_TO_RECENTLY_PLAYED = 'RecentlyPlayed/Add';
+export const CLEANUP_RECENTLY_PLAYED = 'RecentlyPlayed/Cleanup';

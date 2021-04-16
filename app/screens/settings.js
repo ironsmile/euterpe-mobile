@@ -6,15 +6,17 @@ import { IconButton } from '@components/icon-button';
 import { finishLogOut } from '@actions/settings';
 import { cleanupRecentAlbums } from '@actions/recent-albums';
 import { cleanupRecentArtists } from '@actions/recent-artists';
-import { stopPlaying } from '@actions/playing';
+import { cleanupRecentlyPlayed } from '@actions/recently-played';
+import { stopPlaying, cleanupPlaying } from '@actions/playing';
 
 export class SettingsRenderer extends React.PureComponent {
   render() {
     let loginType = 'None, open server';
+    const { settings, dispatch } = this.props;
 
-    if (this.props.settings.token) {
+    if (settings.token) {
       loginType = 'Bearer Token';
-    } else if (this.props.settings.username) {
+    } else if (settings.username) {
       loginType = 'Basic Authenticate';
     }
 
@@ -23,7 +25,7 @@ export class SettingsRenderer extends React.PureComponent {
         <View style={styles.container}>
           <Text style={styles.header}>Library Settings</Text>
 
-          <Text style={styles.text}>HTTPMS Address: {this.props.settings.hostAddress}</Text>
+          <Text style={styles.text}>HTTPMS Address: {settings.hostAddress}</Text>
 
           <Text style={styles.text}>Authentication: {loginType}</Text>
 
@@ -32,10 +34,12 @@ export class SettingsRenderer extends React.PureComponent {
             iconName="log-out"
             onPress={() => {
               Keyboard.dismiss();
-              this.props.dispatch(cleanupRecentAlbums());
-              this.props.dispatch(cleanupRecentArtists());
-              this.props.dispatch(finishLogOut());
-              this.props.dispatch(stopPlaying(true));
+              dispatch(cleanupRecentAlbums());
+              dispatch(cleanupRecentArtists());
+              dispatch(cleanupRecentlyPlayed());
+              dispatch(stopPlaying());
+              dispatch(cleanupPlaying());
+              dispatch(finishLogOut());
             }}
           />
         </View>

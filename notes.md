@@ -17,7 +17,6 @@ footer menu color: #222326
 * theme support
 * "Various artists" in search album results
 * crash с "json syntax error" в browse albums
-* logout трябва да изчиства всички ресурси
 * да защитя playlist обекта и currentIndex зад lock-ове в android модула
 * Press the hardware button so many times and at the end the program carshes when
   trying to stop itself.

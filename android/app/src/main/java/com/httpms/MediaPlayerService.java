@@ -625,7 +625,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         Log.e(TAG, "set data source exception: " + e);
         e.printStackTrace();
         stopSelf();
+        mediaPlayer.release();
+        mediaPlayer = null;
+        return;
     }
+
     mediaPlayer.prepareAsync();
   }
 

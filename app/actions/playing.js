@@ -12,6 +12,7 @@ import {
   SELECT_TRACK,
   SET_SELECTED_TRACK,
   APPEND_IN_PLAYLIST,
+  CLEANUP_PLAYING,
 } from '@reducers/playing';
 
 import MediaControl from '@components/media-control-shim';
@@ -380,6 +381,10 @@ export const restorePlayingState = (errorHandler) => {
     });
   };
 };
+
+export const cleanupPlaying = () => ({
+  type: CLEANUP_PLAYING,
+});
 
 // pos must be a value in the range [0, 1].
 export const seekToSeconds = (pos) => {

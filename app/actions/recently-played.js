@@ -1,4 +1,4 @@
-import { ADD_TO_RECENTLY_PLAYED } from '@reducers/recently-played';
+import { ADD_TO_RECENTLY_PLAYED, CLEANUP_RECENTLY_PLAYED } from '@reducers/recently-played';
 
 export const addToRecentlyPlayed = (song) => {
   return (dispatch, getState) => {
@@ -19,3 +19,7 @@ export const addToRecentlyPlayed = (song) => {
     });
   };
 };
+
+export const cleanupRecentlyPlayed = () => ({
+  type: CLEANUP_RECENTLY_PLAYED,
+});

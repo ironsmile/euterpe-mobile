@@ -82,6 +82,9 @@ export const playingReducer = (state = initialState, action) => {
         paused: true,
       };
 
+    case CLEANUP_PLAYING:
+      return initialState;
+
     default:
       return state;
   }
@@ -99,3 +102,4 @@ export const SET_PLAYLIST = 'Playing/SetPlaylist';
 export const APPEND_IN_PLAYLIST = 'Playing/AppendInPlaylist';
 export const SET_IS_LOADING_STATUS = 'Playing/SetLoadigStatus';
 export const TRACK_ENDED = 'Playing/TrackEnded';
+export const CLEANUP_PLAYING = 'Playing/Cleanup';
