@@ -10,26 +10,20 @@ import { ArtistBig } from '@components/artist-big';
 export class ArtistScreen extends React.PureComponent {
   constructor(props) {
     super(props);
+    const { params } = this.props.route;
 
     this.state = {
       isLoading: true,
       errorLoading: false,
       errorObj: null,
-      artist: null,
+      artist: params?.artist ?? null,
       albums: [],
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { params } = this.props.route;
-    const { artist } = this.state;
-
-    if (!artist || artist !== params.artist) {
-      this.setState({
-        isLoading: true,
-        errorLoading: false,
-        artist: params.artist,
-      });
+    if (params.artist) {
       this.getArtistData(params.artist);
     }
   }

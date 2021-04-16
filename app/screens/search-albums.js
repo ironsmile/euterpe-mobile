@@ -9,15 +9,6 @@ import Header from '@screens/common/header';
 class SearchAlbumsRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
-
-    this.state = {};
-  }
-
-  componentWillMount() {
-    this.filterUniqueAlbums(this.props);
-  }
-
-  filterUniqueAlbums(props) {
     const albums = {};
     const albumsArray = [];
 
@@ -35,16 +26,9 @@ class SearchAlbumsRenderer extends React.PureComponent {
       });
     });
 
-    this.setState({
+    this.state = {
       albums: albumsArray,
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.search.query === this.props.search.query) {
-      return;
-    }
-    this.filterUniqueAlbums(nextProps);
+    };
   }
 
   getHeader() {

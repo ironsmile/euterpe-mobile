@@ -15,27 +15,21 @@ import { errorToMessage } from '@helpers/errors';
 class AlbumScreenRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
+    const { params } = this.props.route;
+
     this.state = {
       isLoading: true,
       errorLoading: false,
       errorMessage: null,
-      album: null,
-      artwork: null,
+      album: params?.album ?? null,
+      artwork: params?.album?.album_id ? httpms.getAlbumArtworkURL(params.album.album_id) : null,
       songs: [],
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { params } = this.props.route;
-    const { album } = this.state;
-
-    if (!album || album.album_id !== params.album.album_id) {
-      this.setState({
-        isLoading: true,
-        errorLoading: false,
-        album: params.album,
-        artwork: httpms.getAlbumArtworkURL(params.album.album_id),
-      });
+    if (params.album) {
       this.getAlbumData(params.album);
     }
   }
@@ -46,6 +40,7 @@ class AlbumScreenRenderer extends React.PureComponent {
         isLoading: false,
         errorLoading: true,
         errorMessage: 'No album was selected.',
+        artwork: null,
       });
 
       return;

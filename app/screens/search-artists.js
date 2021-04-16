@@ -7,11 +7,9 @@ import { ArtistsList } from '@components/artists-list';
 import Header from '@screens/common/header';
 
 class SearchArtistsRenderer extends React.PureComponent {
-  componentWillMount() {
-    this.filterUniqueArtists(this.props);
-  }
+  constructor(props) {
+    super(props);
 
-  filterUniqueArtists(props) {
     const artists = {};
     const artistsArray = [];
 
@@ -27,16 +25,9 @@ class SearchArtistsRenderer extends React.PureComponent {
       });
     });
 
-    this.setState({
+    this.state = {
       artists: artistsArray,
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.search.query === this.props.search.query) {
-      return;
-    }
-    this.filterUniqueArtists(nextProps);
+    };
   }
 
   getHeader() {

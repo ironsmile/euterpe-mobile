@@ -31,11 +31,7 @@ import { PlatformIcon } from '@components/platform-icon';
 import { httpms } from '@components/httpms-service';
 
 class PlayerRenderer extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-
+  componentDidMount() {
     MediaControl.on('play', () => {
       this.onTogglePlay(true);
     });

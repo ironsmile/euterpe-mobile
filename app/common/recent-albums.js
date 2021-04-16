@@ -7,10 +7,7 @@ import { PlayList } from '@components/playlist';
 import Images from '@assets/images';
 
 class RecentAlbumsRenderer extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
+  componentDidMount() {
     this.props.dispatch(refreshRecentAlbums());
   }
 

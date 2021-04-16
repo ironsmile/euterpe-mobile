@@ -23,12 +23,9 @@ class BrowseArtistsScreenRenderer extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
-    this.getNextArtistsPage();
-  }
-
   componentDidMount() {
     this._mounted = true;
+    this.getNextArtistsPage();
   }
 
   componentWillUnmount() {

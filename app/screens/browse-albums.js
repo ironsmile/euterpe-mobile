@@ -25,12 +25,9 @@ class BrowseAlbumsScreenRenderer extends React.PureComponent {
     this._mounted = false;
   }
 
-  componentWillMount() {
-    this.getNextAlbumsPage();
-  }
-
   componentDidMount() {
     this._mounted = true;
+    this.getNextAlbumsPage();
   }
 
   componentWillUnmount() {

@@ -13,9 +13,11 @@ import { errorToMessage } from '@helpers/errors';
 export class LoginBarcodeScreenRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
+
+    const isOS = Platform.OS === 'ios';
     this.state = {
-      waitForAuthInfo: true,
-      authorized: false,
+      waitForAuthInfo: isOS,
+      authorized: !isOS,
       camera: Camera.constants.Type.back,
       evaluatingBarCode: false,
       errorMessage: null,
@@ -33,20 +35,17 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
     );
   }
 
-  componentWillMount() {
-    if (Platform.OS === 'ios') {
-      Camera.checkVideoAuthorizationStatus().then((authorized) => {
-        this.setState({
-          waitForAuthInfo: false,
-          authorized,
-        });
-      });
-    } else {
+  componentDidMount() {
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+
+    Camera.checkVideoAuthorizationStatus().then((authorized) => {
       this.setState({
         waitForAuthInfo: false,
-        authorized: true,
+        authorized,
       });
-    }
+    });
   }
 
   getBody() {

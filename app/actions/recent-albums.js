@@ -9,7 +9,7 @@ import { httpms } from '@components/httpms-service';
 export const refreshRecentAlbums = () => {
   return (dispatch, getState) => {
     const state = getState();
-    const { lastFetched } = state.recentArtists;
+    const { lastFetched } = state.recentAlbums;
 
     const now = Date.now();
 
@@ -56,10 +56,6 @@ export const refreshRecentAlbums = () => {
   };
 };
 
-export const cleanupRecentAlbums = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: CLEANUP_RECENT_ALBUMS,
-    });
-  };
-};
+export const cleanupRecentAlbums = () => ({
+  type: CLEANUP_RECENT_ALBUMS,
+});
