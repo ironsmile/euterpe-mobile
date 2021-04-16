@@ -47,7 +47,7 @@ class ErrorsOverlayRenderer extends React.PureComponent {
     return <Text style={styles.errorText}>{text}</Text>;
   };
 
-  _keyExtractor = (item, index) => index;
+  _keyExtractor = (item, index) => `${index}`;
 
   render() {
     if (this.props.errors.length < 1) {

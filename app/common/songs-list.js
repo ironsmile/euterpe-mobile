@@ -15,7 +15,7 @@ class QueueItem extends React.PureComponent {
 }
 
 export class SongsList extends React.PureComponent {
-  _keyExtractor = (item, index) => index;
+  _keyExtractor = (item, index) => `${index}`;
 
   _onPressItem = (index: number) => {
     this.props.onPressItem(index);

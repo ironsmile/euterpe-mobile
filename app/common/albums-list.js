@@ -17,7 +17,7 @@ class AlbumItem extends React.PureComponent {
 export class AlbumsList extends React.PureComponent {
   state = { selected: (new Map(): Map<int, boolean>) };
 
-  _keyExtractor = (item, index) => item.album_id;
+  _keyExtractor = (item, index) => `${item.album_id}`;
 
   _onPressItem = (album) => {
     this.setState((state) => {

@@ -1,11 +1,10 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, View, Text, Image } from 'react-native';
 
 import { AlbumSmall } from '@components/album-small';
 import { headerHeight } from '@screens/common/header';
 import Images from '@assets/images';
 import D from '@screens/common/dimensions';
-import { PlatformIcon } from '@components/platform-icon';
 import { httpms } from '@components/httpms-service';
 
 class QueueItem extends React.PureComponent {
@@ -19,7 +18,7 @@ class QueueItem extends React.PureComponent {
 }
 
 export class ArtistBig extends React.PureComponent {
-  _keyExtractor = (item, index) => item.album_id;
+  _keyExtractor = (item, index) => `${item.album_id}`;
 
   _onPressAlbum = (album) => {
     if (this.props.onPressAlbum) {

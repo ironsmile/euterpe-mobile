@@ -15,7 +15,7 @@ class ArtistItem extends React.PureComponent {
 }
 
 export class ArtistsList extends React.PureComponent {
-  _keyExtractor = (item, index) => index;
+  _keyExtractor = (item, index) => `${index}`;
 
   _onPressItem = (artist) => {
     if (this.props.onPressItem) {
