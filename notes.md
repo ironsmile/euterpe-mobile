@@ -11,8 +11,6 @@ footer menu color: #222326
   само ако разговора е започнал.
 * възможност музиката на андроид да се пази на SD картата
 * няма нужда да се държи wifi lock за playlists, в които всикчи файлове ги има локално
-* soft клавиатурата трябва да скрива footer-а, защото иначе той заема почти целият екран. Да се види
-  https://github.com/douglasjunior/react-native-keyboard-manager в тази връзка.
 * Error text slider-а отгоре на андроид рисува върху самият taskbar
 * status bar-а на 4.4.2 андроид не е съвсем прозрачен
 * navigation state-a след първото ниво не се запазва в redux
@@ -21,6 +19,8 @@ footer menu color: #222326
 * crash с "json syntax error" в browse albums
 * logout трябва да изчиства всички ресурси
 * да защитя playlist обекта и currentIndex зад lock-ове в android модула
+* Press the hardware button so many times and at the end the program carshes when
+  trying to stop itself.
 
 
 == links ==
@@ -83,8 +83,3 @@ adb logcat --pid $(adb shell ps | grep httpms | awk '{ print $2 }')
 == New Name ==
 
 Euterpe or Muzika
-
-== Know Bugs ==
-
-* Press the hardware button so many times and at the end the program carshes when
-  trying to stop itself.
