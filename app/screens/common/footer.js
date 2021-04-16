@@ -144,26 +144,11 @@ class FooterRenderer extends PureComponent {
       'keyboardDidHide',
       this._keyboardDidHide.bind(this)
     );
-
-    if (Platform.OS !== 'android') {
-      this.keyboardWillShowListener = Keyboard.addListener(
-        'keyboardWillShow',
-        this._keyboardDidShow.bind(this)
-      );
-      this.keyboardWillHideListener = Keyboard.addListener(
-        'keyboardWillHide',
-        this._keyboardDidHide.bind(this)
-      );
-    }
   }
 
   componentWillUnmount() {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
-    if (Platform.OS !== 'android') {
-      this.keyboardWillShowListener.remove();
-      this.keyboardWillHideListener.remove();
-    }
   }
 
   _keyboardDidShow() {
