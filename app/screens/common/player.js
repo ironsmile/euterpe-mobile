@@ -29,6 +29,7 @@ import { NowPlaying } from '@components/now-playing-small';
 import { SongsList } from '@components/songs-list';
 import { PlatformIcon } from '@components/platform-icon';
 import { httpms } from '@components/httpms-service';
+import { appendError } from '@actions/errors';
 
 class PlayerRenderer extends React.PureComponent {
   componentDidMount() {
@@ -124,7 +125,7 @@ class PlayerRenderer extends React.PureComponent {
   }
 
   renderInfo() {
-    const { playing, trackLoading } = this.props;
+    const { playing, trackLoading, dispatch } = this.props;
 
     return (
       <View style={styles.infoContainer}>
@@ -148,7 +149,7 @@ class PlayerRenderer extends React.PureComponent {
                   title: 'Share this song',
                 }).catch((error) => {
                   // ignored
-                  console.error(`Error happened while sharing: ${error}`);
+                  dispatch(appendError(`Error happened while sharing: ${error}`));
                 });
               }}
             >

@@ -30,7 +30,7 @@ import { HttpmsNavigator } from '@nav';
 import { httpms } from '@components/httpms-service';
 import { errorsReducer } from '@reducers/errors';
 import { appendError } from '@actions/errors';
-import { ErrorsOverlay } from '@screens/common/errors'; // todo add it to the App
+import { ErrorsOverlay } from '@screens/common/errors';
 
 const appReducer = combineReducers({
   playing: playingReducer,
@@ -57,6 +57,7 @@ const rehydratedReducer = (state = {}, action) => {
           ...incoming,
         };
       }
+    // eslint-disable-next-line no-fallthrough
     default:
       return appReducer(state, action);
   }
@@ -71,6 +72,22 @@ const store = createStore(
 const Navigator = connect((state) => ({
   loggedIn: state.settings.loggedIn,
 }))(HttpmsNavigator);
+
+const mapStateToPropsRoot = (state) => ({
+  errors: state.errors.errors,
+});
+
+class ErrorsOrNavigatorView extends React.Component {
+  render() {
+    if (this.props.errors.length > 0) {
+      return <ErrorsOverlay />;
+    }
+
+    return <Navigator />;
+  }
+}
+
+const ErrorsOrNavigator = connect(mapStateToPropsRoot)(ErrorsOrNavigatorView);
 
 export default class App extends React.Component {
   constructor(props) {
@@ -120,10 +137,14 @@ export default class App extends React.Component {
       return <Loader />;
     }
 
+    if (this.state.store.getState().errors.length > 0) {
+      return <ErrorsOverlay />;
+    }
+
     return (
       <Provider store={this.state.store}>
         <NavigationContainer>
-          <Navigator />
+          <ErrorsOrNavigator />
         </NavigationContainer>
       </Provider>
     );

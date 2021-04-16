@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { CLEANUP_LIBRARY, RESET_LIBRARY, SONG_USED } from '@reducers/library';
 
 import { httpms } from '@components/httpms-service';
+import { appendError } from '@actions/errors';
 
 let _downloading = null;
 
@@ -86,7 +87,7 @@ export const songDownloaded = (song) => {
 
     while (lruLenght > state.maxAllowedSize - 1) {
       let deletedSongID = lru[lruLenght - 1];
-      unlinkSong(deletedSongID);
+      unlinkSong(deletedSongID, dispatch);
       lru = lru.slice(0, -1);
       lruLenght -= 1;
     }
@@ -100,11 +101,11 @@ export const songDownloaded = (song) => {
   };
 };
 
-const unlinkSong = (songID) => {
+const unlinkSong = (songID, dispatch) => {
   const filePath = songFilePath(songID);
 
   RNFetchBlob.fs.unlink(filePath).catch((error) => {
-    console.error(`Error unlinking song ${songID}`, error);
+    dispatch(appendError(`Error unlinking song ${songID}: ${error}`));
   });
 };
 

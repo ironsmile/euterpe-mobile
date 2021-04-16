@@ -5,6 +5,7 @@ import {
   CLEANUP_RECENT_ARTISTS,
 } from '@reducers/recent-artists';
 import { httpms } from '@components/httpms-service';
+import { appendError } from '@actions/errors';
 
 export const refreshRecentArtists = () => {
   return (dispatch, getState) => {
@@ -50,16 +51,11 @@ export const refreshRecentArtists = () => {
         dispatch({
           type: STOPPED_REFRESHING_ARTISTS,
         });
-
-        console.error('Error while refreshing recently added artists', error);
+        dispatch(appendError(`Error while refreshing recently added artists ${error}`));
       });
   };
 };
 
-export const cleanupRecentArtists = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: CLEANUP_RECENT_ARTISTS,
-    });
-  };
-};
+export const cleanupRecentArtists = () => ({
+  type: CLEANUP_RECENT_ARTISTS,
+});
