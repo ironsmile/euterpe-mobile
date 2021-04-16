@@ -35,15 +35,9 @@ class SearchRenderer extends React.PureComponent {
       showCancel: false,
       searchValue: this.props.search.query,
     };
+  }
 
-    this.keyboardWillShowListener = Keyboard.addListener(
-      'keyboardWillShow',
-      this._keyboardDidShow.bind(this)
-    );
-    this.keyboardWillHideListener = Keyboard.addListener(
-      'keyboardWillHide',
-      this._keyboardDidHide.bind(this)
-    );
+  componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       this._keyboardDidShow.bind(this)
@@ -52,13 +46,26 @@ class SearchRenderer extends React.PureComponent {
       'keyboardDidHide',
       this._keyboardDidHide.bind(this)
     );
+
+    if (Platform.OS !== 'android') {
+      this.keyboardWillShowListener = Keyboard.addListener(
+        'keyboardWillShow',
+        this._keyboardDidShow.bind(this)
+      );
+      this.keyboardWillHideListener = Keyboard.addListener(
+        'keyboardWillHide',
+        this._keyboardDidHide.bind(this)
+      );
+    }
   }
 
   componentWillUnmount() {
-    this.keyboardWillShowListener.remove();
-    this.keyboardWillHideListener.remove();
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
+    if (Platform.OS !== 'android') {
+      this.keyboardWillShowListener.remove();
+      this.keyboardWillHideListener.remove();
+    }
   }
 
   _keyboardDidShow() {

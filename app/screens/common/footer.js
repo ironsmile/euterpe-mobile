@@ -4,12 +4,14 @@ import {
   PanResponder,
   View,
   Text,
+  Platform,
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
   StatusBar,
   ActivityIndicator,
   BackHandler,
+  Keyboard,
 } from 'react-native';
 
 import D from './dimensions';
@@ -40,6 +42,7 @@ class FooterRenderer extends PureComponent {
     this.state = {
       pan: new Animated.ValueXY(),
       opacity: new Animated.Value(1),
+      keyboardShown: false,
     };
 
     let panMover = Animated.event([
@@ -132,6 +135,47 @@ class FooterRenderer extends PureComponent {
       // which makes the screen flicker.
       this.scrollUp();
     }
+
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow.bind(this)
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide.bind(this)
+    );
+
+    if (Platform.OS !== 'android') {
+      this.keyboardWillShowListener = Keyboard.addListener(
+        'keyboardWillShow',
+        this._keyboardDidShow.bind(this)
+      );
+      this.keyboardWillHideListener = Keyboard.addListener(
+        'keyboardWillHide',
+        this._keyboardDidHide.bind(this)
+      );
+    }
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+    if (Platform.OS !== 'android') {
+      this.keyboardWillShowListener.remove();
+      this.keyboardWillHideListener.remove();
+    }
+  }
+
+  _keyboardDidShow() {
+    this.setState({
+      keyboardShown: true,
+    });
+  }
+
+  _keyboardDidHide() {
+    this.setState({
+      keyboardShown: false,
+    });
   }
 
   // hide is called when the player modal is hidden.
@@ -306,6 +350,10 @@ class FooterRenderer extends PureComponent {
   }
 
   render() {
+    if (this.state.keyboardShown === true) {
+      return null;
+    }
+
     const height = this.props.nowPlaying ? TOGETHER : FOOTER_HEIGHT;
 
     return (
