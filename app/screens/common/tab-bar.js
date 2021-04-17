@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const tabFuncs = {
   CreateTabIcon: (iconName) => {
     return ({ focused, color, size }) => {
-      return <Icon name={iconName} color={color} size={size} />;
+      const name = focused ? `${iconName}` : `${iconName}-outline`;
+      return <Icon name={name} color={color} size={size} />;
     };
   },
 
@@ -17,13 +18,13 @@ const tabFuncs = {
       }
       return (
         <Text
-          style={{
-            textAlign: 'center',
-            marginBottom: 3.5,
-            fontSize: 10,
-            color,
-            fontWeight,
-          }}
+          style={[
+            styles.label,
+            {
+              color,
+              fontWeight,
+            },
+          ]}
         >
           {label}
         </Text>
@@ -31,6 +32,14 @@ const tabFuncs = {
     };
   },
 };
+
+const styles = StyleSheet.create({
+  label: {
+    textAlign: 'center',
+    marginBottom: 3.5,
+    fontSize: 10,
+  },
+});
 
 export default tabFuncs;
 
