@@ -1,12 +1,23 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, ImageBackground } from 'react-native';
 
 import D from '@screens/common/dimensions';
 
 export default (props) => {
+  const imageStyle = [styles.album, props.circle ? styles.circled : {}];
+
   return (
     <View style={styles.container}>
-      <Image source={props.source} style={[styles.album, props.circle ? styles.circled : {}]} />
+      <ImageBackground
+        source={props.defaultSource}
+        style={{
+          width: styles.album.width,
+          height: styles.album.height,
+        }}
+        imageStyle={imageStyle}
+      >
+        <Image source={props.source} style={imageStyle} />
+      </ImageBackground>
 
       <Text style={styles.text} numberOfLines={1}>
         {props.getItemTitle(props.item)}
@@ -29,12 +40,6 @@ const styles = StyleSheet.create({
     width: (D.width * 4.2) / 10,
     height: (D.width * 4.2) / 10,
     backgroundColor: 'transparent',
-  },
-
-  img: {
-    flex: 1,
-    height: null,
-    width: null,
   },
 
   text: {

@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, ImageBackground } from 'react-native';
 
 export default (props) => {
+  const imageStyle = [styles.image, { width: props.width, height: props.height }];
+
   return (
     <View style={{ width: props.page_width }}>
-      <Image
-        style={[styles.image, { width: props.width, height: props.height }]}
-        source={props.source}
-      />
+      <ImageBackground source={props.defaultSource} style={imageStyle}>
+        <Image style={imageStyle} source={props.source} />
+      </ImageBackground>
     </View>
   );
 };

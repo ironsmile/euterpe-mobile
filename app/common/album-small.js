@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, ImageBackground } from 'react-native';
 
 import Images from '@assets/images';
 import { SmallClickable } from '@components/small-clickable';
@@ -18,11 +18,12 @@ export class AlbumSmall extends React.PureComponent {
 
   getAlbumImage() {
     return (
-      <Image
-        style={styles.resultRowImage}
-        defaultSource={Images.unknownAlbum}
-        source={{ uri: httpms.getAlbumArtworkURL(this.props.album.album_id) }}
-      />
+      <ImageBackground source={Images.unknownAlbum} style={styles.resultRowImage}>
+        <Image
+          style={styles.resultRowImage}
+          source={{ uri: httpms.getAlbumArtworkURL(this.props.album.album_id) }}
+        />
+      </ImageBackground>
     );
   }
 

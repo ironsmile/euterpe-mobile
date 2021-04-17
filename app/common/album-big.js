@@ -1,5 +1,13 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 
 import { SongSmall } from '@components/song-small';
 import { headerHeight } from '@screens/common/header';
@@ -47,11 +55,9 @@ export class AlbumBig extends React.PureComponent {
         <View style={styles.screenHeaderAvoider} />
         <View style={styles.headerTextContainer}>
           <View style={styles.withShadow}>
-            <Image
-              style={styles.albumImage}
-              defaultSource={Images.unknownAlbum}
-              source={{ uri: this.props.artwork }}
-            />
+            <ImageBackground source={Images.unknownAlbum} style={styles.albumImage}>
+              <Image style={styles.albumImage} source={{ uri: this.props.artwork }} />
+            </ImageBackground>
           </View>
           <Text style={styles.header}>{this.props.album.album}</Text>
           <Text style={styles.artistName}>ALBUM BY {this.props.album.artist.toUpperCase()}</Text>
