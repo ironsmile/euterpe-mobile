@@ -94,7 +94,8 @@ export class SearchResultsRenderer extends React.Component {
             {this.props.search.topArtists.map((item, index) => (
               <ArtistSmall
                 key={index}
-                artist={item}
+                artist={item.artist}
+                artist_id={item.artist_id}
                 onSelect={() => {
                   this.props.navigation.navigate('SearchArtist', { artist: item });
                 }}

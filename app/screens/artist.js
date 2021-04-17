@@ -16,15 +16,15 @@ export class ArtistScreen extends React.PureComponent {
       isLoading: true,
       errorLoading: false,
       errorObj: null,
-      artist: params?.artist ?? null,
+      artist: params?.artist?.artist ?? null,
+      artist_id: params?.artist?.artist_id ?? null,
       albums: [],
     };
   }
 
   componentDidMount() {
-    const { params } = this.props.route;
-    if (params.artist) {
-      this.getArtistData(params.artist);
+    if (this.state.artist) {
+      this.getArtistData(this.state.artist);
     }
   }
 
@@ -141,6 +141,7 @@ export class ArtistScreen extends React.PureComponent {
     return (
       <ArtistBig
         artist={this.state.artist}
+        artist_id={this.state.artist_id}
         albums={this.state.albums}
         onPressAlbum={(album) => {
           this.props.navigation.navigate('SearchAlbum', { album });

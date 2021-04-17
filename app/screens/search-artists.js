@@ -21,6 +21,7 @@ class SearchArtistsRenderer extends React.PureComponent {
       artists[song.artist] = true;
 
       artistsArray.push({
+        artist_id: song?.artist_id ?? null,
         artist: song.artist,
       });
     });

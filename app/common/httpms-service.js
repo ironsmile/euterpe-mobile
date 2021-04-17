@@ -120,6 +120,18 @@ class HttpmsService {
     return url;
   }
 
+  getArtistImageURL(artistID) {
+    const e = encodeURIComponent;
+    const { settings } = this.getState();
+    const url = `${settings.hostAddress}/artist/${e(artistID)}/image`;
+
+    if (settings.token) {
+      return `${url}?token=${e(settings.token)}`;
+    }
+
+    return url;
+  }
+
   getCheckSettingsRequest() {
     return this.getRequestByURL(this.getRecentAlbumsURL());
   }

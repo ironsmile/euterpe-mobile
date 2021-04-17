@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, Text, Image } from 'react-native';
+import { FlatList, StyleSheet, View, Text, Image, ImageBackground } from 'react-native';
 
 import { AlbumSmall } from '@components/album-small';
 import { headerHeight } from '@screens/common/header';
@@ -43,7 +43,7 @@ export class ArtistBig extends React.PureComponent {
       <View>
         <View style={styles.screenHeaderAvoider} />
         <View style={styles.headerTextContainer}>
-          <Image style={styles.artistImage} source={Images.unknownArtist} />
+          <ArtistImage {...this.props} />
           <Text style={styles.header}>{this.props.artist}</Text>
           <Text style={styles.subTitle}>Albums</Text>
         </View>
@@ -62,6 +62,26 @@ export class ArtistBig extends React.PureComponent {
       />
     );
   }
+}
+
+function ArtistImage({ artist_id }) {
+  if (!artist_id) {
+    return <Image style={styles.artistImage} source={Images.unknownArtist} />;
+  }
+
+  const artistImageURL = httpms.getArtistImageURL(artist_id);
+  return (
+    <ImageBackground
+      source={Images.unknownArtist}
+      style={{
+        width: styles.artistImage.width,
+        height: styles.artistImage.height,
+      }}
+      imageStyle={styles.artistImage}
+    >
+      <Image source={{ uri: artistImageURL }} style={styles.artistImage} />
+    </ImageBackground>
+  );
 }
 
 const styles = StyleSheet.create({

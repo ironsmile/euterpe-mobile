@@ -16,7 +16,7 @@ export class HomeScreen extends React.PureComponent {
             <RecentArtists
               key={0}
               onArtistPress={(item) => {
-                this.props.navigation.navigate('SearchArtist', { artist: item.artist });
+                this.props.navigation.navigate('SearchArtist', { artist: item });
               }}
             />
             <RecentAlbums
@@ -28,7 +28,7 @@ export class HomeScreen extends React.PureComponent {
             <RecentlyPlayedArtists
               key={3}
               onArtistPress={(item) => {
-                this.props.navigation.navigate('SearchArtist', { artist: item.artist });
+                this.props.navigation.navigate('SearchArtist', { artist: item });
               }}
             />
             <RecentlyPlayedAlbums

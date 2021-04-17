@@ -52,7 +52,10 @@ export const searchReducer = (state = initialState, action) => {
 
         artists[song.artist] = true;
 
-        artistsArray.push(song.artist);
+        artistsArray.push({
+          artist_id: song?.artist_id ?? null,
+          artist: song.artist,
+        });
 
         artistsLen += 1;
       };

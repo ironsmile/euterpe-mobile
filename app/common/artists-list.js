@@ -6,7 +6,8 @@ import { headerHeight } from '@screens/common/header';
 
 class ArtistItem extends React.PureComponent {
   _onPress = () => {
-    this.props.onPressItem(this.props.artist);
+    const { artist, artist_id } = this.props;
+    this.props.onPressItem({ artist, artist_id });
   };
 
   render() {
@@ -24,7 +25,7 @@ export class ArtistsList extends React.PureComponent {
   };
 
   _renderItem = ({ item, index }) => (
-    <ArtistItem index={index} onPressItem={this._onPressItem} artist={item.artist} />
+    <ArtistItem index={index} onPressItem={this._onPressItem} {...item} />
   );
 
   _renderFooter = () => {
