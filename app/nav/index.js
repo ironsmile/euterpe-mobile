@@ -47,7 +47,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         options={{
           tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Home'),
-          tabBarIcon: CreateTabIcon('ios-home'),
+          tabBarIcon: CreateTabIcon('home'),
         }}
       />
       <Tabs.Screen
@@ -56,7 +56,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         options={{
           tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Browse'),
-          tabBarIcon: CreateTabIcon('ios-albums'),
+          tabBarIcon: CreateTabIcon('albums'),
         }}
       />
       <Tabs.Screen
@@ -65,7 +65,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         options={{
           tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Search'),
-          tabBarIcon: CreateTabIcon('ios-search'),
+          tabBarIcon: CreateTabIcon('search'),
         }}
       />
       <Tabs.Screen
@@ -74,7 +74,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         options={{
           tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('Library'),
-          tabBarIcon: CreateTabIcon('ios-book'),
+          tabBarIcon: CreateTabIcon('book'),
         }}
       />
       <Tabs.Screen
@@ -83,7 +83,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         options={{
           tabBarVisible: !showFooter,
           tabBarLabel: CreateTabLabel('About'),
-          tabBarIcon: CreateTabIcon('ios-information-circle'),
+          tabBarIcon: CreateTabIcon('information-circle'),
         }}
       />
     </Tabs.Navigator>
