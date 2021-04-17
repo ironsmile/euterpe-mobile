@@ -15,7 +15,7 @@ class HttpmsService {
 
   getSearchURL(searchText) {
     const { settings } = this.getState();
-    return `${settings.hostAddress}/search?q=${encodeURIComponent(searchText)}`;
+    return `${settings.hostAddress}/v1/search?q=${encodeURIComponent(searchText)}`;
   }
 
   getSearchRequest(searchText) {
@@ -46,7 +46,7 @@ class HttpmsService {
 
   getSongURL(songID) {
     const { settings } = this.getState();
-    return `${settings.hostAddress}/file/${songID}`;
+    return `${settings.hostAddress}/v1/file/${songID}`;
   }
 
   getSongRequest(songID) {
@@ -82,17 +82,17 @@ class HttpmsService {
 
   getBrowseArtistsURL() {
     const { settings } = this.getState();
-    return `${settings.hostAddress}/browse?by=artist&per-page=20`;
+    return `${settings.hostAddress}/v1/browse?by=artist&per-page=20`;
   }
 
   getBrowseAlbumsURL() {
     const { settings } = this.getState();
-    return `${settings.hostAddress}/browse?by=album&per-page=20`;
+    return `${settings.hostAddress}/v1/browse?by=album&per-page=20`;
   }
 
   getRecentArtistsURL() {
     const { settings } = this.getState();
-    return `${settings.hostAddress}/browse?by=artist&per-page=5&order=desc&order-by=id`;
+    return `${settings.hostAddress}/v1/browse?by=artist&per-page=5&order=desc&order-by=id`;
   }
 
   getRecentArtistsRequest() {
@@ -101,7 +101,7 @@ class HttpmsService {
 
   getRecentAlbumsURL() {
     const { settings } = this.getState();
-    return `${settings.hostAddress}/browse?by=album&per-page=5&order=desc&order-by=id`;
+    return `${settings.hostAddress}/v1/browse?by=album&per-page=5&order=desc&order-by=id`;
   }
 
   getRecentAlbumsRequest() {
@@ -111,7 +111,7 @@ class HttpmsService {
   getAlbumArtworkURL(albumID) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
-    const url = `${settings.hostAddress}/album/${e(albumID)}/artwork`;
+    const url = `${settings.hostAddress}/v1/album/${e(albumID)}/artwork`;
 
     if (settings.token) {
       return `${url}?token=${e(settings.token)}`;
@@ -123,7 +123,7 @@ class HttpmsService {
   getArtistImageURL(artistID) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
-    const url = `${settings.hostAddress}/artist/${e(artistID)}/image`;
+    const url = `${settings.hostAddress}/v1/artist/${e(artistID)}/image`;
 
     if (settings.token) {
       return `${url}?token=${e(settings.token)}`;
@@ -140,7 +140,7 @@ class HttpmsService {
     const { settings } = this.getState();
 
     return {
-      url: `${settings.hostAddress}/login/token/`,
+      url: `${settings.hostAddress}/v1/login/token/`,
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -157,7 +157,7 @@ class HttpmsService {
     const { settings } = this.getState();
 
     return {
-      url: `${settings.hostAddress}/register/token/`,
+      url: `${settings.hostAddress}/v1/register/token/`,
       method: 'POST',
       headers: {
         Accept: 'application/json',
