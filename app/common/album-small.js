@@ -33,7 +33,7 @@ export class AlbumSmall extends React.PureComponent {
         mainText={this.props.album.album}
         additionalText={this.getAdditionalText()}
         leftRectangle={this.getAlbumImage()}
-        rightIcon="ios-arrow-forward"
+        rightIcon="chevron-forward"
       />
     );
   }

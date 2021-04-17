@@ -20,7 +20,7 @@ export class ArtistSmall extends React.PureComponent {
         onSelect={this.props.onSelect}
         mainText={this.props.artist}
         leftRectangle={this.getArtistImage()}
-        rightIcon="ios-arrow-forward"
+        rightIcon="chevron-forward"
       />
     );
   }

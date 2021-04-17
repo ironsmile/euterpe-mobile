@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 10,
     paddingRight: 10,
-    width: D.width - 65,
+    width: D.width - 75,
   },
   text: {
     fontSize: 12,
