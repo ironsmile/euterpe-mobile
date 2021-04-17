@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, View, Platform, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import Camera from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
@@ -14,11 +14,8 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const isOS = Platform.OS === 'ios';
     this.state = {
-      waitForAuthInfo: isOS,
-      authorized: !isOS,
-      camera: Camera.constants.Type.back,
+      camera: RNCamera.Constants.Type.back,
       evaluatingBarCode: false,
       errorMessage: null,
     };
@@ -35,36 +32,7 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
     );
   }
 
-  componentDidMount() {
-    if (Platform.OS !== 'ios') {
-      return;
-    }
-
-    Camera.checkVideoAuthorizationStatus().then((authorized) => {
-      this.setState({
-        waitForAuthInfo: false,
-        authorized,
-      });
-    });
-  }
-
   getBody() {
-    if (this.state.waitForAuthInfo) {
-      return <Text style={styles.text}>Checking camera permissions...</Text>;
-    }
-
-    if (!this.state.authorized) {
-      return (
-        <Helpful title="No Camera Permissions" firstLine="" iconName="camera">
-          <Text style={styles.text}>
-            The app has no camera permissions. They are required in order to use the device's camera
-            for scanning HTTPMS details barcode. Please go to Settings -> httpms and allow the
-            camera.
-          </Text>
-        </Helpful>
-      );
-    }
-
     let qrMessage = null;
 
     if (this.state.evaluatingBarCode) {
@@ -87,14 +55,21 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
     }
 
     return (
-      <Camera
+      <RNCamera
         ref={(cam) => {
           this.camera = cam;
         }}
+        captureAudio={false}
         type={this.state.camera}
         style={styles.preview}
-        aspect={Camera.constants.Aspect.fill}
-        barCodeTypes={['qr']}
+        barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+        androidCameraPermissionOptions={{
+          title: 'Permission to use camera',
+          message:
+            'In order to scan the server barcode a permission to use the camera is ' +
+            'needed. The camera will never be used for anything else.',
+          buttonPositive: 'Ok',
+        }}
         onBarCodeRead={(event) => {
           if (this.state.evaluatingBarCode) {
             return;
@@ -177,28 +152,38 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
           );
         }}
       >
-        {errorMessage}
-        {qrMessage}
+        {({ status }) => {
+          if (status !== 'READY') {
+            return <NotAuthorizedYet />;
+          }
 
-        <View style={[styles.verticallyAligned, styles.hintBackground]}>
-          <Text style={styles.hintText}>Point to a HTTPMS QR Code</Text>
-          <TouchableOpacity
-            onPress={() => {
-              let newCamera = Camera.constants.Type.back;
+          return (
+            <View>
+              {errorMessage}
+              {qrMessage}
 
-              if (this.state.camera === Camera.constants.Type.back) {
-                newCamera = Camera.constants.Type.front;
-              }
+              <View style={[styles.verticallyAligned, styles.hintBackground]}>
+                <Text style={styles.hintText}>Point to a HTTPMS QR Code</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    let newCamera = RNCamera.Constants.Type.back;
 
-              this.setState({
-                camera: newCamera,
-              });
-            }}
-          >
-            <PlatformIcon color="white" platform="reverse-camera" size={34} />
-          </TouchableOpacity>
-        </View>
-      </Camera>
+                    if (this.state.camera === RNCamera.Constants.Type.back) {
+                      newCamera = RNCamera.Constants.Type.front;
+                    }
+
+                    this.setState({
+                      camera: newCamera,
+                    });
+                  }}
+                >
+                  <PlatformIcon color="white" platform="camera-reverse-outline" size={34} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }}
+      </RNCamera>
     );
   }
 
@@ -210,6 +195,15 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
     );
   }
 }
+
+const NotAuthorizedYet = () => (
+  <Helpful title="No Camera Permissions" firstLine="" iconName="camera-outline">
+    <Text style={styles.text}>
+      The app has no camera permissions. They are required in order to use the device's camera for
+      scanning HTTPMS details barcode. Please go to Settings -> httpms and allow the camera.
+    </Text>
+  </Helpful>
+);
 
 const mapStateToProps = (state) => ({
   settings: state.settings,
