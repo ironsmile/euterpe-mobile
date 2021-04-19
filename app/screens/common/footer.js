@@ -18,7 +18,7 @@ import D from './dimensions';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
-import { showFooter } from '@actions/footer';
+import { showPlayerFullscreen } from '@actions/footer';
 import { togglePlaying } from '@actions/playing';
 import { TrackProgress } from '@components/track-progress';
 import { PlatformIcon } from '@components/platform-icon';
@@ -165,12 +165,12 @@ class FooterRenderer extends PureComponent {
 
   // hide is called when the player modal is hidden.
   hide() {
-    this.props.dispatch(showFooter(true));
+    this.props.dispatch(showPlayerFullscreen(true));
   }
 
   // show is called when the player modal is shown.
   show() {
-    this.props.dispatch(showFooter(false));
+    this.props.dispatch(showPlayerFullscreen(false));
   }
 
   panResponderEnabled() {
@@ -450,7 +450,7 @@ const mapStateToProps = (state) => ({
   paused: state.playing.paused,
   trackLoading: state.playing.trackLoading,
   playerQueueShown: state.player.showQueue,
-  playerFullScreen: state.footer.shown,
+  playerFullScreen: state.footer.playerFullScreen,
 });
 
 const Footer = connect(mapStateToProps)(FooterRenderer);

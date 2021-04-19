@@ -19,7 +19,7 @@ import { CreateTabIcon, CreateTabLabel } from '@screens/common/tab-bar';
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
-function LoggedUserNavigatorView({ showFooter }) {
+function LoggedUserNavigatorView({ playerFullScreen }) {
   return (
     <Tabs.Navigator
       tabBar={HttpmsBottomTabView}
@@ -45,7 +45,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         name="Home"
         component={HomeNavigator}
         options={{
-          tabBarVisible: !showFooter,
+          tabBarVisible: !playerFullScreen,
           tabBarLabel: CreateTabLabel('Home'),
           tabBarIcon: CreateTabIcon('home'),
         }}
@@ -54,7 +54,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         name="Browse"
         component={BrowseNavigator}
         options={{
-          tabBarVisible: !showFooter,
+          tabBarVisible: !playerFullScreen,
           tabBarLabel: CreateTabLabel('Browse'),
           tabBarIcon: CreateTabIcon('albums'),
         }}
@@ -63,7 +63,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         name="Search"
         component={SearchNavigator}
         options={{
-          tabBarVisible: !showFooter,
+          tabBarVisible: !playerFullScreen,
           tabBarLabel: CreateTabLabel('Search'),
           tabBarIcon: CreateTabIcon('search'),
         }}
@@ -72,7 +72,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         name="Library"
         component={LibraryScreen}
         options={{
-          tabBarVisible: !showFooter,
+          tabBarVisible: !playerFullScreen,
           tabBarLabel: CreateTabLabel('Library'),
           tabBarIcon: CreateTabIcon('book'),
         }}
@@ -81,7 +81,7 @@ function LoggedUserNavigatorView({ showFooter }) {
         name="About"
         component={AboutScreen}
         options={{
-          tabBarVisible: !showFooter,
+          tabBarVisible: !playerFullScreen,
           tabBarLabel: CreateTabLabel('About'),
           tabBarIcon: CreateTabIcon('information-circle'),
         }}
@@ -91,7 +91,7 @@ function LoggedUserNavigatorView({ showFooter }) {
 }
 
 export const LoggedUserNavigator = connect((state) => ({
-  showFooter: state.footer.shown,
+  playerFullScreen: state.footer.playerFullScreen,
 }))(LoggedUserNavigatorView);
 
 export function LoginFlowNavigator() {

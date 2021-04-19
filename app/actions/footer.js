@@ -1,6 +1,6 @@
-import { SHOW_FOOTER } from '@reducers/footer';
+import { SHOW_PLAYER_FULLSCREEN } from '@reducers/footer';
 
-export const showFooter = (val) => ({
-  type: SHOW_FOOTER,
+export const showPlayerFullscreen = (val) => ({
+  type: SHOW_PLAYER_FULLSCREEN,
   val,
 });

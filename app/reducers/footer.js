@@ -1,14 +1,14 @@
 const initialState = {
-  shown: true,
+  playerFullScreen: false,
 };
 
 export const footerReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SHOW_FOOTER:
-      return { ...state, shown: action.val ?? initialState.shown };
+    case SHOW_PLAYER_FULLSCREEN:
+      return { ...state, playerFullScreen: action.val ?? initialState.playerFullScreen };
     default:
       return state;
   }
 };
 
-export const SHOW_FOOTER = 'Footer/Show';
+export const SHOW_PLAYER_FULLSCREEN = 'Footer/ShowPlayerFullscreen';
