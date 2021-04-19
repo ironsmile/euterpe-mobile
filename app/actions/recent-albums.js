@@ -6,6 +6,7 @@ import {
 } from '@reducers/recent-albums';
 import { httpms } from '@components/httpms-service';
 import { appendError } from '@actions/errors';
+import { errorToMessage } from '@helpers/errors';
 
 export const refreshRecentAlbums = () => {
   return (dispatch, getState) => {
@@ -51,7 +52,9 @@ export const refreshRecentAlbums = () => {
         dispatch({
           type: STOPPED_REFRESHING_ALBUMS,
         });
-        dispatch(appendError(`Error while refreshing recently added albums ${error}`));
+        dispatch(
+          appendError(`Error while refreshing recently added albums ${errorToMessage(error)}`)
+        );
       });
   };
 };

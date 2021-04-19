@@ -6,6 +6,7 @@ import {
 } from '@reducers/recent-artists';
 import { httpms } from '@components/httpms-service';
 import { appendError } from '@actions/errors';
+import { errorToMessage } from '@helpers/errors';
 
 export const refreshRecentArtists = () => {
   return (dispatch, getState) => {
@@ -51,7 +52,9 @@ export const refreshRecentArtists = () => {
         dispatch({
           type: STOPPED_REFRESHING_ARTISTS,
         });
-        dispatch(appendError(`Error while refreshing recently added artists ${error}`));
+        dispatch(
+          appendError(`Error while refreshing recently added artists ${errorToMessage(error)}`)
+        );
       });
   };
 };
