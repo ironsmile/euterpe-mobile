@@ -1,5 +1,3 @@
-import base64 from 'base-64';
-
 class HttpmsService {
   constructor() {
     this.store = null;
@@ -27,20 +25,12 @@ class HttpmsService {
   getAuthCredsHeader() {
     const { settings } = this.getState();
 
-    if (!settings.username && !settings.token) {
+    if (!settings.token) {
       return {};
     }
 
-    if (settings.token) {
-      return {
-        Authorization: `Bearer ${settings.token}`,
-      };
-    }
-
-    const encoded = base64.encode(`${settings.username}:${settings.password}`);
-
     return {
-      Authorization: `Basic ${encoded}`,
+      Authorization: `Bearer ${settings.token}`,
     };
   }
 

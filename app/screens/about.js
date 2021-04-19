@@ -51,7 +51,6 @@ function Credits() {
       <Text style={styles.text}>react-native-safe-area-context (^3.2.0)</Text>
       <Text style={styles.text}>rn-fetch-blob (^0.10.16)</Text>
       <Text style={styles.text}>@react-navigation/native (^5.9.4)</Text>
-      <Text style={styles.text}>base-64 (^0.1.0)</Text>
       <Text style={styles.text}>moment (^2.18.1)</Text>
       <Text style={styles.text}>react-native-vector-icons (^8.1.0)</Text>
       <Text style={styles.text}>@react-native-community/masked-view (^0.1.10)</Text>
