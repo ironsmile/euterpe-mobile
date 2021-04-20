@@ -111,7 +111,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       mediaPlayer.reset();
       mediaPlayer.release();
     }
-  
+
     removeAudioFocus();
     unregisterReceiver(becomingNoisyReceiver);
     unregisterReceiver(playReceiver);
@@ -298,7 +298,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         return;
       }
 
-      if (mediaPlayer == null || !mediaPlayerPrepared) {        
+      if (mediaPlayer == null || !mediaPlayerPrepared) {
         bundle.putInt("time", 0);
         bundle.putBoolean("isPlaying", false);
       } else {
@@ -384,7 +384,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     IntentFilter filter = new IntentFilter(MediaPlayerModule.Broadcast_SEEK_TO);
     registerReceiver(seekToReceiver, filter);
   }
-  
+
 
   private BroadcastReceiver getDuration = new BroadcastReceiver() {
     @Override
@@ -570,7 +570,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         break;
     }
   }
-      
+
   private boolean requestAudioFocus() {
     if (audioManager == null) {
       audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
