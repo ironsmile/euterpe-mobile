@@ -18,7 +18,7 @@
 		"moment": "^2.18.1",
 		"react": "^16.8.6",
 		"react-lifecycles-compat": "^3.0.4",
-		"react-native": "^0.60.4",
+		"react-native": "0.60.6",
 		"react-native-call-detection": "^1.9.0",
 		"react-native-camera": "^3.43.5",
 		"react-native-dropdownalert": "^4.1.0",
