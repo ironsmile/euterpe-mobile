@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
+import { httpms } from '@components/httpms-service';
 import { PlayList } from '@components/playlist';
 import Images from '@assets/images';
 
@@ -25,7 +27,12 @@ class RecentlyPlayedArtistsRenderer extends React.Component {
         }}
         getItemTitle={(item) => item.artist}
         getItemSubTitle={(item) => null}
-        getItemArtwork={(item) => Images.unknownArtist}
+        getItemArtwork={(item) => {
+          if (!item.artist_id) {
+            return Images.unknownArtist;
+          }
+          return httpms.getArtistImageURL(item.artist_id);
+        }}
         defaultItemSource={Images.unknownArtist}
         circle
       />

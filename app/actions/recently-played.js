@@ -10,6 +10,7 @@ export const addToRecentlyPlayed = (song) => {
 
     const artist = {
       artist: song.artist,
+      artist_id: song?.artist_id ?? null,
     };
 
     dispatch({
