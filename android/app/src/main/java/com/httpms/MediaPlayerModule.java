@@ -388,6 +388,11 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
     @Override
     protected void onReceiveResult(int resultCode, Bundle bundle) {
+      if (resultCode != 0) {
+        sendErrorEvent(bundle.getString("error"));
+        return;
+      }
+
       int time = bundle.getInt("time");
       boolean isPlaying = bundle.getBoolean("isPlaying");
 
@@ -407,6 +412,11 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
     @Override
     protected void onReceiveResult(int resultCode, Bundle bundle) {
+      if (resultCode != 0) {
+        sendErrorEvent(bundle.getString("error"));
+        return;
+      }
+
       callback.invoke(bundle.getInt("duration"));
     }
   }

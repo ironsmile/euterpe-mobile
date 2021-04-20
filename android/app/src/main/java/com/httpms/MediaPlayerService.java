@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.media.AudioManager;
+import android.media.AudioAttributes;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.os.IBinder;
@@ -29,6 +30,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private static final String TAG = "MediaPlayerService";
   private boolean debugMode = false;
   private boolean playbackError = false;
+  private boolean mediaPlayerPrepared = false;
 	private int ONGOING_NOTIFICATION_ID = 42;
   private final IBinder iBinder = new LocalBinder();
 
@@ -106,6 +108,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     if (mediaPlayer != null) {
       stopMedia();
+      mediaPlayer.reset();
       mediaPlayer.release();
     }
   
@@ -204,6 +207,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
       if (mediaPlayer != null) {
         stopMedia();
+        mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
       }
@@ -285,6 +289,16 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       Bundle bundle = new Bundle();
 
       if (mediaPlayer == null) {
+        Log.e(TAG, "getCurrentTime called when the player is still null");
+        resultReceiver.send(1, bundlWithError("player is still null"));
+        return;
+      } else if (!mediaPlayerPrepared) {
+        Log.e(TAG, "getCurrentTime called during the player is still preparing");
+        resultReceiver.send(1, bundlWithError("player is still preparing"));
+        return;
+      }
+
+      if (mediaPlayer == null || !mediaPlayerPrepared) {        
         bundle.putInt("time", 0);
         bundle.putBoolean("isPlaying", false);
       } else {
@@ -353,6 +367,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       }
 
       if (mediaPlayer == null) {
+        Log.e(TAG, "seekTo called when the player is still null");
+        return;
+      } else if (!mediaPlayerPrepared) {
+        Log.e(TAG, "seekTo called during the player is still preparing");
         return;
       }
 
@@ -382,10 +400,20 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         return;
       }
 
+      if (mediaPlayer == null) {
+        Log.e(TAG, "getDuration called when the player is still null");
+        resultReceiver.send(1, bundlWithError("player is still null"));
+        return;
+      } else if (!mediaPlayerPrepared) {
+        Log.e(TAG, "getDuration called during the player is still preparing");
+        resultReceiver.send(1, bundlWithError("player is still preparing"));
+        return;
+      }
+
       Bundle bundle = new Bundle();
       int duration = 0;
 
-      if (mediaPlayer != null) {
+      if (mediaPlayer != null && mediaPlayerPrepared) {
         duration = mediaPlayer.getDuration();
         if (duration == -1) {
           duration = 0;
@@ -453,7 +481,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         msg = "MediaPlayer Error unknown " + extra;
         break;
       default:
-        msg = "MediaPlayer Error really uknown type this time " + extra;
+        msg = "MediaPlayer Error really uknown type this time (" + what + ") " + extra;
     }
 
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
@@ -461,6 +489,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     if (mediaPlayer != null) {
       mediaPlayer.reset();
+      mediaPlayer.release();
+      mediaPlayer = null;
+      mediaPlayerPrepared = false;
       removeAudioFocus();
       stopResultReceiver.send(0, null);
     }
@@ -477,6 +508,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   @Override
   public void onPrepared(MediaPlayer mp) {
     // Invoked when the media source is ready for playback.
+    logDebug("mediaPlayer prepared!");
+    mediaPlayerPrepared = true;
+
     if (setTrackResultReceiver == null) {
       playMedia();
       return;
@@ -514,6 +548,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
           mediaPlayer.stop();
           stopResultReceiver.send(0, null);
         }
+        mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
         break;
@@ -570,6 +605,14 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   // Media methods
 
   private void playMedia() {
+    if (mediaPlayer == null) {
+      initMediaPlayer();
+      return;
+    }
+    if (!mediaPlayerPrepared) {
+      Log.e(TAG, "playMedia called when the player is still preparing");
+      return;
+    }
     if (!mediaPlayer.isPlaying()) {
       playbackError = false;
       mediaPlayer.start();
@@ -592,6 +635,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   }
 
   private void resumeMedia() {
+    if (!mediaPlayerPrepared) {
+      Log.e(TAG, "resumeMedia called when the player is still not prepared");
+      return;
+    }
     if (!mediaPlayer.isPlaying()) {
       mediaPlayer.seekTo(resumePosition);
       mediaPlayer.start();
@@ -613,10 +660,14 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     mediaPlayer.setOnInfoListener(this);
     // Reset so that the MediaPlayer is not pointing to another data source
     mediaPlayer.reset();
-    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+             .setUsage(AudioAttributes.USAGE_MEDIA)
+             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+             .build());
     mediaPlayer.setLooping(MediaPlayerModule.repeatSong);
 
     Uri uri = Uri.parse(mediaFile);
+    logDebug("setting media source to " + uri);
 
     try {
         // Set the data source to the mediaFile location
@@ -625,11 +676,14 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         Log.e(TAG, "set data source exception: " + e);
         e.printStackTrace();
         stopSelf();
+        mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
         return;
     }
 
+    logDebug("preparing mediaPlayer");
+    mediaPlayerPrepared = false;
     mediaPlayer.prepareAsync();
   }
 
