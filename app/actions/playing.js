@@ -223,7 +223,7 @@ const updateMediaControls = () => {
       ? MediaControl.STATE_PAUSED
       : MediaControl.STATE_PLAYING;
 
-    mediaPlayer.getDuration((duration) => {
+    const durCallback = (duration) => {
       MediaControl.setNowPlaying({
         title: track.title,
         artist: track.artist,
@@ -235,7 +235,14 @@ const updateMediaControls = () => {
         state: mediaControlState,
         elapsedTime: progress.value * duration,
       });
-    });
+    };
+
+    console.log('updating media controls for track ', track);
+    if (track.duration && track.duration > 0) {
+      durCallback(track.duration / 1000);
+    } else {
+      mediaPlayer.getDuration(durCallback);
+    }
   };
 };
 
@@ -272,12 +279,16 @@ export const restorePlayingState = (errorHandler) => {
 
       cleanupProgressTimer();
       setUpCallDetection(dispatch);
-      mediaPlayer.getDuration((duration) => {
-        dispatch(setDuration(duration));
 
+      const getTrack = () => {
         const state = getState();
         const index = state.playing.currentIndex;
-        const track = state.playing.playlist[index];
+        return state.playing.playlist[index];
+      };
+
+      const durCallback = (duration) => {
+        dispatch(setDuration(duration));
+        const track = getTrack();
 
         MediaControl.updatePlayback({
           state: MediaControl.STATE_PLAYING,
@@ -290,7 +301,15 @@ export const restorePlayingState = (errorHandler) => {
         }
 
         dispatch(startProgressTimer());
-      });
+      };
+
+      const track = getTrack();
+
+      if (track.duration && track.duration > 0) {
+        durCallback(track.duration / 1000);
+      } else {
+        mediaPlayer.getDuration(durCallback);
+      }
     });
 
     const stopPauseCb = () => {
