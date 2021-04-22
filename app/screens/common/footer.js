@@ -28,7 +28,7 @@ import { gs } from '@styles/global';
 export const FOOTER_HEIGHT = 38;
 export const TABBAR_HEIGHT = 56;
 export const TOGETHER = FOOTER_HEIGHT + TABBAR_HEIGHT;
-const animationDuration = 400;
+const ANIMATION_DURATION = 400;
 
 class FooterRenderer extends PureComponent {
   moving = false;
@@ -45,12 +45,15 @@ class FooterRenderer extends PureComponent {
       keyboardShown: false,
     };
 
-    let panMover = Animated.event([
-      null,
-      {
-        dy: this.state.pan.y,
-      },
-    ]);
+    let panMover = Animated.event(
+      [
+        null,
+        {
+          dy: this.state.pan.y,
+        },
+      ],
+      { useNativeDriver: false }
+    );
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (e, g) => !(g.dx === 0 || g.dy === 0),
@@ -186,15 +189,14 @@ class FooterRenderer extends PureComponent {
       this.state.opacity.setValue(0);
       Animated.timing(this.state.pan.y, {
         toValue: -D.height + TOGETHER,
-        duration: animationDuration,
-      }).start(() => {
+        duration: ANIMATION_DURATION,
+        useNativeDriver: false,
+      }).start(({ finished }) => {
         // console.log('opened');
         //hide tab bar
+        this.open = true;
+        this.moving = false;
 
-        setTimeout(() => {
-          this.open = true;
-          this.moving = false;
-        }, animationDuration);
         this.state.pan.setOffset({ y: -D.height + TOGETHER });
         this.state.pan.setValue({ y: 0 });
       });
@@ -202,8 +204,8 @@ class FooterRenderer extends PureComponent {
       this.reset();
       // console.log('back to original state 1!', this.state.pan.y);
       this.show();
-      Animated.timing(this.state.pan.y, { toValue: 0 }).start(() => {
-        setTimeout(() => (this.moving = false), animationDuration);
+      Animated.timing(this.state.pan.y, { toValue: 0, useNativeDriver: false }).start(() => {
+        this.moving = false;
         this.state.pan.setOffset({ y: 0 });
       });
     }
@@ -218,13 +220,12 @@ class FooterRenderer extends PureComponent {
       StatusBar.setHidden(false, true);
       Animated.timing(this.state.pan.y, {
         toValue: D.height - TOGETHER,
-        duration: animationDuration,
+        duration: ANIMATION_DURATION,
+        useNativeDriver: false,
       }).start(() => {
         // console.log('closed');
-        setTimeout(() => {
-          this.open = false;
-          this.moving = false;
-        }, animationDuration);
+        this.open = false;
+        this.moving = false;
         this.state.pan.setOffset({ y: 0 });
         this.state.pan.setValue({ y: 0 });
       });
@@ -232,25 +233,25 @@ class FooterRenderer extends PureComponent {
       this.moving = true;
       // console.log('back to original state 2!');
       this.hide();
-      Animated.timing(this.state.pan.y, { toValue: 0 }).start(() => {
-        setTimeout(() => (this.moving = false), animationDuration);
+      Animated.timing(this.state.pan.y, { toValue: 0, useNativeDriver: false }).start(() => {
+        this.moving = false;
         this.state.pan.setOffset({ y: -D.height + TOGETHER });
       });
     }
   }
 
   scrollUp() {
-    Animated.spring(this.state.opacity, { toValue: 0 }).start();
+    Animated.spring(this.state.opacity, { toValue: 0, useNativeDriver: false }).start();
     this.openPlaying(-101);
   }
 
   scrollDown() {
-    Animated.spring(this.state.opacity, { toValue: 1 }).start();
+    Animated.spring(this.state.opacity, { toValue: 1, useNativeDriver: false }).start();
     this.closePlaying(101);
   }
 
   reset() {
-    Animated.spring(this.state.opacity, { toValue: 1 }).start();
+    Animated.spring(this.state.opacity, { toValue: 1, useNativeDriver: false }).start();
   }
 
   getStyle() {

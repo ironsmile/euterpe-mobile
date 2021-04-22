@@ -2,12 +2,12 @@
 
 buildscript {
     ext {
-        compileSdkVersion           = 28
+        compileSdkVersion           = 29
         targetSdkVersion            = 25
-        minSdkVersion               = 16
-        buildToolsVersion           = "28.0.3"
+        minSdkVersion               = 21
+        buildToolsVersion           = "29.0.3"
         googlePlayServicesVersion   = "12.0.1"
-        supportLibVersion           = "27.0.0"
+        ndkVersion                  = "20.1.5948944"
     }
 
     repositories {
@@ -15,7 +15,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.4.1")
+        classpath("com.android.tools.build:gradle:4.1.0")
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -57,7 +57,7 @@ subprojects {
         if (project.hasProperty("android")) {
             android {
                 compileSdkVersion 28
-                buildToolsVersion '28.0.3'
+                buildToolsVersion '29.0.2'
             }
         }
     }

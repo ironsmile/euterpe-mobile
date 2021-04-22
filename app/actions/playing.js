@@ -237,7 +237,6 @@ const updateMediaControls = () => {
       });
     };
 
-    console.log('updating media controls for track ', track);
     if (track.duration && track.duration > 0) {
       durCallback(track.duration / 1000);
     } else {

@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { Platform } from 'react-native';
+import { Platform, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
@@ -126,6 +126,7 @@ export default class App extends React.Component {
         store.dispatch(setupLibrary());
       }
     );
+    LogBox.ignoreLogs(['Require cycle: node_modules/rn-fetch-blob']);
   }
 
   render() {
