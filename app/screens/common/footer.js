@@ -34,7 +34,6 @@ class FooterRenderer extends PureComponent {
   moving = false;
   open = false;
   hiding = false;
-  offY = D.height - TOGETHER;
 
   constructor(props) {
     super(props);
@@ -66,7 +65,6 @@ class FooterRenderer extends PureComponent {
       onMoveShouldSetPanResponderCapture: () => false,
 
       onPanResponderGrant: (e, gestureState) => {},
-
       onPanResponderMove: (e, g) => {
         if (this.moving || (!this.open && g.dy > 0) || (this.open && g.dy < 0)) {
           // console.log('shouldnt move!!');
@@ -146,8 +144,15 @@ class FooterRenderer extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    if (this.keyboardDidShowListener) {
+      this.keyboardDidShowListener.remove();
+      this.keyboardDidShowListener = null;
+    }
+
+    if (this.keyboardDidHideListener) {
+      this.keyboardDidHideListener.remove();
+      this.keyboardDidHideListener = null;
+    }
   }
 
   _keyboardDidShow() {
@@ -237,17 +242,33 @@ class FooterRenderer extends PureComponent {
   }
 
   scrollUp() {
-    Animated.spring(this.state.opacity, { toValue: 0, useNativeDriver: false }).start();
+    if (this.open) {
+      return;
+    }
+
+    Animated.spring(this.state.opacity, {
+      duration: ANIMATION_DURATION,
+      toValue: 0,
+      useNativeDriver: false,
+    }).start();
     this.openPlaying(-101);
   }
 
   scrollDown() {
-    Animated.spring(this.state.opacity, { toValue: 1, useNativeDriver: false }).start();
+    Animated.spring(this.state.opacity, {
+      duration: ANIMATION_DURATION,
+      toValue: 1,
+      useNativeDriver: false,
+    }).start();
     this.closePlaying(101);
   }
 
   reset() {
-    Animated.spring(this.state.opacity, { toValue: 1, useNativeDriver: false }).start();
+    Animated.spring(this.state.opacity, {
+      duration: ANIMATION_DURATION,
+      toValue: 1,
+      useNativeDriver: false,
+    }).start();
   }
 
   getStyle() {
@@ -262,9 +283,9 @@ class FooterRenderer extends PureComponent {
 
   renderDefault() {
     const { opacity } = this.state;
-    const { nowPlaying } = this.props;
+    const { nowPlaying, playerFullScreen } = this.props;
 
-    if (!nowPlaying) {
+    if (!nowPlaying || playerFullScreen) {
       return null;
     }
 
