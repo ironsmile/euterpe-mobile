@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { Helpful } from '@components/helpful';
 import { httpms } from '@components/httpms-service';
 import { ArtistBig } from '@components/artist-big';
+import { ActivityIndicator } from '@components/activity-indicator';
 
 export class ArtistScreen extends React.PureComponent {
   constructor(props) {

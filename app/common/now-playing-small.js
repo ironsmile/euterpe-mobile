@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux';
 
 import { httpms } from '@components/httpms-service';
 import Images from '@assets/images';
+import { ActivityIndicator } from '@components/activity-indicator';
 import D from '../screens/common/dimensions';
 
 class NowPlayingRenderer extends React.Component {

@@ -4,7 +4,6 @@ import {
   PanResponder,
   View,
   Text,
-  Platform,
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
@@ -332,7 +331,7 @@ class FooterRenderer extends PureComponent {
     if (this.props.trackLoading) {
       return (
         <View style={styles.pauseButton}>
-          <ActivityIndicator color="white" />
+          <ActivityIndicator color={gs.font.color} />
         </View>
       );
     }

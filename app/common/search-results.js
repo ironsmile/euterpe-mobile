@@ -1,15 +1,9 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { ActivityIndicator } from '@components/activity-indicator';
 import { httpms } from '@components/httpms-service';
 import { setPlaylist } from '@actions/playing';
 import { SongSmall } from '@components/song-small';

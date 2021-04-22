@@ -1,6 +1,7 @@
 import React from 'react';
-import { FlatList, View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { FlatList, View, StyleSheet, Text } from 'react-native';
 
+import { ActivityIndicator } from '@components/activity-indicator';
 import { AlbumSmall } from '@components/album-small';
 import { headerHeight } from '@screens/common/header';
 

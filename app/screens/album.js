@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -11,6 +11,7 @@ import { httpms } from '@components/httpms-service';
 import { AlbumBig } from '@components/album-big';
 import { setPlaylist, appendToPlaylist } from '@actions/playing';
 import { errorToMessage } from '@helpers/errors';
+import { ActivityIndicator } from '@components/activity-indicator';
 
 class AlbumScreenRenderer extends React.PureComponent {
   constructor(props) {

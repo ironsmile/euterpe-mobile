@@ -1,8 +1,9 @@
 import React from 'react';
-import { FlatList, View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { FlatList, View, StyleSheet, Text } from 'react-native';
 
 import { ArtistSmall } from '@components/artist-small';
 import { headerHeight } from '@screens/common/header';
+import { ActivityIndicator } from '@components/activity-indicator';
 
 class ArtistItem extends React.PureComponent {
   _onPress = () => {

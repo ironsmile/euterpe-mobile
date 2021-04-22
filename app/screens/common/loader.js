@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { ActivityIndicator } from '@components/activity-indicator';
 
 export class Loader extends React.PureComponent {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator color="white" />
+        <ActivityIndicator />
       </View>
     );
   }

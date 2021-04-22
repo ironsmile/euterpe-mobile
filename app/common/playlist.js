@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { ActivityIndicator } from '@components/activity-indicator';
 import PlaylistItem from '@components/playlist-item';
 import D from '@screens/common/dimensions';
 

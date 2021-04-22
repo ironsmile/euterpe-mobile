@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { httpms } from '@components/httpms-service';
@@ -8,6 +8,7 @@ import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { ArtistsList } from '@components/artists-list';
 import { errorToMessage } from '@helpers/errors';
+import { ActivityIndicator } from '@components/activity-indicator';
 
 class BrowseArtistsScreenRenderer extends React.PureComponent {
   constructor(props) {
