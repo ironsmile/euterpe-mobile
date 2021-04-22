@@ -55,8 +55,12 @@ class FooterRenderer extends PureComponent {
       { useNativeDriver: false }
     );
     this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (e, g) => !(g.dx === 0 || g.dy === 0),
+      onStartShouldSetPanResponder: () => {
+        return this.panResponderEnabled();
+      },
+      onMoveShouldSetPanResponder: (e, g) => {
+        return this.panResponderEnabled();
+      },
       onPanResponderTerminationRequest: () => false,
       onStartShouldSetPanResponderCapture: () => false,
       onMoveShouldSetPanResponderCapture: () => false,
@@ -64,10 +68,6 @@ class FooterRenderer extends PureComponent {
       onPanResponderGrant: (e, gestureState) => {},
 
       onPanResponderMove: (e, g) => {
-        if (!this.panResponderEnabled()) {
-          return;
-        }
-
         if (this.moving || (!this.open && g.dy > 0) || (this.open && g.dy < 0)) {
           // console.log('shouldnt move!!');
           return;
@@ -90,10 +90,6 @@ class FooterRenderer extends PureComponent {
         return panMover(e, g);
       },
       onPanResponderRelease: (e, g) => {
-        if (!this.panResponderEnabled()) {
-          return;
-        }
-
         if (this.moving || (!this.open && g.dy > 0) || (this.open && g.dy < 0)) {
           // console.log('shouldnt release');
           return;
@@ -198,7 +194,7 @@ class FooterRenderer extends PureComponent {
         this.moving = false;
 
         this.state.pan.setOffset({ y: -D.height + TOGETHER });
-        this.state.pan.setValue({ y: 0 });
+        this.state.pan.setValue({ y: 0, x: 0 });
       });
     } else {
       this.reset();
@@ -227,7 +223,7 @@ class FooterRenderer extends PureComponent {
         this.open = false;
         this.moving = false;
         this.state.pan.setOffset({ y: 0 });
-        this.state.pan.setValue({ y: 0 });
+        this.state.pan.setValue({ y: 0, x: 0 });
       });
     } else {
       this.moving = true;
@@ -235,7 +231,7 @@ class FooterRenderer extends PureComponent {
       this.hide();
       Animated.timing(this.state.pan.y, { toValue: 0, useNativeDriver: false }).start(() => {
         this.moving = false;
-        this.state.pan.setOffset({ y: -D.height + TOGETHER });
+        this.state.pan.setOffset({ y: TOGETHER - D.height });
       });
     }
   }
