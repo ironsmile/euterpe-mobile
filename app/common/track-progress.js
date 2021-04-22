@@ -52,10 +52,10 @@ class TimedProgressRenderer extends React.PureComponent {
 
   render() {
     const { textWidth } = this.state;
-    const { duration, progress, loading } = this.props;
+    const { duration, progress, loading, style } = this.props;
 
     return (
-      <View style={[styles.timedProgressContainer, this.props.style]}>
+      <View style={[styles.timedProgressContainer, style]}>
         <Text style={[styles.text, { width: textWidth - 5 }]}>
           {elapsedTime(progress, duration)}
         </Text>
@@ -70,9 +70,9 @@ class TimedProgressRenderer extends React.PureComponent {
         <Text
           style={[
             styles.text,
+            styles.alignRight,
             {
               width: textWidth,
-              textAlign: 'right',
             },
           ]}
         >
@@ -93,10 +93,14 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     fontSize: 12,
+    lineHeight: 12,
   },
   timedProgressBarElement: {
     flex: 1,
     justifyContent: 'center',
+  },
+  alignRight: {
+    textAlign: 'right',
   },
 });
 

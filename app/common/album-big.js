@@ -145,8 +145,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1db954',
     height: 50,
     borderRadius: 25,
-    paddingTop: 20,
-    paddingBottom: 20,
     paddingLeft: 40,
     paddingRight: 40,
     justifyContent: 'center',
@@ -156,6 +154,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 22,
+    lineHeight: 22,
+    height: 22,
+    paddingTop: 3,
   },
   artistName: {
     marginTop: 5,
