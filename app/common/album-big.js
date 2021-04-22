@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     lineHeight: 22,
     height: 22,
-    paddingTop: 3,
+    paddingTop: 3, // Suspect code. Here because of react-native bug I guess
   },
   artistName: {
     marginTop: 5,
