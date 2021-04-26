@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     justifyContent: 'center',
     flexGrow: 1,
+    flexShrink: 3,
   },
   text: {
     fontSize: 12,
