@@ -98,7 +98,7 @@ class HttpmsService {
     return this.getRequestByURL(this.getRecentAlbumsURL());
   }
 
-  getAlbumArtworkURL(albumID, { size }) {
+  getAlbumArtworkURL(albumID, { size } = {}) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
     const url = `${settings.hostAddress}/v1/album/${e(albumID)}/artwork`;
@@ -122,7 +122,7 @@ class HttpmsService {
     return url;
   }
 
-  getArtistImageURL(artistID, { size }) {
+  getArtistImageURL(artistID, { size } = {}) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
     const url = `${settings.hostAddress}/v1/artist/${e(artistID)}/image`;
