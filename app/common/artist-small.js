@@ -23,7 +23,10 @@ export class ArtistSmall extends React.PureComponent {
           height: styles.resultRowImage.height,
         }}
       >
-        <Image style={imageStyle} source={{ uri: httpms.getArtistImageURL(artist_id) }} />
+        <Image
+          style={imageStyle}
+          source={{ uri: httpms.getArtistImageURL(artist_id, { size: 'small' }) }}
+        />
       </ImageBackground>
     );
   }

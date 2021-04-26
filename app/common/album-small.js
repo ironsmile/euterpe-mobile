@@ -17,11 +17,12 @@ export class AlbumSmall extends React.PureComponent {
   }
 
   getAlbumImage() {
+    const albumID = this.props.album.album_id;
     return (
       <ImageBackground source={Images.unknownAlbum} style={styles.resultRowImage}>
         <Image
           style={styles.resultRowImage}
-          source={{ uri: httpms.getAlbumArtworkURL(this.props.album.album_id) }}
+          source={{ uri: httpms.getAlbumArtworkURL(albumID, { size: 'small' }) }}
         />
       </ImageBackground>
     );

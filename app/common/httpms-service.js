@@ -98,27 +98,50 @@ class HttpmsService {
     return this.getRequestByURL(this.getRecentAlbumsURL());
   }
 
-  getAlbumArtworkURL(albumID) {
+  getAlbumArtworkURL(albumID, { size }) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
     const url = `${settings.hostAddress}/v1/album/${e(albumID)}/artwork`;
+    let sizeQuery = null;
+    if (size === 'small') {
+      sizeQuery = 'size=small';
+    }
 
     if (settings.token) {
-      return `${url}?token=${e(settings.token)}`;
+      const withToken = `${url}?token=${e(settings.token)}`;
+      if (sizeQuery) {
+        return `${withToken}&${sizeQuery}`;
+      }
+      return withToken;
+    }
+
+    if (sizeQuery) {
+      return `${url}?${sizeQuery}`;
     }
 
     return url;
   }
 
-  getArtistImageURL(artistID) {
+  getArtistImageURL(artistID, { size }) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
     const url = `${settings.hostAddress}/v1/artist/${e(artistID)}/image`;
-
-    if (settings.token) {
-      return `${url}?token=${e(settings.token)}`;
+    let sizeQuery = null;
+    if (size === 'small') {
+      sizeQuery = 'size=small';
     }
 
+    if (settings.token) {
+      const withToken = `${url}?token=${e(settings.token)}`;
+      if (sizeQuery) {
+        return `${withToken}&${sizeQuery}`;
+      }
+      return withToken;
+    }
+
+    if (sizeQuery) {
+      return `${url}?${sizeQuery}`;
+    }
     return url;
   }
 
