@@ -61,41 +61,43 @@ export class BrowseScreen extends React.PureComponent {
             </Text>
           </View>
 
-          <SmallClickable
-            onSelect={() => {
-              this.props.navigation.navigate('BrowseArtists');
-            }}
-            mainText="Browse Artists"
-            leftRectangle={this.getArtistsIcon()}
-            rightIcon="ios-arrow-forward"
-          />
+          <View style={styles.clickablesContainer}>
+            <SmallClickable
+              onSelect={() => {
+                this.props.navigation.navigate('BrowseArtists');
+              }}
+              mainText="Browse Artists"
+              leftRectangle={this.getArtistsIcon()}
+              rightIcon="ios-arrow-forward"
+            />
 
-          <SmallClickable
-            onSelect={() => {
-              this.props.navigation.navigate('BrowseAlbums');
-            }}
-            mainText="Browse Albums"
-            leftRectangle={this.getAlbumsIcon()}
-            rightIcon="ios-arrow-forward"
-          />
+            <SmallClickable
+              onSelect={() => {
+                this.props.navigation.navigate('BrowseAlbums');
+              }}
+              mainText="Browse Albums"
+              leftRectangle={this.getAlbumsIcon()}
+              rightIcon="ios-arrow-forward"
+            />
 
-          <SmallClickable
-            onSelect={() => {
-              this.props.navigation.navigate('BrowseSongs');
-            }}
-            mainText="Browse Songs"
-            leftRectangle={this.getSongsIcon()}
-            rightIcon="ios-arrow-forward"
-          />
+            <SmallClickable
+              onSelect={() => {
+                this.props.navigation.navigate('BrowseSongs');
+              }}
+              mainText="Browse Songs"
+              leftRectangle={this.getSongsIcon()}
+              rightIcon="ios-arrow-forward"
+            />
 
-          <SmallClickable
-            onSelect={() => {
-              this.props.navigation.navigate('Library');
-            }}
-            mainText="Offline Library"
-            leftRectangle={this.getLibraryIcon()}
-            rightIcon="ios-arrow-forward"
-          />
+            <SmallClickable
+              onSelect={() => {
+                this.props.navigation.navigate('Library');
+              }}
+              mainText="Offline Library"
+              leftRectangle={this.getLibraryIcon()}
+              rightIcon="ios-arrow-forward"
+            />
+          </View>
 
           <View style={styles.encouragmentContainer}>
             <Text style={styles.subduedText}>
@@ -125,7 +127,6 @@ const styles = StyleSheet.create({
   },
   sectionIcon: {
     alignSelf: 'center',
-    paddingLeft: 10,
   },
   subduedText: {
     color: '#aeafb3',
@@ -141,5 +142,9 @@ const styles = StyleSheet.create({
   noMargins: {
     marginTop: 0,
     marginBottom: 0,
+  },
+  clickablesContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
   },
 });
