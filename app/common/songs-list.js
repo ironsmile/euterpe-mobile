@@ -39,7 +39,7 @@ export class SongsList extends React.PureComponent {
     let headerAvoider = null;
 
     if (this.props.avoidHeader) {
-      headerAvoider = <View style={{ height: headerHeight, width: 100 }} />;
+      headerAvoider = <View style={[{ height: headerHeight }, styles.headerAvoider]} />;
     }
 
     if (!this.props.headerText) {
@@ -75,6 +75,9 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     alignItems: 'center',
     paddingBottom: 15,
+  },
+  headerAvoider: {
+    width: 100,
   },
   header: {
     fontWeight: 'bold',

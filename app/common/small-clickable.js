@@ -7,14 +7,16 @@ import { gs } from '@styles/global';
 
 export class SmallClickable extends React.PureComponent {
   getAdditionalText() {
-    if (!this.props.additionalText) {
+    const { additionalText, highlighted } = this.props;
+
+    if (!additionalText) {
       return null;
     }
 
     return (
       <View style={styles.additional}>
-        <Text numberOfLines={1} style={styles.text}>
-          {this.props.additionalText}
+        <Text numberOfLines={1} style={[styles.text, highlighted ? styles.highlighted : null]}>
+          {additionalText}
         </Text>
       </View>
     );
@@ -28,32 +30,41 @@ export class SmallClickable extends React.PureComponent {
     return <View style={styles.imageContainer}>{this.props.leftRectangle}</View>;
   }
 
-  getRightIcon() {
-    if (!this.props.rightIcon) {
-      return null;
+  getRightRectangle() {
+    if (this.props.rightIcon) {
+      return <Icon name={this.props.rightIcon} color="#aeafb3" size={16} />;
     }
 
-    return <Icon name={this.props.rightIcon} color="#aeafb3" size={16} />;
+    if (this.props.rightText) {
+      return <Text style={[styles.text, styles.rightText]}>{this.props.rightText}</Text>;
+    }
+
+    return null;
   }
 
   render() {
+    const { onSelect, mainText, highlighted } = this.props;
+
     return (
       <TouchableOpacity
         onPress={() => {
-          if (this.props.onSelect) {
-            this.props.onSelect();
+          if (onSelect) {
+            onSelect();
           }
         }}
       >
-        <View style={styles.outerContainer}>
+        <View style={[styles.outerContainer, highlighted ? styles.highlightedContainer : null]}>
           {this.getLeftRectangle()}
           <View style={styles.resultContainer}>
-            <Text numberOfLines={1} style={[gs.bolder, styles.textTitle]}>
-              {this.props.mainText}
+            <Text
+              numberOfLines={1}
+              style={[gs.bolder, styles.textTitle, highlighted ? styles.highlighted : null]}
+            >
+              {mainText}
             </Text>
             {this.getAdditionalText()}
           </View>
-          {this.getRightIcon()}
+          {this.getRightRectangle()}
         </View>
       </TouchableOpacity>
     );
@@ -64,9 +75,7 @@ const styles = StyleSheet.create({
   resultContainer: {
     paddingTop: 3,
     justifyContent: 'center',
-    paddingLeft: 10,
-    paddingRight: 10,
-    width: D.width - 75,
+    flexGrow: 1,
   },
   text: {
     fontSize: 12,
@@ -79,6 +88,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
+  rightText: {},
   outerContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -91,5 +101,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 40,
     height: 40,
+  },
+  highlighted: {
+    fontWeight: 'bold',
+  },
+  highlightedContainer: {
+    backgroundColor: '#222327',
+    paddingLeft: 5,
+    paddingRight: 5,
   },
 });

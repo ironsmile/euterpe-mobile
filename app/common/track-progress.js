@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import { formatDuration } from '@helpers/duration';
 
 class TrackProgressRenderer extends React.PureComponent {
   constructor(props) {
@@ -130,17 +130,6 @@ const remaingTime = (progress, duration) => {
   }
 
   return `-${formatDuration(duration - progress * duration, duration)}`;
-};
-
-const formatDuration = (duration, wholeDuration) => {
-  const format = wholeDuration >= 3600 ? 'h:mm:ss' : 'm:ss';
-  let renderDuration = duration;
-
-  if (renderDuration < 0) {
-    renderDuration = 0;
-  }
-
-  return moment(renderDuration * 1000).format(format);
 };
 
 const mapStateToProps = (state) => ({

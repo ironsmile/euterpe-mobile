@@ -275,18 +275,20 @@ class PlayerRenderer extends React.PureComponent {
           <Text style={styles.queueHeader}>Now Playing</Text>
           <NowPlaying
             song={this.props.playing}
-            style={{ marginBottom: 5 }}
+            style={styles.nowPlaying}
             loading={this.props.trackLoading}
           />
-          <TrackProgress style={{ marginBottom: 13 }} />
+          <TrackProgress style={styles.trackProgress} />
           <Text style={styles.queueHeader}>Play Queue</Text>
         </View>
 
-        <SongsList
-          data={this.props.playlist}
-          highlighted={this.props.currentIndex}
-          onPressItem={this.onPressQueueItem.bind(this)}
-        />
+        <View style={styles.songListContainer}>
+          <SongsList
+            data={this.props.playlist}
+            highlighted={this.props.currentIndex}
+            onPressItem={this.onPressQueueItem.bind(this)}
+          />
+        </View>
       </View>
     );
   }
@@ -445,6 +447,20 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingLeft: 10,
     paddingRight: 10,
+  },
+
+  nowPlaying: {
+    marginBottom: 5,
+  },
+
+  trackProgress: {
+    marginBottom: 13,
+  },
+
+  songListContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: D.height - 305,
   },
 });
 

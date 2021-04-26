@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { View, StyleSheet } from 'react-native';
 
 import { Screen } from '@screens/screen';
 import { SongsList } from '@components/songs-list';
@@ -21,20 +22,29 @@ class SearchSongsRenderer extends React.PureComponent {
   render() {
     return (
       <Screen navigation={this.props.navigation} header={this.getHeader()}>
-        <SongsList
-          headerText="Songs"
-          avoidHeader={true}
-          data={this.props.search.results}
-          onPressItem={(index) => {
-            const playlist = [this.props.search.results[index]];
+        <View style={styles.songListContainer}>
+          <SongsList
+            headerText="Songs"
+            avoidHeader={true}
+            data={this.props.search.results}
+            onPressItem={(index) => {
+              const playlist = [this.props.search.results[index]];
 
-            this.props.dispatch(setPlaylist(playlist, true));
-          }}
-        />
+              this.props.dispatch(setPlaylist(playlist, true));
+            }}
+          />
+        </View>
       </Screen>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  songListContainer: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+});
 
 const mapStateToProps = (state) => ({
   search: state.search,
