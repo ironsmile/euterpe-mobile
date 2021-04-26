@@ -153,7 +153,7 @@ class PlayerRenderer extends React.PureComponent {
                 });
               }}
             >
-              <PlatformIcon platform="share" color="white" size={24} />
+              <PlatformIcon io="share-outline" md="share-social-outline" color="white" size={24} />
             </TouchableOpacity>
           </View>
         </View>
