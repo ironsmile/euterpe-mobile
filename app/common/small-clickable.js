@@ -88,7 +88,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
-  rightText: {},
+  rightText: {
+    marginLeft: 5,
+  },
   outerContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 40,
     height: 40,
+    marginRight: 5,
   },
   highlighted: {
     fontWeight: 'bold',
