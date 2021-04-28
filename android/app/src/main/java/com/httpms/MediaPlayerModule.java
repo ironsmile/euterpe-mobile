@@ -362,6 +362,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
 
     context.unbindService(serviceConnection);
+    serviceBound = false;
     player.stopSelf();
   }
 
