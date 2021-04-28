@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  StyleSheet,
-  Share,
-} from 'react-native';
+import { View, Text, StyleSheet, Share } from 'react-native';
 
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -24,6 +17,7 @@ import D from './dimensions';
 import CoverFlowItem from './coverflow-item';
 import { TimedProgress, TrackProgress } from '@components/track-progress';
 import Images from '@assets/images';
+import { Pressable } from '@components/pressable';
 import MediaControl from '@components/media-control-shim';
 import { NowPlaying } from '@components/now-playing-small';
 import { SongsList } from '@components/songs-list';
@@ -93,17 +87,17 @@ class PlayerRenderer extends React.PureComponent {
 
     return (
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => this.props.scrollDown()}>
+        <Pressable onPress={() => this.props.scrollDown()}>
           <View style={styles.headerButton}>
             <Icon name="ios-arrow-down" color="white" size={24} />
           </View>
-        </TouchableOpacity>
+        </Pressable>
         <Text style={styles.playing}>NOW PLAYING</Text>
-        <TouchableOpacity onPress={this.toggleViewState.bind(this)}>
+        <Pressable onPress={this.toggleViewState.bind(this)}>
           <View style={styles.headerButton}>
             <Icon name={stateIcon} color="white" size={26} />
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     );
   }
@@ -142,7 +136,7 @@ class PlayerRenderer extends React.PureComponent {
             </Text>
           </View>
           <View style={styles.smallButtonContainer}>
-            <TouchableOpacity
+            <Pressable
               onPress={() => {
                 Share.share({
                   message: `${playing.title} by ${playing.artist}\n${httpms.getShareURL(playing)}`,
@@ -154,7 +148,7 @@ class PlayerRenderer extends React.PureComponent {
               }}
             >
               <PlatformIcon io="share-outline" md="share-social-outline" color="white" size={24} />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
         <TimedProgress style={styles.progress} loading={trackLoading} />
@@ -169,9 +163,9 @@ class PlayerRenderer extends React.PureComponent {
     const iconColor = 'white';
 
     let prevButton = (
-      <TouchableOpacity onPress={this.onPreviousSong.bind(this)}>
+      <Pressable onPress={this.onPreviousSong.bind(this)}>
         <PlatformIcon platform="play-skip-back" size={32} color={iconColor} />
-      </TouchableOpacity>
+      </Pressable>
     );
 
     if (currentIndex - 1 < 0 || !playlist[currentIndex - 1] || trackLoading) {
@@ -179,9 +173,9 @@ class PlayerRenderer extends React.PureComponent {
     }
 
     let nextButton = (
-      <TouchableOpacity onPress={this.onNextSong.bind(this)}>
+      <Pressable onPress={this.onNextSong.bind(this)}>
         <PlatformIcon platform="play-skip-forward" size={32} color={iconColor} />
-      </TouchableOpacity>
+      </Pressable>
     );
 
     if (
@@ -192,14 +186,14 @@ class PlayerRenderer extends React.PureComponent {
     }
 
     let playButton = (
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
           this.onTogglePlay();
         }}
         style={styles.playContainer}
       >
         <PlatformIcon platform={paused ? 'play' : 'pause'} style={styles.play} color={iconColor} />
-      </TouchableOpacity>
+      </Pressable>
     );
 
     if (trackLoading) {
@@ -218,7 +212,7 @@ class PlayerRenderer extends React.PureComponent {
 
     return (
       <View style={styles.buttonContainer}>
-        <TouchableWithoutFeedback
+        <Pressable
           onPress={() => {
             this.props.dispatch(toggleShuffle());
           }}
@@ -231,11 +225,11 @@ class PlayerRenderer extends React.PureComponent {
               style={this.props.shuffle ? styles.repeatToggleActive : null}
             />
           </View>
-        </TouchableWithoutFeedback>
+        </Pressable>
         {prevButton}
         {playButton}
         {nextButton}
-        <TouchableWithoutFeedback
+        <Pressable
           onPress={() => {
             this.props.dispatch(toggleRepeat());
           }}
@@ -248,7 +242,7 @@ class PlayerRenderer extends React.PureComponent {
               style={this.props.repeat ? styles.repeatToggleActive : null}
             />
           </View>
-        </TouchableWithoutFeedback>
+        </Pressable>
       </View>
     );
   }

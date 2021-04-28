@@ -7,7 +7,7 @@ import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
 import { REHYDRATE } from 'redux-persist/constants';
 import { connect, Provider } from 'react-redux';
-import MediaControl from './common/media-control-shim';
+import MediaControl from '@components/media-control-shim';
 import thunkMiddleware from 'redux-thunk';
 import { enableScreens } from 'react-native-screens';
 

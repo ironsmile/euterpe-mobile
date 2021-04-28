@@ -4,8 +4,6 @@ import {
   PanResponder,
   View,
   Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   StyleSheet,
   StatusBar,
   ActivityIndicator,
@@ -21,6 +19,7 @@ import { showPlayerFullscreen } from '@actions/footer';
 import { togglePlaying } from '@actions/playing';
 import { TrackProgress } from '@components/track-progress';
 import { PlatformIcon } from '@components/platform-icon';
+import { Pressable } from '@components/pressable';
 import Player from './player';
 import { gs } from '@styles/global';
 
@@ -304,12 +303,12 @@ class FooterRenderer extends PureComponent {
         <View style={styles.defaultContainer}>
           <TrackProgress height={4} style={{ width: '100%' }} />
           <View style={styles.defaultView}>
-            <TouchableOpacity onPress={() => this.scrollUp()}>
+            <Pressable onPress={() => this.scrollUp()}>
               <View style={styles.pullUpArrow}>
                 <Icon name="ios-arrow-up" color="#aeafb3" size={16} />
               </View>
-            </TouchableOpacity>
-            <TouchableWithoutFeedback onPress={() => this.scrollUp()}>
+            </Pressable>
+            <Pressable onPress={() => this.scrollUp()}>
               <View style={styles.nowPlayingContainer}>
                 <Text style={[gs.bolder, styles.title]} numberOfLines={1}>
                   {nowPlaying.title}
@@ -319,7 +318,7 @@ class FooterRenderer extends PureComponent {
                   {nowPlaying.artist}
                 </Text>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
             {this.renderControlButton()}
           </View>
         </View>
@@ -337,7 +336,7 @@ class FooterRenderer extends PureComponent {
     }
 
     return (
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
           this.props.dispatch(togglePlaying());
         }}
@@ -347,7 +346,7 @@ class FooterRenderer extends PureComponent {
             <PlatformIcon platform={this.props.paused ? 'play' : 'pause'} color="white" size={16} />
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 
