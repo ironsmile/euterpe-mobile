@@ -21,6 +21,7 @@ export class JavaScriptMediaPlayer {
     this.playlistSetCallback = () => {};
     this.playlistAppendCallback = () => {};
     this.setTrackCallback = () => {};
+    this.seekCompletedCallback = () => {};
     this.errorHandler = () => {};
   }
 
@@ -98,6 +99,11 @@ export class JavaScriptMediaPlayer {
     this.playCompletedCallback = callback;
   }
 
+  // callback is of the type func(seconds int)
+  onSeekCompleted(callback) {
+    this.seekCompletedCallback = callback;
+  }
+
   pause() {
     if (this.player == null) {
       return;
@@ -167,7 +173,9 @@ export class JavaScriptMediaPlayer {
     }
 
     const duration = this.player.getDuration();
-    this.player.setCurrentTime(duration * progress);
+    const toSecond = duration * progress;
+    this.player.setCurrentTime(toSecond);
+    this.seekCompletedCallback(toSecond);
   }
 
   setTrack(index, onSuccess) {
