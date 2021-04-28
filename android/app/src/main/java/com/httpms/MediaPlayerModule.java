@@ -84,18 +84,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       player = binder.getService();
       serviceBound = true;
       serviceStarting = false;
-      if (isDebugMode) {
-        Log.d(TAG, "service bound");
-        Toast.makeText(context, "Service Bound", Toast.LENGTH_SHORT).show();
-      }
+      logDebug("Service Bound");
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-      if (isDebugMode) {
-        Log.d(TAG, "service unbound");
-        Toast.makeText(context, "Service Unbound", Toast.LENGTH_SHORT).show();
-      }
+      logDebug("Service Unbound");
       serviceStarting = false;
       serviceBound = false;
     }
@@ -106,12 +100,15 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     isDebugMode = debugMode;
 
     if (serviceBound || serviceStarting) {
+      logDebug(String.format(
+        "Music Service already bound or starting. sb: %b, ss: %b",
+        serviceBound,
+        serviceStarting
+      ));
       return;
     }
 
-    if (isDebugMode) {
-      Log.d(TAG, "starting music service");
-    }
+    logDebug("Starting Music Service");
 
     Intent playerIntent = new Intent(context, MediaPlayerService.class);
     playerIntent.putExtra(ResultReceiver_END_TRACK, new EndTrackReceiver());
@@ -340,25 +337,17 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
       playlistLen = playlist.length;
     }
 
-    Toast.makeText(
-      context,
-      String.format(
-        "Host Resume. sb: %b, ss: %b, pl: %d",
-        serviceBound,
-        serviceStarting,
-        playlistLen
-      ),
-      Toast.LENGTH_SHORT
-      ).show();
+    logDebug(String.format(
+      "Host Resume. sb: %b, ss: %b, pl: %d",
+      serviceBound,
+      serviceStarting,
+      playlistLen
+    ));
   }
 
   @Override
   public void onHostPause() {
-    if (!isDebugMode) {
-      return;
-    }
-
-    Toast.makeText(context, "Host Pause", Toast.LENGTH_SHORT).show();
+    logDebug("Host Pause");
   }
 
   @Override
@@ -626,5 +615,14 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     WritableMap params = Arguments.createMap();
     params.putInt("index", index);
     sendEvent(EVENT_TRACK_SET, params);
+  }
+
+  private void logDebug(String msg) {
+    if (!isDebugMode) {
+      return;
+    }
+
+    Log.d(TAG, msg);
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
   }
 }
