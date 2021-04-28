@@ -189,7 +189,7 @@ class FooterRenderer extends PureComponent {
       Animated.timing(this.state.pan.y, {
         toValue: -D.height + TOGETHER,
         duration: ANIMATION_DURATION,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start(({ finished }) => {
         // console.log('opened');
         //hide tab bar
@@ -203,7 +203,7 @@ class FooterRenderer extends PureComponent {
       this.reset();
       // console.log('back to original state 1!', this.state.pan.y);
       this.show();
-      Animated.timing(this.state.pan.y, { toValue: 0, useNativeDriver: false }).start(() => {
+      Animated.timing(this.state.pan.y, { toValue: 0, useNativeDriver: true }).start(() => {
         this.moving = false;
         this.state.pan.setOffset({ y: 0 });
       });
@@ -220,7 +220,7 @@ class FooterRenderer extends PureComponent {
       Animated.timing(this.state.pan.y, {
         toValue: D.height - TOGETHER,
         duration: ANIMATION_DURATION,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start(() => {
         // console.log('closed');
         this.open = false;
@@ -232,7 +232,7 @@ class FooterRenderer extends PureComponent {
       this.moving = true;
       // console.log('back to original state 2!');
       this.hide();
-      Animated.timing(this.state.pan.y, { toValue: 0, useNativeDriver: false }).start(() => {
+      Animated.timing(this.state.pan.y, { toValue: 0, useNativeDriver: true }).start(() => {
         this.moving = false;
         this.state.pan.setOffset({ y: TOGETHER - D.height });
       });
