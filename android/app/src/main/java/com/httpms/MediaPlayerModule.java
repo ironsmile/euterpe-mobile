@@ -115,6 +115,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     playerIntent.putExtra(ResultReceiver_PLAY, new PlayReceiver());
     playerIntent.putExtra(ResultReceiver_PAUSE, new PauseReceiver());
     playerIntent.putExtra(ResultReceiver_STOP, new StopReceiver());
+    playerIntent.putExtra(ResultReceiver_SEEK_COMPLETED, new SeekCompletedReceiver());
     playerIntent.putExtra("debugMode", debugMode);
     serviceStarting = true;
     context.startService(playerIntent);
@@ -573,6 +574,21 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
+  public static final String ResultReceiver_SEEK_COMPLETED = "com.httpms.resultReceiver.trackCompleted";
+  private final class SeekCompletedReceiver extends ResultReceiver {
+    public SeekCompletedReceiver() {
+      super(null);
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle bundle) {
+      if (resultCode != 0) {
+        return;
+      }
+      sendSeekCompletedEvent(bundle.getInt("toSecond"));
+    }
+  }
+
   public static final String ResultReceiver_IS_PLAYING = "com.httpms.resultReceiver.isPlaying";
   private final class IsPlayingReceiver extends ResultReceiver {
     Callback callback;
@@ -609,6 +625,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   private final String EVENT_PAUSED = "EVENT_PAUSED";
   private final String EVENT_STOPPED = "EVENT_STOPPED";
   private final String EVENT_TRACK_SET = "EVENT_TRACK_SET";
+  private final String EVENT_SEEK_COMPLETED = "EVENT_SEEK_COMPLETED";
 
 
   private void sendErrorEvent(final String err) {
@@ -647,6 +664,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     WritableMap params = Arguments.createMap();
     params.putInt("index", index);
     sendEvent(EVENT_TRACK_SET, params);
+  }
+
+  private void sendSeekCompletedEvent(final int toSecond) {
+    WritableMap params = Arguments.createMap();
+    params.putInt("toSecond", toSecond);
+    sendEvent(EVENT_SEEK_COMPLETED, params);
   }
 
   private void logDebug(String msg) {

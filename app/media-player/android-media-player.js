@@ -14,6 +14,7 @@ export class AndroidMediaPlayer {
     this.playlistSetCallback = () => {};
     this.playlistAppendCallback = () => {};
     this.setTrackCallback = () => {};
+    this.seekCompletedCallback = () => {};
     this.errorHandler = () => {};
 
     const eventEmitter = new NativeEventEmitter(this.java);
@@ -44,6 +45,10 @@ export class AndroidMediaPlayer {
 
     this.setTrackSub = eventEmitter.addListener('EVENT_TRACK_SET', (params) =>
       this.setTrackCallback(params.index)
+    );
+
+    this.seekCompletionSub = eventEmitter.addListener('EVENT_SEEK_COMPLETED', (params) =>
+      this.seekCompletedCallback(params.toSecond)
     );
   }
 
@@ -79,6 +84,11 @@ export class AndroidMediaPlayer {
   // callback is of the type func(success bool)
   onPlayCompleted(callback) {
     this.playCompletedCallback = callback;
+  }
+
+  // callback is of the type func(seconds int)
+  onSeekCompleted(callback) {
+    this.seekCompletedCallback = callback;
   }
 
   pause() {

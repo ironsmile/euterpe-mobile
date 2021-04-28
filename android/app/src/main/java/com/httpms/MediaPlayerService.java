@@ -43,6 +43,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private ResultReceiver playResultReceiver;
   private ResultReceiver pauseResultReceiver;
   private ResultReceiver stopResultReceiver;
+  private ResultReceiver seekCompletedResultReceiver;
 
   // Used to pause/resume MediaPlayer
   private int resumePosition;
@@ -87,6 +88,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       );
       stopResultReceiver = intent.getParcelableExtra(
         MediaPlayerModule.ResultReceiver_STOP
+      );
+      seekCompletedResultReceiver = intent.getParcelableExtra(
+        MediaPlayerModule.ResultReceiver_SEEK_COMPLETED
       );
       debugMode = intent.getExtras().getBoolean("debugMode");
     } catch (NullPointerException e) {
@@ -363,6 +367,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       }
       
       if (progress < 0 || progress > 1) {
+        logDebug("trying to seek to strange progress");
         return;
       }
 
@@ -523,6 +528,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   @Override
   public void onSeekComplete(MediaPlayer mp) {
     // Invoked indicating the completion of a seek operation.
+    final int trackPosition = mp.getCurrentPosition() / 1000;
+    Bundle bundle = new Bundle();
+    bundle.putInt("toSecond", trackPosition);
+    seekCompletedResultReceiver.send(0, bundle);
   }
 
   // AudioManager methods

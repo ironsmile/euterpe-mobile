@@ -354,6 +354,17 @@ export const restorePlayingState = (errorHandler) => {
       });
     });
 
+    mediaPlayer.onSeekCompleted((second) => {
+      const { duration } = getState().progress;
+      const pos = second / duration;
+      cleanupProgressTimer();
+      dispatch(setProgress(pos));
+      startProgressInterval(dispatch, second, duration);
+      MediaControl.updatePlayback({
+        elapsedTime: second,
+      });
+    });
+
     mediaPlayer.isPlaying((isPlaying, currentIndex) => {
       if (isPlaying) {
         dispatch({
@@ -404,9 +415,19 @@ export const cleanupPlaying = () => ({
   type: CLEANUP_PLAYING,
 });
 
-// pos must be a value in the range [0, 1].
-export const seekToSeconds = (pos) => {
-  return () => {
+export const seekToSeconds = (seconds) => {
+  return (dispatch, getState) => {
+    if (seconds === 0) {
+      mediaPlayer.seekTo(0);
+      return;
+    }
+
+    const { playing } = getState();
+    const index = playing.currentIndex;
+    const track = playing.playlist[index];
+    const pos = seconds / (track.duration / 1000);
+
+    // pos must be a value in the range [0, 1].
     mediaPlayer.seekTo(pos);
   };
 };
@@ -495,13 +516,21 @@ const startProgressTimer = () => {
         return;
       }
 
-      _startedTime = nowSeconds() - seconds;
-      _timer = setInterval(() => {
-        const playingTime = nowSeconds() - _startedTime;
-        dispatch(setProgress(playingTime / duration));
-      }, progressUpdate);
+      startProgressInterval(dispatch, seconds, duration);
     });
   };
+};
+
+const startProgressInterval = (dispatch, seconds, duration) => {
+  _startedTime = nowSeconds() - seconds;
+  _timer = setInterval(() => {
+    const playingTime = nowSeconds() - _startedTime;
+    dispatch(setProgress(playingTime / duration));
+    // Only works while the UI is open. But still something :D
+    MediaControl.updatePlayback({
+      elapsedTime: playingTime,
+    });
+  }, progressUpdate);
 };
 
 // nowSeconds returns the current unix timestamp in seconds.
