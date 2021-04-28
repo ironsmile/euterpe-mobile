@@ -359,10 +359,10 @@ export const restorePlayingState = (errorHandler) => {
       const pos = second / duration;
       cleanupProgressTimer();
       dispatch(setProgress(pos));
-      startProgressInterval(dispatch, second, duration);
       MediaControl.updatePlayback({
         elapsedTime: second,
       });
+      dispatch(startProgressTimer());
     });
 
     mediaPlayer.isPlaying((isPlaying, currentIndex) => {
@@ -516,21 +516,16 @@ const startProgressTimer = () => {
         return;
       }
 
-      startProgressInterval(dispatch, seconds, duration);
+      _startedTime = nowSeconds() - seconds;
+      _timer = setInterval(() => {
+        const playingTime = nowSeconds() - _startedTime;
+        dispatch(setProgress(playingTime / duration));
+        MediaControl.updatePlayback({
+          elapsedTime: playingTime,
+        });
+      }, progressUpdate);
     });
   };
-};
-
-const startProgressInterval = (dispatch, seconds, duration) => {
-  _startedTime = nowSeconds() - seconds;
-  _timer = setInterval(() => {
-    const playingTime = nowSeconds() - _startedTime;
-    dispatch(setProgress(playingTime / duration));
-    // Only works while the UI is open. But still something :D
-    MediaControl.updatePlayback({
-      elapsedTime: playingTime,
-    });
-  }, progressUpdate);
 };
 
 // nowSeconds returns the current unix timestamp in seconds.
