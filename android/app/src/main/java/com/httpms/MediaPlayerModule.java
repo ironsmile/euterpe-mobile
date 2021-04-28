@@ -185,14 +185,45 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   }
 
   @ReactMethod
+  public void restorePlayerState(
+    final boolean setShuffle,
+    final boolean setRepeat,
+    final boolean setRepeatSong
+  ) {
+    shuffle = setShuffle;
+    repeat = setRepeat;
+    repeatSong = setRepeatSong;
+  }
+
+  @ReactMethod
   public void setShuffle(final boolean isSet) {
     shuffle = isSet;
+
+    String msg;
+    if (isSet) {
+      msg = "Shuffle On";
+    } else {
+      msg = "Shuffle Off";
+    }
+
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
   }
 
   @ReactMethod
   public void setRepeat(final boolean setRepeat, final boolean setRepeatSong) {
     repeat = setRepeat;
     repeatSong = setRepeatSong;
+
+    String msg;
+    if (setRepeat && !setRepeatSong) {
+      msg = "Repeat Queue";
+    } else if (setRepeat && setRepeatSong) {
+      msg = "Repeat Song";
+    } else {
+      msg = "Repeat Off";
+    }
+
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
   }
 
   @ReactMethod

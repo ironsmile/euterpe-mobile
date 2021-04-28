@@ -152,6 +152,13 @@ export class AndroidMediaPlayer {
     this.setTrackCallback = callback;
   }
 
+  restorePlayerState(setShuffle, repeat, repeatSong) {
+    if (repeatSong == null) {
+      repeatSong = false;
+    }
+    this.java.restorePlayerState(setShuffle, repeat, repeatSong);
+  }
+
   setShuffle(isSet) {
     this.java.setShuffle(isSet);
   }

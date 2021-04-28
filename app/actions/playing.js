@@ -386,8 +386,7 @@ export const restorePlayingState = (errorHandler) => {
 
       dispatch(() => {
         mediaPlayer.setPlaylist(playing.playlist, playing.currentIndex);
-        mediaPlayer.setShuffle(playing.shuffle);
-        mediaPlayer.setRepeat(playing.repeat, playing.setRepeatSong);
+        mediaPlayer.restorePlayerState(playing.shuffle, playing.repeat, playing.setRepeatSong);
       });
 
       if (playing.currentIndex !== null) {

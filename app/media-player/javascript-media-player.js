@@ -211,6 +211,11 @@ export class JavaScriptMediaPlayer {
     this.setTrackCallback = callback;
   }
 
+  restorePlayerState(setShuffle, repeat, repeatSong) {
+    this.setShuffle(setShuffle);
+    this.setRepeat(repeat, repeatSong);
+  }
+
   setShuffle(isSet) {
     if (isSet !== true && isSet !== false) {
       return;
