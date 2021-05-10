@@ -52,11 +52,11 @@ class FooterRenderer extends PureComponent {
       { useNativeDriver: false }
     );
     this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => {
-        return this.panResponderEnabled();
+      onStartShouldSetPanResponder: (e, g) => {
+        return this.panResponderEnabled(g);
       },
       onMoveShouldSetPanResponder: (e, g) => {
-        return this.panResponderEnabled();
+        return this.panResponderEnabled(g);
       },
       onPanResponderTerminationRequest: () => false,
       onStartShouldSetPanResponderCapture: () => false,
@@ -175,8 +175,23 @@ class FooterRenderer extends PureComponent {
     this.props.dispatch(showPlayerFullscreen(false));
   }
 
-  panResponderEnabled() {
-    return !this.open || !this.props.playerQueueShown;
+  panResponderEnabled(g) {
+    // Somehow when the player is open and moveY is above zero it means that the pan
+    // gesture is started from above some pressable on the screen. When it is zero
+    // then it was on "empty" screen. THIS IS NOT DOCUMENTED BEHAVIOUR. But so far
+    // this has been the case in my tests so sticking with this as long as it works.
+    if (this.open && g.moveY > 0) {
+      return false;
+    }
+
+    // When only the small player info above the footer is shown then do not start
+    // the pan movement when it is above the buttons. Which are to the far left and
+    // far right of the screen.
+    if (!this.open && (g.moveX < 50 || g.moveX > D.width - 50)) {
+      return false;
+    }
+
+    return true;
   }
 
   openPlaying(offsetY) {
