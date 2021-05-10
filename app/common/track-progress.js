@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
+import Slider from '@react-native-community/slider';
 import { connect } from 'react-redux';
 import { formatDuration } from '@helpers/duration';
+import { seekTo } from '@actions/playing';
 
 class TrackProgressRenderer extends React.PureComponent {
   constructor(props) {
@@ -39,12 +41,11 @@ class TimedProgressRenderer extends React.PureComponent {
 
     this.state = {
       renderProps: {
-        unfilledColor: '#3c3d41',
-        borderWidth: 0,
-        borderRadius: 0,
         height: 2,
-        width: null,
-        color: 'white',
+        minimumTrackTintColor: 'white',
+        thumbTintColor: 'white',
+        maximumTrackTintColor: '#3c3d41',
+        step: 0.01,
       },
       textWidth: getTimesWidth(props.duration),
     };
@@ -60,11 +61,13 @@ class TimedProgressRenderer extends React.PureComponent {
           {elapsedTime(progress, duration)}
         </Text>
         <View style={styles.timedProgressBarElement}>
-          <ProgressBar
+          <Slider
             {...this.state.renderProps}
-            progress={progress}
-            indeterminate={loading === true}
-            animated={loading === true}
+            value={progress}
+            disabled={loading === true}
+            onSlidingComplete={(val) => {
+              this.props.dispatch(seekTo(val));
+            }}
           />
         </View>
         <Text

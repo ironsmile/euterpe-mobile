@@ -432,6 +432,17 @@ export const seekToSeconds = (seconds) => {
   };
 };
 
+export const seekTo = (progress) => {
+  return () => {
+    if (progress < 0 && progress > 1) {
+      return;
+    }
+
+    // pos must be a value in the range [0, 1].
+    mediaPlayer.seekTo(progress);
+  };
+};
+
 const setMuscControlNextPre = (playlist, index) => {
   if (playlist[index + 1]) {
     MediaControl.enableControl('nextTrack', true);

@@ -26,7 +26,6 @@ footer menu color: #222326
 
 * [FlatList Perf improvements](https://github.com/facebook/react-native/issues/15930#issuecomment-373816387)
 
-
 == required software ==
 
 it seems currently the project only works with Node 10 and no newer for some

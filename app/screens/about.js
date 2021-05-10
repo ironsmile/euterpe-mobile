@@ -30,35 +30,36 @@ export class AboutScreen extends React.PureComponent {
 function Credits() {
   return (
     <View>
-      <Text style={styles.text}>react-native-keyboard-spacer (^0.4.1)</Text>
-      <Text style={styles.text}>react-native-progress (^4.1.2)</Text>
-      <Text style={styles.text}>react-native-screens (^3.0.0)</Text>
-      <Text style={styles.text}>react-native-dropdownalert (^4.1.0)</Text>
+      <Text style={styles.text}>@react-native-async-storage/async-storage (^1.15.1)</Text>
+      <Text style={styles.text}>@react-native-community/masked-view (^0.1.10)</Text>
+      <Text style={styles.text}>@react-native-community/slider (^3.0.3)</Text>
+      <Text style={styles.text}>@react-native-community/toolbar-android (0.1.0-rc.2)</Text>
+      <Text style={styles.text}>@react-navigation/bottom-tabs (^5.11.9)</Text>
+      <Text style={styles.text}>@react-navigation/native (^5.9.4)</Text>
+      <Text style={styles.text}>@react-navigation/stack (^5.14.4)</Text>
       <Text style={styles.text}>graceful-fs (^4.2.6)</Text>
       <Text style={styles.text}>lodash (^4.17.4)</Text>
-      <Text style={styles.text}>react-native-sound (^0.10.3)</Text>
-      <Text style={styles.text}>@react-navigation/bottom-tabs (^5.11.9)</Text>
-      <Text style={styles.text}>react-native (^0.60.4)</Text>
-      <Text style={styles.text}>react-native-call-detection (^1.9.0)</Text>
-      <Text style={styles.text}>react-native-music-control (^0.10.5)</Text>
-      <Text style={styles.text}>@react-native-community/toolbar-android (0.1.0-rc.2)</Text>
-      <Text style={styles.text}>react-redux (^7.1.0)</Text>
-      <Text style={styles.text}>react-lifecycles-compat (^3.0.4)</Text>
-      <Text style={styles.text}>react-native-camera (^3.43.5)</Text>
-      <Text style={styles.text}>redux (^3.7.2)</Text>
-      <Text style={styles.text}>redux-thunk (^2.3.0)</Text>
-      <Text style={styles.text}>@react-native-async-storage/async-storage (^1.15.1)</Text>
-      <Text style={styles.text}>react-native-safe-area-context (^3.2.0)</Text>
-      <Text style={styles.text}>rn-fetch-blob (^0.10.16)</Text>
-      <Text style={styles.text}>@react-navigation/native (^5.9.4)</Text>
       <Text style={styles.text}>moment (^2.18.1)</Text>
-      <Text style={styles.text}>react-native-vector-icons (^8.1.0)</Text>
-      <Text style={styles.text}>@react-native-community/masked-view (^0.1.10)</Text>
-      <Text style={styles.text}>react (^16.8.6)</Text>
+      <Text style={styles.text}>react (17.0.1)</Text>
+      <Text style={styles.text}>react-lifecycles-compat (^3.0.4)</Text>
+      <Text style={styles.text}>react-native (0.64.0)</Text>
+      <Text style={styles.text}>react-native-call-detection (^1.9.0)</Text>
+      <Text style={styles.text}>react-native-camera (^3.43.5)</Text>
+      <Text style={styles.text}>react-native-dropdownalert (^4.1.0)</Text>
       <Text style={styles.text}>react-native-gesture-handler (^1.10.3)</Text>
+      <Text style={styles.text}>react-native-keyboard-spacer (^0.4.1)</Text>
+      <Text style={styles.text}>react-native-music-control (^0.10.5)</Text>
+      <Text style={styles.text}>react-native-progress (^4.1.2)</Text>
       <Text style={styles.text}>react-native-reanimated (^1.13.3)</Text>
+      <Text style={styles.text}>react-native-safe-area-context (^3.2.0)</Text>
+      <Text style={styles.text}>react-native-screens (^3.0.0)</Text>
+      <Text style={styles.text}>react-native-sound (^0.10.3)</Text>
+      <Text style={styles.text}>react-native-vector-icons (^8.1.0)</Text>
+      <Text style={styles.text}>react-redux (^7.1.0)</Text>
+      <Text style={styles.text}>redux (^3.7.2)</Text>
       <Text style={styles.text}>redux-persist (^4.8.2)</Text>
-      <Text style={styles.text}>@react-navigation/stack (^5.14.4)</Text>
+      <Text style={styles.text}>redux-thunk (^2.3.0)</Text>
+      <Text style={styles.text}>rn-fetch-blob (^0.10.16)</Text>
     </View>
   );
 }
