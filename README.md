@@ -26,7 +26,7 @@ The app is stable and usable but there are still some kinks which I want to iron
 
 * Downloading media to the phone for offline use
 * Generally better behaviour when there is no internet connection
-* Some buttons are really hard to press for some devices. This seems to be react-native bug which I haven't found a workaround yet
+* ~~Some buttons are really hard to press for some devices. This seems to be react-native bug which I haven't found a workaround yet~~
 
 ### Installation
 
