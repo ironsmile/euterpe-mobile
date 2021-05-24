@@ -1,4 +1,4 @@
-package com.httpms;
+package com.doycho.euterpe.mobile;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.httpms;
+package com.doycho.euterpe.mobile;
 
 import android.os.Bundle;
 
@@ -15,7 +15,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "httpms";
+        return "Euterpe";
     }
 
     @Override

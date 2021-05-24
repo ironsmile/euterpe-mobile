@@ -1,4 +1,4 @@
-package com.httpms;
+package com.doycho.euterpe.mobile;
 
 import android.app.Service;
 import android.app.PendingIntent;

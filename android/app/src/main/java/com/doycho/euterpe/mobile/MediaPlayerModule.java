@@ -1,4 +1,4 @@
-package com.httpms;
+package com.doycho.euterpe.mobile;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -43,14 +43,14 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
   boolean serviceStarting = false;
   boolean isDebugMode = false;
 
-  public static final String Broadcast_PLAY = "com.httpms.Play";
-  public static final String Broadcast_SET_TRACK = "com.httpms.SetTrack";
-  public static final String Broadcast_PAUSE = "com.httpms.Pause";
-  public static final String Broadcast_STOP = "com.httpms.Stop";
-  public static final String Broadcast_GET_CURRENT_TIME = "com.httpms.GetCurrentTime";
-  public static final String Broadcast_GET_DURATION = "com.httpms.GetDuration";
-  public static final String Broadcast_SEEK_TO = "com.httpms.SeekTo";
-  public static final String Broadcast_IS_PLAYING = "com.httpms.IsPlaying";
+  public static final String Broadcast_PLAY = "com.doycho.euterpe.mobile.Play";
+  public static final String Broadcast_SET_TRACK = "com.doycho.euterpe.mobile.SetTrack";
+  public static final String Broadcast_PAUSE = "com.doycho.euterpe.mobile.Pause";
+  public static final String Broadcast_STOP = "com.doycho.euterpe.mobile.Stop";
+  public static final String Broadcast_GET_CURRENT_TIME = "com.doycho.euterpe.mobile.GetCurrentTime";
+  public static final String Broadcast_GET_DURATION = "com.doycho.euterpe.mobile.GetDuration";
+  public static final String Broadcast_SEEK_TO = "com.doycho.euterpe.mobile.SeekTo";
+  public static final String Broadcast_IS_PLAYING = "com.doycho.euterpe.mobile.IsPlaying";
 
   public static Map<String, String> AuthHeaders;
   public static boolean repeat;
@@ -398,7 +398,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     player.stopSelf();
   }
 
-  public static final String ResultReceiver_CURRENT_TIME = "com.httpms.resultReceiver.currentTime";
+  public static final String ResultReceiver_CURRENT_TIME = "com.doycho.euterpe.mobile.resultReceiver.currentTime";
   private final class CurrentTimeReceiver extends ResultReceiver {
 
     Callback callback;
@@ -422,7 +422,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_GET_DURATION = "com.httpms.resultReceiver.getDuration";
+  public static final String ResultReceiver_GET_DURATION = "com.doycho.euterpe.mobile.resultReceiver.getDuration";
   private final class GetDurationReceiver extends ResultReceiver {
 
     Callback callback;
@@ -443,7 +443,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_SET_TRACK = "com.httpms.resultReceiver.setTrack";
+  public static final String ResultReceiver_SET_TRACK = "com.doycho.euterpe.mobile.resultReceiver.setTrack";
   private final class SetTrackReceiver extends ResultReceiver {
 
     private Callback callback;
@@ -479,7 +479,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_END_TRACK = "com.httpms.resultReceiver.endTrack";
+  public static final String ResultReceiver_END_TRACK = "com.doycho.euterpe.mobile.resultReceiver.endTrack";
   private final class EndTrackReceiver extends ResultReceiver {
 
     public EndTrackReceiver() {
@@ -528,7 +528,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_PLAY = "com.httpms.resultReceiver.play";
+  public static final String ResultReceiver_PLAY = "com.doycho.euterpe.mobile.resultReceiver.play";
   private final class PlayReceiver extends ResultReceiver {
     public PlayReceiver() {
       super(null);
@@ -544,7 +544,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_PAUSE = "com.httpms.resultReceiver.pause";
+  public static final String ResultReceiver_PAUSE = "com.doycho.euterpe.mobile.resultReceiver.pause";
   private final class PauseReceiver extends ResultReceiver {
     public PauseReceiver() {
       super(null);
@@ -559,7 +559,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_STOP = "com.httpms.resultReceiver.stop";
+  public static final String ResultReceiver_STOP = "com.doycho.euterpe.mobile.resultReceiver.stop";
   private final class StopReceiver extends ResultReceiver {
     public StopReceiver() {
       super(null);
@@ -574,7 +574,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_SEEK_COMPLETED = "com.httpms.resultReceiver.trackCompleted";
+  public static final String ResultReceiver_SEEK_COMPLETED = "com.doycho.euterpe.mobile.resultReceiver.trackCompleted";
   private final class SeekCompletedReceiver extends ResultReceiver {
     public SeekCompletedReceiver() {
       super(null);
@@ -589,7 +589,7 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
     }
   }
 
-  public static final String ResultReceiver_IS_PLAYING = "com.httpms.resultReceiver.isPlaying";
+  public static final String ResultReceiver_IS_PLAYING = "com.doycho.euterpe.mobile.resultReceiver.isPlaying";
   private final class IsPlayingReceiver extends ResultReceiver {
     Callback callback;
 
