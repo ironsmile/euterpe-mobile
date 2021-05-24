@@ -44,7 +44,7 @@ class TimedProgressRenderer extends React.PureComponent {
         height: 2,
         minimumTrackTintColor: 'white',
         thumbTintColor: 'white',
-        maximumTrackTintColor: '#3c3d41',
+        maximumTrackTintColor: 'white',
         step: 0.01,
       },
       textWidth: getTimesWidth(props.duration),
