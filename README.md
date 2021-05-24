@@ -6,19 +6,12 @@ This is the mobile client for the [Euterpe](https://listen-to-euterpe.eu) media 
 
 <!-- MarkdownTOC -->
 
-* [Name](#name)
 * [Project Status](#project-status)
 * [Installation](#installation)
     - [Android](#android)
     - [iOS](#ios)
 
 <!-- /MarkdownTOC -->
-
-### Name
-
-Note that currently the whole project is in the process of renaming from "HTTPMS" to "Euterpe". This might take some time as there is only one person behind all Euterpe-related. And that's me!
-
-Keep that in mind and when you see "HTTPMS" somewhere, do know that we're talking about Euterpe still. I hope to remove all references to the old name soon. Unfortunately for the mobile apps this is a big deal. Up to now they were all released with the identifier `com.httpms`. This will change and instead `com.doycho.euterpe` will be used instead in the future.
 
 ### Project Status
 
@@ -39,7 +32,7 @@ At the time of writing the only distribution method is [F-Droid](https://f-droid
 * Install F-Droid on your Android if you haven't already
 * Under "Settings" find "Repositories" and add `https://fdroid.doycho.com/fdroid/repo` as a new repository
 * Refresh the repositories (by pulling down in the F-Droid app)
-* Search for "httpms"
+* Search for "Euterpe"
 
 Or you could skip F-Droid entirely and download an .apk file from this repository's releases page.
 
@@ -58,5 +51,5 @@ For that to work you will have to generate your own keystore for signing Android
 The app will happily run on iOS but at this time I am not distributing it through the App Store. Dealing with the developer hostility of Apple and the costs related are too much for me at this time. So your best bet is to install the app from source. If you go this route get yourself Apple developer key and then run the following in the project directory:
 
 ```
-npx react-native run-ios --release
+npx react-native run-ios
 ```
