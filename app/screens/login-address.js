@@ -37,9 +37,9 @@ export class LoginAddressScreenRenderer extends React.PureComponent {
       <Screen noTabBar={true} header={this.getHeader()} navigation={this.props.navigation}>
         <View style={login.container}>
           <View style={login.buttonWrapper}>
-            <Text style={login.headerText}>HTTPMS Address</Text>
+            <Text style={login.headerText}>Euterpe Address</Text>
             <Text style={login.subduedText}>
-              This is the address of your HTTPMS installation. It is the one you use with your
+              This is the URL address of your Euterpe installation. It is the one you use with your
               browser.
             </Text>
           </View>
@@ -75,7 +75,7 @@ export class LoginAddressScreenRenderer extends React.PureComponent {
                       return;
                     }
 
-                    let message = 'Error contacting the HTTPMS server';
+                    let message = 'Error contacting the Euterpe server';
 
                     if (error.message) {
                       message += ': ' + error.message;

@@ -93,7 +93,7 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
             }
           } catch (error) {
             this.setState({
-              errorMessage: 'Not a valid HTTPMS QR code',
+              errorMessage: 'Not a valid Euterpe QR code',
             });
           } finally {
             if (this.state.errorMessage !== null) {
@@ -163,7 +163,7 @@ export class LoginBarcodeScreenRenderer extends React.PureComponent {
               {qrMessage}
 
               <View style={[styles.verticallyAligned, styles.hintBackground]}>
-                <Text style={styles.hintText}>Point to a HTTPMS QR Code</Text>
+                <Text style={styles.hintText}>Point to a Euterpe QR Code</Text>
                 <TouchableOpacity
                   onPress={() => {
                     let newCamera = RNCamera.Constants.Type.back;
@@ -200,7 +200,7 @@ const NotAuthorizedYet = () => (
   <Helpful title="No Camera Permissions" firstLine="" iconName="camera-outline">
     <Text style={styles.text}>
       The app has no camera permissions. They are required in order to use the device's camera for
-      scanning HTTPMS details barcode. Please go to Settings -> httpms and allow the camera.
+      scanning Euterpe login barcode. Please go to Settings -> Euterpe and allow the camera.
     </Text>
   </Helpful>
 );

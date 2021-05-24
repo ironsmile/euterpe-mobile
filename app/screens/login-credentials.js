@@ -39,7 +39,7 @@ export class LoginCredentialsScreenRenderer extends React.PureComponent {
           <View style={login.buttonWrapper}>
             <Text style={login.headerText}>Username and Password</Text>
             <Text style={login.subduedText}>
-              This HTTPMS server requires authorization with username and password. Please, enter
+              This Euterpe server requires authorization with username and password. Please, enter
               yours below.
             </Text>
           </View>
@@ -93,7 +93,7 @@ export class LoginCredentialsScreenRenderer extends React.PureComponent {
                       return;
                     }
 
-                    let message = 'Error contacting the HTTPMS server';
+                    let message = 'Error contacting the Euterpe server';
 
                     if (error.message) {
                       message += ': ' + error.message;

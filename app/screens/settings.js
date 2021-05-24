@@ -25,7 +25,7 @@ export class SettingsRenderer extends React.PureComponent {
         <View style={styles.container}>
           <Text style={styles.header}>Library Settings</Text>
 
-          <Text style={styles.text}>HTTPMS Address: {settings.hostAddress}</Text>
+          <Text style={styles.text}>Euterpe Address: {settings.hostAddress}</Text>
 
           <Text style={styles.text}>Authentication: {loginType}</Text>
 

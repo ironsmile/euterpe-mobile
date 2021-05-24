@@ -9,7 +9,7 @@ export class AboutScreen extends React.PureComponent {
       <Screen title="ABOUT" navigation={this.props.navigation}>
         <ScrollView>
           <View style={styles.container}>
-            <Text style={[styles.text, styles.header]}>HTTPMS Mobile Player</Text>
+            <Text style={[styles.text, styles.header]}>Euterpe Mobile Player</Text>
 
             <Text style={styles.text}>Version: {version}</Text>
 

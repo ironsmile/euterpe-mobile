@@ -79,8 +79,8 @@ class SearchRenderer extends React.PureComponent {
     if (!this.props.settings.hostAddress) {
       this.dropdown.alertWithType(
         'error',
-        'No HTTPMS server selected',
-        'Go to "Library" and add an HTTPMS server for usage.'
+        'No Euterpe server selected',
+        'Go to "Library" and add an Euterpe server for usage.'
       );
       return;
     }
@@ -119,7 +119,7 @@ class SearchRenderer extends React.PureComponent {
       this.dropdown.alertWithType(
         'error',
         'Wrong Username or Password',
-        'Wrong HTTPMS server username or password. Go to Library and correct them.'
+        'Wrong Euterpe server username or password. Go to Library and correct them.'
       );
     } else if (typeof error === 'string') {
       this.dropdown.alertWithType('error', 'Playback Error', error);

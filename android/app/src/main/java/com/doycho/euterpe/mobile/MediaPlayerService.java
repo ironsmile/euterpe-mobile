@@ -56,7 +56,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
 		Notification notification =
 				new Notification.Builder(this)
-			.setContentTitle("HTTPMS Media Service")
+			.setContentTitle("Euterpe Service")
 			.setContentText("music playing in background")
 			.setContentIntent(pendingIntent)
 			.build();

@@ -9,7 +9,7 @@ export class LoginMainScreen extends React.PureComponent {
     return (
       <Screen noTabBar={true} noHeader={true} navigation={this.props.navigation}>
         <ScrollView style={styles.container} contentContainerStyle={styles.containerContent}>
-          <Text style={login.headerText}>Add a HTTPMS server</Text>
+          <Text style={login.headerText}>Add an Euterpe server</Text>
 
           <View style={login.buttonWrapper}>
             <IconButton
@@ -21,7 +21,7 @@ export class LoginMainScreen extends React.PureComponent {
             />
             <Text style={login.subduedText}>
               Use your devices camera to scan a barcode, generated in the web inteface of your
-              HTTPMS installation.
+              Euterpe installation.
             </Text>
           </View>
 
@@ -34,7 +34,7 @@ export class LoginMainScreen extends React.PureComponent {
               }}
             />
             <Text style={login.subduedText}>
-              Manually enter the HTTPS server address, your username and password if any required.
+              Manually enter the Euterpe server address, your username and password if any required.
             </Text>
           </View>
         </ScrollView>
