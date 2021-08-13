@@ -6,6 +6,7 @@ import Header from '@screens/common/header';
 import { Helpful } from '@components/helpful';
 import { httpms } from '@components/httpms-service';
 import { ArtistBig } from '@components/artist-big';
+import { errorToMessage } from '@helpers/errors';
 import { ActivityIndicator } from '@components/activity-indicator';
 
 export class ArtistScreen extends React.PureComponent {
@@ -97,7 +98,7 @@ export class ArtistScreen extends React.PureComponent {
         this.setState({
           errorLoading: true,
           isLoading: false,
-          errorObj: error,
+          errorMessage: errorToMessage(error),
         });
 
         console.error('Error while GETting artist data', error);
@@ -121,7 +122,7 @@ export class ArtistScreen extends React.PureComponent {
         iconName="warning"
         title="Error Loading Artist"
         firstLine="Getting info for this artist failed."
-        secondLine={this.state.errorObj.toString()}
+        secondLine={this.state.errorMessage}
       />
     );
   }
