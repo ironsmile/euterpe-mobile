@@ -37,6 +37,10 @@ reason.
 
 avdmanager list avd
 
+или
+
+~/Android/Sdk/emulator/emulator -list-avds
+
 Пускане на android емулатор:
 
 /Users/iron4o/Library/Android/sdk/tools/emulator -avd <name> # name идва от list-а по - горе
@@ -49,12 +53,12 @@ avdmanager list avd
 
 пускане на bundler (комилитор). От root project dir:
 
-EDITOR=true react-native start
+EDITOR=true npx react-native start
 
 пускане на android и ios:
 
-react-native run-nadroid
-react-native run-ios
+npx react-native run-android
+npx react-native run-ios
 
 debug menu:
 
@@ -76,8 +80,4 @@ adb -s ZX1B23C8SJ install -r android/app/build/outputs/apk/app-release.apk
 
 логовете само на моя арр:
 
-adb logcat --pid $(adb shell ps | grep httpms | awk '{ print $2 }')
-
-== New Name ==
-
-Euterpe or Muzika
+adb logcat --pid $(adb shell ps | grep -i euterpe | awk '{ print $2 }')
