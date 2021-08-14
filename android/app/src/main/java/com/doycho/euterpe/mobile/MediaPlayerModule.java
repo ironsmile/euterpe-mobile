@@ -384,6 +384,12 @@ public class MediaPlayerModule extends ReactContextBaseJavaModule implements Lif
 
   @Override
   public void onHostDestroy() {
+    logDebug(String.format(
+      "Host Destroy. ss: %b, sb: %b",
+      serviceStarting,
+      serviceBound
+    ));
+
     if (serviceStarting) {
       player.stopSelf();
       return;

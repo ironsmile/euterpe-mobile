@@ -38,6 +38,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
   private MediaPlayer mediaPlayer;
   private String mediaFile;
 
+  private int startedId = 0;
+
   private ResultReceiver setTrackResultReceiver;
   private ResultReceiver endTrackResultReceiver;
   private ResultReceiver playResultReceiver;
@@ -76,6 +78,17 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+    logDebug(String.format("onStartCommand with startId: %d", startId));
+
+    if (intent == null) {
+      String logMsg = "MediaPlayer service restarted";
+      if (debugMode) {
+        Toast.makeText(this, logMsg, Toast.LENGTH_LONG).show();
+      }
+      logDebug(logMsg);
+      return START_STICKY;
+    }
+
     try {
       endTrackResultReceiver = intent.getParcelableExtra(
         MediaPlayerModule.ResultReceiver_END_TRACK
@@ -97,8 +110,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       String logMsg = "MediaPlayer start null pointer exception: " + e;
       Toast.makeText(this, logMsg, Toast.LENGTH_LONG).show();
       Log.e(TAG, logMsg);
-      return START_STICKY;
     }
+
+    startedId = startId;
 
 		// If we get killed, after returning from here, restart
 		return START_STICKY;
@@ -167,7 +181,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       try {
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PLAY);
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "play null pointer exception: " + e);
         return;
       }
@@ -205,7 +219,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         mediaFile = intent.getExtras().getString("media");
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_SET_TRACK);
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "setNewTrack null pointer exception: " + e);
         return;
       }
@@ -235,7 +249,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       try {
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_PAUSE);
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "pause null pointer exception: " + e);
         return;
       }
@@ -259,7 +273,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       try {
         resultReceiver = intent.getParcelableExtra(MediaPlayerModule.ResultReceiver_STOP);
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "stop null pointer exception: " + e);
         return;
       }
@@ -286,7 +300,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
           MediaPlayerModule.ResultReceiver_CURRENT_TIME
         );
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "getCurrentTime null pointer exception: " + e);
         return;
       }
@@ -332,7 +346,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
           MediaPlayerModule.ResultReceiver_IS_PLAYING
         );
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "isPlaying null pointer exception: " + e);
         return;
       }
@@ -362,7 +376,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       try {
         progress = intent.getExtras().getFloat("progress");
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "progress null pointer exception: " + e);
         return;
       }
@@ -401,7 +415,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
           MediaPlayerModule.ResultReceiver_GET_DURATION
         );
       } catch (NullPointerException e) {
-        stopSelf();
+        stopSelf(startedId);
         Log.e(TAG, "getDuration null pointer exception: " + e);
         return;
       }
@@ -466,7 +480,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
 
     // Stop the service
-    stopSelf();
+    stopSelf(startedId);
   }
 
   // Handle medila player errors.
@@ -690,7 +704,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     } catch (IOException e) {
         Log.e(TAG, "set data source exception: " + e);
         e.printStackTrace();
-        stopSelf();
+        stopSelf(startedId);
         mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
