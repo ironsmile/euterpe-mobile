@@ -2,10 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { IconButton } from '@components/icon-button';
-import { FlatList, View, StyleSheet, Text } from 'react-native';
+import { FlatList, View, StyleSheet, Text, Keyboard } from 'react-native';
 import { headerHeight } from '@screens/common/header';
 import { dismissErrors } from '@actions/errors';
 import { gs } from '@styles/global';
+
+import { finishLogOut } from '@actions/settings';
+import { cleanupRecentAlbums } from '@actions/recent-albums';
+import { cleanupRecentArtists } from '@actions/recent-artists';
+import { cleanupRecentlyPlayed } from '@actions/recently-played';
+import { stopPlaying, cleanupPlaying } from '@actions/playing';
 
 class ErrorsOverlayRenderer extends React.PureComponent {
   constructor(props) {
@@ -24,13 +30,28 @@ class ErrorsOverlayRenderer extends React.PureComponent {
   };
 
   _renderFooter = () => {
+    const { dispatch } = this.props;
     return (
       <View style={styles.footerContainer}>
         <IconButton
           text="Dismiss"
           iconName="close"
           onPress={() => {
-            this.props.dispatch(dismissErrors());
+            dispatch(dismissErrors());
+          }}
+        />
+
+        <IconButton
+          text="Log Out"
+          iconName="log-out"
+          onPress={() => {
+            Keyboard.dismiss();
+            dispatch(cleanupRecentAlbums());
+            dispatch(cleanupRecentArtists());
+            dispatch(cleanupRecentlyPlayed());
+            dispatch(stopPlaying());
+            dispatch(cleanupPlaying());
+            dispatch(finishLogOut());
           }}
         />
       </View>
@@ -97,8 +118,8 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
     marginTop: 15,
     marginBottom: 15,
   },

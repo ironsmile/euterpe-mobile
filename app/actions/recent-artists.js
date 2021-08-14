@@ -1,7 +1,7 @@
 import {
   RECENT_ARTISTS_REFRESHED,
   START_REFRESHING_ARTISTS,
-  STOPPED_REFRESHING_ARTISTS,
+  ERROR_REFRESHING_ARTISTS,
   CLEANUP_RECENT_ARTISTS,
 } from '@reducers/recent-artists';
 import { httpms } from '@components/httpms-service';
@@ -49,16 +49,18 @@ export const refreshRecentArtists = () => {
         });
       })
       .catch((error) => {
-        dispatch({
-          type: STOPPED_REFRESHING_ARTISTS,
-        });
-        dispatch(
-          appendError(`Error while refreshing recently added artists ${errorToMessage(error)}`)
-        );
+        const errMessage = errorToMessage(error);
+        dispatch(errorRefreshingRecentArtists(errMessage));
+        dispatch(appendError(`Error while refreshing recently added artists ${errMessage}`));
       });
   };
 };
 
 export const cleanupRecentArtists = () => ({
   type: CLEANUP_RECENT_ARTISTS,
+});
+
+export const errorRefreshingRecentArtists = (error) => ({
+  type: ERROR_REFRESHING_ARTISTS,
+  error,
 });

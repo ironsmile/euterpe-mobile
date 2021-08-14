@@ -1,8 +1,8 @@
 import {
   RECENT_ALBUMS_REFRESHED,
   START_REFRESHING_ALBUMS,
-  STOPPED_REFRESHING_ALBUMS,
   CLEANUP_RECENT_ALBUMS,
+  ERROR_REFRESHING_ALBUMS,
 } from '@reducers/recent-albums';
 import { httpms } from '@components/httpms-service';
 import { appendError } from '@actions/errors';
@@ -49,16 +49,18 @@ export const refreshRecentAlbums = () => {
         });
       })
       .catch((error) => {
-        dispatch({
-          type: STOPPED_REFRESHING_ALBUMS,
-        });
-        dispatch(
-          appendError(`Error while refreshing recently added albums ${errorToMessage(error)}`)
-        );
+        const errMessage = errorToMessage(error);
+        dispatch(errorRefreshingRecentAlbums(errMessage));
+        dispatch(appendError(`Error while refreshing recently added albums ${errMessage}`));
       });
   };
 };
 
 export const cleanupRecentAlbums = () => ({
   type: CLEANUP_RECENT_ALBUMS,
+});
+
+export const errorRefreshingRecentAlbums = (error) => ({
+  type: ERROR_REFRESHING_ALBUMS,
+  error,
 });

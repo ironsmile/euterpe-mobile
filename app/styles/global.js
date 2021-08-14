@@ -68,3 +68,18 @@ export const login = {
     marginTop: 20,
   },
 };
+
+export const recentlyAddedError = {
+  errorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    marginBottom: 24,
+  },
+  errorTitle: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 8,
+  },
+};

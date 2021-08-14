@@ -1,5 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { View, Text, StyleSheet } from 'react-native';
+
+import { recentlyAddedError } from '@styles/global';
 import { refreshRecentArtists } from '@actions/recent-artists';
 import { PlayList } from '@components/playlist';
 import { httpms } from '@components/httpms-service';
@@ -14,11 +17,24 @@ class RecentArtistsRenderer extends React.PureComponent {
   }
 
   render() {
-    const { loading, artists } = this.props.recentArtists;
+    const { loading, artists, error } = this.props.recentArtists;
+    const title = 'Recently Added Artists';
+
+    if (error != null) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorTitle} numberOfLines={1}>
+            {title}
+          </Text>
+          <Text>Error loading recent albums:</Text>
+          <Text>{error}</Text>
+        </View>
+      );
+    }
 
     return (
       <PlayList
-        title="Recently Added Artists"
+        title={title}
         items={artists}
         key={this.props.key}
         isLoading={loading}
@@ -42,6 +58,8 @@ class RecentArtistsRenderer extends React.PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create(recentlyAddedError);
 
 const mapStateToProps = (state) => ({
   recentArtists: state.recentArtists,
