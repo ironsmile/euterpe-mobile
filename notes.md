@@ -81,3 +81,12 @@ adb -s ZX1B23C8SJ install -r android/app/build/outputs/apk/app-release.apk
 логовете само на моя арр:
 
 adb logcat --pid $(adb shell ps | grep -i euterpe | awk '{ print $2 }')
+
+=== Bugs ==
+
+Bugz #1:
+
+* Слушкаш музика
+* Пускаш друг звук (youtube или друг плеър) докато работи
+* връщаш се на Euterpe и натискаш play
+* "media player is not created"
