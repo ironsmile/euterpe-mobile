@@ -41,7 +41,8 @@
 		"redux": "^3.7.2",
 		"redux-persist": "^4.8.2",
 		"redux-thunk": "^2.3.0",
-		"rn-fetch-blob": "^0.10.16"
+		"rn-fetch-blob": "^0.10.16",
+		"xmldom": "github:xmldom/xmldom#0.7.0"
 	},
 	"devDependencies": {
 		"@react-native-community/eslint-config": "^2.0.0",
