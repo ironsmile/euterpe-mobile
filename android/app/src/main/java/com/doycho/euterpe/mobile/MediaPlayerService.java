@@ -180,7 +180,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       }
 
       if (mediaPlayer == null) {
-        resultReceiver.send(1, bundlWithError("media player is not created"));
+        initMediaPlayer();
+        resultReceiver.send(0, null);
         return;
       }
 
@@ -554,6 +555,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
       case AudioManager.AUDIOFOCUS_LOSS:
         // Lost focus for an unbounded amount of time: stop playback and release media player
         if (mediaPlayer.isPlaying()) {
+          resumePosition = mediaPlayer.getCurrentPosition();
           mediaPlayer.stop();
           stopResultReceiver.send(0, null);
         }
@@ -624,11 +626,15 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
     if (!mediaPlayer.isPlaying()) {
       playbackError = false;
+      if (resumePosition > 0) {
+        mediaPlayer.seekTo(resumePosition);
+      }
       mediaPlayer.start();
     }
   }
 
   private void stopMedia() {
+    resumePosition = 0;
     if (mediaPlayer == null) return;
     if (mediaPlayer.isPlaying()) {
       mediaPlayer.stop();
