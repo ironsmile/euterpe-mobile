@@ -72,7 +72,7 @@ rr (android)
 
 компилиране на release версия:
 
-react-native run-android --variant=release
+npx react-native run-android --variant=release
 
 инсталиране на истински device на release версия:
 
@@ -82,11 +82,7 @@ adb -s ZX1B23C8SJ install -r android/app/build/outputs/apk/app-release.apk
 
 adb logcat --pid $(adb shell ps | grep -i euterpe | awk '{ print $2 }')
 
-=== Bugs ==
+=== React Native Embarassing bugs ===
 
-Bugz #1:
-
-* Слушкаш музика
-* Пускаш друг звук (youtube или друг плеър) докато работи
-* връщаш се на Euterpe и натискаш play
-* "media player is not created"
+https://github.com/facebook/react-native/issues/24260
+https://github.com/facebook/react-native/issues/24261
