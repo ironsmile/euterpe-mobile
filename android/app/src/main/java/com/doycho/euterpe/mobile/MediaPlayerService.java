@@ -307,17 +307,20 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
       Bundle bundle = new Bundle();
 
-      if (mediaPlayer == null) {
+      if (mediaPlayer == null && resumePosition == 0) {
         Log.e(TAG, "getCurrentTime called when the player is still null");
         resultReceiver.send(1, bundlWithError("player is still null"));
         return;
-      } else if (!mediaPlayerPrepared) {
+      } else if (!mediaPlayerPrepared && resumePosition == 0) {
         Log.e(TAG, "getCurrentTime called during the player is still preparing");
         resultReceiver.send(1, bundlWithError("player is still preparing"));
         return;
       }
 
-      if (mediaPlayer == null || !mediaPlayerPrepared) {
+      if ((mediaPlayer == null || !mediaPlayerPrepared) && resumePosition > 0) {
+        bundle.putInt("time", resumePosition / 1000);
+        bundle.putBoolean("isPlaying", false);
+      } else if (mediaPlayer == null || !mediaPlayerPrepared) {
         bundle.putInt("time", 0);
         bundle.putBoolean("isPlaying", false);
       } else {
