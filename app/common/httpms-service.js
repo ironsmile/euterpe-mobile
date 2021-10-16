@@ -12,8 +12,7 @@ class HttpmsService {
   }
 
   getSearchURL(searchText) {
-    const { settings } = this.getState();
-    return `${settings.hostAddress}/v1/search?q=${encodeURIComponent(searchText)}`;
+    return this.addressFromURI(`/v1/search?q=${encodeURIComponent(searchText)}`);
   }
 
   getSearchRequest(searchText) {
@@ -35,8 +34,7 @@ class HttpmsService {
   }
 
   getSongURL(songID) {
-    const { settings } = this.getState();
-    return `${settings.hostAddress}/v1/file/${songID}`;
+    return this.addressFromURI(`/v1/file/${songID}`);
   }
 
   getSongRequest(songID) {
@@ -50,12 +48,11 @@ class HttpmsService {
   }
 
   getShareURL(song) {
-    const { settings } = this.getState();
     const e = encodeURIComponent;
 
-    return `${settings.hostAddress}/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(
-      song.album_id
-    )}&at=${e(song.artist)}`;
+    return this.addressFromURI(
+      `/?q=${e(song.title)}&tr=${e(song.id)}&al=${e(song.album_id)}&at=${e(song.artist)}`
+    );
   }
 
   getRequestByURL(url) {
@@ -71,18 +68,15 @@ class HttpmsService {
   }
 
   getBrowseArtistsURL() {
-    const { settings } = this.getState();
-    return `${settings.hostAddress}/v1/browse?by=artist&per-page=20`;
+    return this.addressFromURI('/v1/browse?by=artist&per-page=20');
   }
 
   getBrowseAlbumsURL() {
-    const { settings } = this.getState();
-    return `${settings.hostAddress}/v1/browse?by=album&per-page=20`;
+    return this.addressFromURI('/v1/browse?by=album&per-page=20');
   }
 
   getRecentArtistsURL() {
-    const { settings } = this.getState();
-    return `${settings.hostAddress}/v1/browse?by=artist&per-page=5&order=desc&order-by=id`;
+    return this.addressFromURI('/v1/browse?by=artist&per-page=5&order=desc&order-by=id');
   }
 
   getRecentArtistsRequest() {
@@ -90,8 +84,7 @@ class HttpmsService {
   }
 
   getRecentAlbumsURL() {
-    const { settings } = this.getState();
-    return `${settings.hostAddress}/v1/browse?by=album&per-page=5&order=desc&order-by=id`;
+    return this.addressFromURI('/v1/browse?by=album&per-page=5&order=desc&order-by=id');
   }
 
   getRecentAlbumsRequest() {
@@ -101,7 +94,7 @@ class HttpmsService {
   getAlbumArtworkURL(albumID, { size } = {}) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
-    const url = `${settings.hostAddress}/v1/album/${e(albumID)}/artwork`;
+    const url = this.addressFromURI(`/v1/album/${e(albumID)}/artwork`);
     let sizeQuery = null;
     if (size === 'small') {
       sizeQuery = 'size=small';
@@ -125,7 +118,7 @@ class HttpmsService {
   getArtistImageURL(artistID, { size } = {}) {
     const e = encodeURIComponent;
     const { settings } = this.getState();
-    const url = `${settings.hostAddress}/v1/artist/${e(artistID)}/image`;
+    const url = this.addressFromURI(`/v1/artist/${e(artistID)}/image`);
     let sizeQuery = null;
     if (size === 'small') {
       sizeQuery = 'size=small';
@@ -153,7 +146,7 @@ class HttpmsService {
     const { settings } = this.getState();
 
     return {
-      url: `${settings.hostAddress}/v1/login/token/`,
+      url: this.addressFromURI('/v1/login/token/'),
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -167,10 +160,8 @@ class HttpmsService {
   }
 
   getRegisterTokenRequest() {
-    const { settings } = this.getState();
-
     return {
-      url: `${settings.hostAddress}/v1/register/token/`,
+      url: this.addressFromURI('/v1/register/token/'),
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -181,10 +172,11 @@ class HttpmsService {
   }
 
   addressFromURI(uri) {
-    const noSlashes = uri.replace(/^\/+/, '');
     const { settings } = this.getState();
+    const noSlashes = uri.replace(/^\/+/, '');
+    const slashlessAddress = settings.hostAddress.replace(/\/+$/, '');
 
-    return `${settings.hostAddress}/${noSlashes}`;
+    return `${slashlessAddress}/${noSlashes}`;
   }
 }
 
