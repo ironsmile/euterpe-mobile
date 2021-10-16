@@ -6,6 +6,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer';
 import { Screen } from '@screens/screen';
 import Header from '@screens/common/header';
 import { TextInput } from '@components/text-input';
+import { PasswordInput } from '@components/password-input';
 import { login } from '@styles/global';
 import { IconButton } from '@components/icon-button';
 import { changeSettings, checkError, getToken } from '@actions/settings';
@@ -60,7 +61,7 @@ export class LoginCredentialsScreenRenderer extends React.PureComponent {
             }}
           />
 
-          <TextInput
+          <PasswordInput
             ref="PasswordInput"
             placeholder="Password"
             returnKeyType="done"
@@ -72,7 +73,6 @@ export class LoginCredentialsScreenRenderer extends React.PureComponent {
                 })
               );
             }}
-            secureTextEntry={true}
             onSubmitEditing={Keyboard.dismiss}
           />
 
