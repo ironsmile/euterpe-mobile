@@ -153,7 +153,7 @@ def getVersionCodeFromNpm() {
     def packageJson = new JsonSlurper().parseText(inputFile.text)
     def semVer = packageJson["version"].split(/\./, -1)
 
-    return semVer[2].toInteger() + semVer[1].toInteger() * 1000 + semVer[2].toInteger() * 1000000
+    return semVer[2].toInteger() + semVer[1].toInteger() * 1000 + semVer[0].toInteger() * 1000000
 }
 
 /**
