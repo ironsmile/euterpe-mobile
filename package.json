@@ -20,7 +20,7 @@
 		"browserslist": "^4.16.7",
 		"graceful-fs": "^4.2.6",
 		"lodash": "^4.17.4",
-		"moment": "^2.18.1",
+		"moment": "^2.29.4",
 		"path-parse": "^1.0.7",
 		"react": "17.0.1",
 		"react-lifecycles-compat": "^3.0.4",
